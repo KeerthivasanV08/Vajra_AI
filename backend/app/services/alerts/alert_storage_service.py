@@ -2,12 +2,14 @@ import os
 import csv
 from typing import Dict, List
 
-from app.core.runtime_context import get_runtime_session_id
+import pandas as pd
 
-# Compute path to TrustVault/data/processed/alerts from the backend package
-BASE_DIR = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'data', 'processed', 'alerts')
-)
+from app.core.runtime_context import get_runtime_session_id
+from app.core import storage_paths
+
+# Canonical: backend/data/processed/alerts/
+BASE_DIR = str(storage_paths.ALERTS_DIR)
+
 
 FILES = {
     'onboarding_alerts': 'onboarding_alerts.csv',

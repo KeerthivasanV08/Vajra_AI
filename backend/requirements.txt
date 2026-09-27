@@ -1,54 +1,63 @@
-# =====================================================
-# FASTAPI STACK
-# =====================================================
+# ==============================================================================
+# VAJRA AI — Backend Requirements
+# Generated from codebase import scan + installed environment verification.
+# Python >= 3.10 required.
+# ==============================================================================
 
-fastapi
-uvicorn[standard]
-python-multipart
+# ── Web Framework ──────────────────────────────────────────────────────────────
+fastapi>=0.115.0
+uvicorn>=0.35.0
+starlette>=0.38.0
+python-multipart>=0.0.22         # Form/file upload parsing (multipart middleware)
 
-# =====================================================
-# DATA SCIENCE / ML
-# =====================================================
+# ── Config & Environment ───────────────────────────────────────────────────────
+python-dotenv>=1.0.0
+pydantic>=2.11.0
+pydantic-settings>=2.15.0
 
-numpy==1.26.4
-pandas==2.2.3
-scikit-learn==1.6.1
-lightgbm==4.6.0
-joblib==1.5.1
-scipy==1.13.1
+# ── Authentication & Security ──────────────────────────────────────────────────
+PyJWT>=2.10.0                    # JWT token verification (app/core/security.py)
+python-jose>=3.5.0               # JOSE token utilities
+httpx>=0.28.0                    # Async HTTP client (health checks, outbound calls)
 
-# =====================================================
-# DEEP LEARNING
-# =====================================================
+# ── Data & ML — Core ──────────────────────────────────────────────────────────
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.2.0
+scipy>=1.10.0                    # Statistical utilities (calibration, metrics)
+joblib>=1.2.0                    # Model artifact serialization
 
-tensorflow==2.13.1
-keras==2.13.1
-protobuf==4.25.3
+# ── ML — Gradient Boosting ────────────────────────────────────────────────────
+xgboost>=1.7.0                   # Models 1, 4 (Trajectory, Node Ranking)
+lightgbm>=4.0.0                  # Models 0, 2 (Onboarding, Vulnerability)
 
-# =====================================================
-# GRAPH DATABASE
-# =====================================================
+# ── ML — Deep Learning ────────────────────────────────────────────────────────
+tensorflow>=2.13.0               # Sequence LSTM model (train_sequence_model.py)
+keras>=2.13.0                    # Keras model loading (model_loader.py)
+h5py>=3.12.0                     # Legacy .h5 model artifact reading
 
-neo4j
+# ── ML — Sampling ─────────────────────────────────────────────────────────────
+imbalanced-learn>=0.10.0         # SMOTE oversampling (imblearn.over_sampling)
 
-# =====================================================
-# DATABASE / CONFIG
-# =====================================================
+# ── Graph Intelligence ────────────────────────────────────────────────────────
+neo4j>=5.0.0                     # Neo4j Bolt driver (app/db/neo4j_client.py)
+networkx>=3.0.0                  # Graph utility (syndicate matching, community)
 
-python-dotenv
-pydantic
+# ── Geospatial ────────────────────────────────────────────────────────────────
+geopandas>=1.0.0                 # Spatial data processing
+h3>=3.7.0                        # H3 hex spatial indexing (optional — graceful fallback if missing)
 
-# =====================================================
-# OPTIONAL AML UTILITIES
-# =====================================================
+# ── Reporting & Documents ─────────────────────────────────────────────────────
+reportlab>=4.0.0                 # Legal Dossier PDF generation (pdf_service.py)
+Pillow>=10.0.0                   # Image processing (PIL.Image)
 
-matplotlib
-seaborn
+# ── Visualisation ─────────────────────────────────────────────────────────────
+matplotlib>=3.7.0
+seaborn>=0.12.0
 
-# =====================================================
-# API / HTTP
-# =====================================================
+# ── Async & Runtime Utilities ─────────────────────────────────────────────────
+anyio>=4.0.0                     # Async concurrency (used by FastAPI / Starlette)
 
-requests
-httpx
-sse-starlette
+# ── Data Generation & Testing ─────────────────────────────────────────────────
+Faker>=18.0.0                    # Synthetic data generation
+python-dateutil>=2.8.2           # Date parsing utilities

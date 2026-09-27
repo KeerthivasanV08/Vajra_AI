@@ -1,0 +1,125 @@
+{
+  "models_dir": "D:\\Vajra_AI\\backend\\models",
+  "total_artifacts": 13,
+  "valid_artifacts": 13,
+  "corrupted_artifacts": 0,
+  "artifact_details": [
+    {
+      "filename": "trajectory_model.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\trajectory_model.joblib",
+      "exists": true,
+      "size_bytes": 14721121,
+      "readable": true,
+      "type_name": "RandomForestClassifier",
+      "status": "VALID"
+    },
+    {
+      "filename": "trajectory_preprocessor.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\trajectory_preprocessor.joblib",
+      "exists": true,
+      "size_bytes": 1995,
+      "readable": true,
+      "type_name": "dict",
+      "status": "VALID"
+    },
+    {
+      "filename": "node_vulnerability_model.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\node_vulnerability_model.joblib",
+      "exists": true,
+      "size_bytes": 642352,
+      "readable": true,
+      "type_name": "XGBRegressor",
+      "status": "VALID"
+    },
+    {
+      "filename": "node_vulnerability_preprocessor.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\node_vulnerability_preprocessor.joblib",
+      "exists": true,
+      "size_bytes": 1599,
+      "readable": true,
+      "type_name": "StandardScaler",
+      "status": "VALID"
+    },
+    {
+      "filename": "spatial_region_model.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\spatial_region_model.joblib",
+      "exists": true,
+      "size_bytes": 2507446,
+      "readable": true,
+      "type_name": "XGBClassifier",
+      "status": "VALID"
+    },
+    {
+      "filename": "spatial_region_preprocessor.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\spatial_region_preprocessor.joblib",
+      "exists": true,
+      "size_bytes": 1961,
+      "readable": true,
+      "type_name": "dict",
+      "status": "VALID"
+    },
+    {
+      "filename": "node_ranker_model.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\node_ranker_model.joblib",
+      "exists": true,
+      "size_bytes": 220591,
+      "readable": true,
+      "type_name": "XGBClassifier",
+      "status": "VALID"
+    },
+    {
+      "filename": "node_ranker_preprocessor.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\node_ranker_preprocessor.joblib",
+      "exists": true,
+      "size_bytes": 1343,
+      "readable": true,
+      "type_name": "StandardScaler",
+      "status": "VALID"
+    },
+    {
+      "filename": "cross_border_model.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\cross_border_model.joblib",
+      "exists": true,
+      "size_bytes": 943,
+      "readable": true,
+      "type_name": "LogisticRegression",
+      "status": "VALID"
+    },
+    {
+      "filename": "cross_border_preprocessor.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\cross_border_preprocessor.joblib",
+      "exists": true,
+      "size_bytes": 1447,
+      "readable": true,
+      "type_name": "StandardScaler",
+      "status": "VALID"
+    },
+    {
+      "filename": "sop_calibrator.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\sop_calibrator.joblib",
+      "exists": true,
+      "size_bytes": 615,
+      "readable": true,
+      "type_name": "IsotonicRegression",
+      "status": "VALID"
+    },
+    {
+      "filename": "sop_preprocessor.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\sop_preprocessor.joblib",
+      "exists": true,
+      "size_bytes": 87,
+      "readable": true,
+      "type_name": "dict",
+      "status": "VALID"
+    },
+    {
+      "filename": "syndicate_matcher.joblib",
+      "path": "D:\\Vajra_AI\\backend\\models\\syndicate_matcher.joblib",
+      "exists": true,
+      "size_bytes": 1736,
+      "readable": true,
+      "type_name": "dict",
+      "status": "VALID"
+    }
+  ]
+}

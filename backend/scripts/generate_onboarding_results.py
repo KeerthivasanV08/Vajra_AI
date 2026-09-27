@@ -11,11 +11,9 @@ from app.core import storage_paths
 # ---------------------------------------------------
 # PATH CONFIG
 # ---------------------------------------------------
-BASE_DIR = Path(__file__).resolve().parents[2]
-
-RAW_DIR = BASE_DIR / "data" / "raw"
-REF_DIR = BASE_DIR / "data" / "reference"
-PROCESSED_DIR = BASE_DIR / "data" / "processed"
+RAW_DIR = storage_paths.DATA_DIR / "raw"
+REF_DIR = storage_paths.REFERENCE_DIR
+PROCESSED_DIR = storage_paths.PROCESSED_DIR
 
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -22,7 +22,7 @@ from sklearn.preprocessing import StandardScaler
 
 from imblearn.over_sampling import SMOTE
 
-from onboarding_feature_pipeline import (
+from training.onboarding.onboarding_feature_pipeline import (
     prepare_onboarding_training_data
 )
 

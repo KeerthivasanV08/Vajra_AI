@@ -1,0 +1,7 @@
+transaction_type,description
+CREDIT,Inbound credit to account
+DEBIT,Outbound debit from account
+TRANSFER,Account to account fund transfer
+REFUND,Reversal or refund of previous transaction
+CASH_WITHDRAWAL,Physical cash withdrawal from terminal or CSP
+CASH_DEPOSIT,Physical cash deposit into account

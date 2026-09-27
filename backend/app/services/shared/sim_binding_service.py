@@ -4,14 +4,10 @@ import pandas as pd
 
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parents[4]
+from app.core import storage_paths
 
-SIM_REGISTRY = (
-    BASE_DIR /
-    "data" /
-    "processed" /
-    "sim_registry.csv"
-)
+SIM_REGISTRY = storage_paths.PROCESSED_DIR / "sim_registry.csv"
+
 
 
 class SimBindingService:

@@ -1,0 +1,105 @@
+{
+  "existing_files": [
+    "backend/main.py",
+    "backend/config/config.py",
+    "backend/app/core/config.py",
+    "backend/app/core/model_loader.py",
+    "backend/app/core/policy_engine.py",
+    "backend/app/core/runtime_context.py",
+    "backend/app/api/onboarding_routes.py",
+    "backend/app/api/transaction_routes.py",
+    "backend/app/api/accounts_routes.py",
+    "backend/app/api/graph_routes.py",
+    "backend/app/api/alerts_routes.py",
+    "backend/app/api/case_routes.py",
+    "backend/app/api/officer_routes.py",
+    "backend/app/api/health_routes.py",
+    "backend/app/api/v1/reports.py"
+  ],
+  "existing_routes": [
+    "/api/onboarding",
+    "/api/transactions",
+    "/api/accounts",
+    "/api/graph",
+    "/api/dashboard",
+    "/api/alerts",
+    "/api/cases",
+    "/api/reports",
+    "/api/health",
+    "/api/officer"
+  ],
+  "existing_services": [
+    "app.services.account_service",
+    "app.services.onboarding.onboarding_service",
+    "app.services.transaction.transaction_service",
+    "app.services.alerts.alert_service",
+    "app.services.cases.case_service",
+    "app.services.officer.officer_service"
+  ],
+  "existing_models": [
+    "trajectory_model.joblib",
+    "node_vulnerability_model.joblib",
+    "spatial_region_model.joblib",
+    "node_ranker_model.joblib",
+    "cross_border_model.joblib",
+    "sop_calibrator.joblib",
+    "syndicate_matcher.joblib"
+  ],
+  "existing_datasets": [
+    "data/raw/trustvault/users.csv",
+    "data/raw/transactions/transactions.csv",
+    "data/raw/spatial/withdrawal_nodes_master.csv",
+    "data/raw/spatial/ip_geo_sessions.csv",
+    "data/raw/cross_border/cross_border_sessions.csv",
+    "data/raw/complaints/complaints.csv",
+    "data/raw/jurisdiction/jurisdiction_units.csv",
+    "data/raw/investigation/syndicate_patterns.csv",
+    "data/processed/spatial/node_features.csv",
+    "data/processed/integrated/vajra_feature_dataset.csv"
+  ],
+  "existing_artifacts": [
+    "backend/models/*.joblib",
+    "backend/evaluation/*.json"
+  ],
+  "frontend_dependencies": [
+    "/api/onboarding",
+    "/api/transactions",
+    "/api/accounts",
+    "/api/alerts",
+    "/api/cases",
+    "/api/graph",
+    "/api/officer",
+    "/api/reports"
+  ],
+  "missing_components": [
+    "VAJRA Physical Prediction Service",
+    "Candidate Generation Service",
+    "Node Ranking Service",
+    "Cross-Border Service",
+    "SOP Fusion Engine & Calibration Service",
+    "PCR & Bank Dispatch Service",
+    "Legal Dossier Service & PDF Generator",
+    "Cryptographic Audit Chain Service",
+    "Fairness & Governance Audit Service",
+    "Syndicate Fingerprint Matching Service",
+    "Attack Simulation Service",
+    "Master VAJRA Orchestrator & /api/v1 Routers"
+  ],
+  "duplicate_components": [],
+  "planned_changes": [
+    "Implement app/core/config.py with Pydantic Settings",
+    "Create app/core/logging.py, security.py, exceptions.py, middleware.py",
+    "Implement full Pydantic schemas under app/schemas/",
+    "Implement app/ml/model_registry.py & model_loader.py",
+    "Implement repository layer app/repositories/",
+    "Implement app/services/aml/ for core AML services",
+    "Implement app/services/vajra/ for physical prediction, trajectory, vulnerability, candidate, ranking, spatial, cross-border, sop_fusion, fairness, syndicate, simulation, validation",
+    "Implement app/services/operations/ for dispatch, geofence, bank_action, case_action, notification",
+    "Implement app/services/legal/ for legal_dossier, evidence_hash, pdf_service",
+    "Implement app/services/audit/ for audit_chain, integrity_service",
+    "Implement app/services/reporting/ for report_service, export_service",
+    "Implement master orchestrator backend/app/services/vajra/vajra_orchestrator.py",
+    "Create router app/api/router.py and all v1 route handlers under app/api/routes/",
+    "Update main.py to integrate all v1 routers alongside existing AML routers"
+  ]
+}

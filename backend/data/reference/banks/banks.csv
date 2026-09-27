@@ -1,0 +1,11 @@
+id,name,type
+BNK001,State Bank of Synthetic India,PUBLIC
+BNK002,HDFC Synthetic Bank,PRIVATE
+BNK003,ICICI Synthetic Bank,PRIVATE
+BNK004,Axis Synthetic Bank,PRIVATE
+BNK005,Punjab National Synthetic Bank,PUBLIC
+BNK006,Kotak Synthetic Bank,PRIVATE
+BNK007,India Post Synthetic Bank,PAYMENTS
+BNK008,Airtel Synthetic Payments Bank,PAYMENTS
+BNK009,Fino Synthetic Payments Bank,PAYMENTS
+BNK010,Paytm Synthetic Payments Bank,PAYMENTS

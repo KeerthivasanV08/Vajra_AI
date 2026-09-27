@@ -1,0 +1,15 @@
+{
+  "row_counts": "PASS",
+  "column_presence": "PASS",
+  "data_types": "PASS",
+  "missing_values": "PASS",
+  "duplicate_ids": "PASS",
+  "invalid_coordinates": "PASS",
+  "invalid_timestamps": "PASS",
+  "foreign_key_integrity": "PASS",
+  "date_ranges": "PASS",
+  "negative_amounts": "PASS",
+  "invalid_probabilities": "PASS",
+  "invalid_scores": "PASS",
+  "unexpected_categoricals": "PASS"
+}

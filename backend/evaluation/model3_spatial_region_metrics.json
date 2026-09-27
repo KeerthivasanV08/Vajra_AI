@@ -1,0 +1,15 @@
+{
+  "model_name": "Model 3 \u2014 Spatial Region Prediction Model",
+  "algorithm": "XGBClassifier Multiclass",
+  "training_dataset": "vajra_feature_dataset.csv",
+  "train_rows": 21000,
+  "test_rows": 4500,
+  "main_metric": "Top-1 Region Accuracy",
+  "main_metric_value": 0.1576,
+  "top1_accuracy": 0.1576,
+  "top3_accuracy": 0.4296,
+  "macro_f1": 0.0574,
+  "weighted_f1": 0.0948,
+  "baseline_top1_accuracy": 0.1667,
+  "evaluation_type": "synthetic_holdout"
+}

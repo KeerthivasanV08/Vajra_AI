@@ -3,6 +3,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from app.core import storage_paths
+
 # -----------------------------
 # CONFIG
 # -----------------------------
@@ -11,10 +13,9 @@ NUM_TRANSACTIONS = 30000
 
 BASE_TIME = datetime(2025, 3, 1, 10, 0)
 
-AML_DIR = Path(__file__).resolve().parents[2]
-DATA_DIR = AML_DIR / "data"
+DATA_DIR = storage_paths.DATA_DIR
 RAW_DIR = DATA_DIR / "raw"
-REFERENCE_DIR = DATA_DIR / "reference"
+REFERENCE_DIR = storage_paths.REFERENCE_DIR
 RAW_DIR.mkdir(parents=True, exist_ok=True)
 REFERENCE_DIR.mkdir(parents=True, exist_ok=True)
 

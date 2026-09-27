@@ -1,0 +1,51 @@
+[
+  {
+    "model": "Model 1 \u2014 Trajectory",
+    "task": "Sequence Classification",
+    "main_metric": "Top-1 Cell Accuracy",
+    "model_score": 0.9541,
+    "baseline_score": 0.2352
+  },
+  {
+    "model": "Model 2 \u2014 Vulnerability",
+    "task": "Regression",
+    "main_metric": "R2 Score",
+    "model_score": 0.9987,
+    "baseline_score": 0.0
+  },
+  {
+    "model": "Model 3 \u2014 Spatial Region",
+    "task": "Multiclass Classification",
+    "main_metric": "Top-1 Region Accuracy",
+    "model_score": 0.1576,
+    "baseline_score": 0.1667
+  },
+  {
+    "model": "Model 4 \u2014 Node Ranker",
+    "task": "Candidate Ranking",
+    "main_metric": "Top-3 Precision (Hit@3)",
+    "model_score": 0.992,
+    "baseline_score": 0.0013
+  },
+  {
+    "model": "Model 5 \u2014 Cross-Border",
+    "task": "Early Warning Classification",
+    "main_metric": "ROC-AUC Score",
+    "model_score": 0.9975,
+    "baseline_score": 0.5
+  },
+  {
+    "model": "Model 6 \u2014 SOP Fusion",
+    "task": "Calibration / Scoring",
+    "main_metric": "Calibrated Brier (1-Loss)",
+    "model_score": 0.9999,
+    "baseline_score": 0.7854
+  },
+  {
+    "model": "Model 8 \u2014 Syndicate",
+    "task": "Cosine Similarity Matching",
+    "main_metric": "Precision@1",
+    "model_score": 0.1475,
+    "baseline_score": 0.2
+  }
+]

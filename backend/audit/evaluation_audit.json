@@ -1,0 +1,98 @@
+{
+  "evaluation_dir": "D:\\Vajra_AI\\backend\\evaluation",
+  "total_files": 11,
+  "valid_json_count": 11,
+  "eval_details": [
+    {
+      "filename": "model1_trajectory_metrics.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\model1_trajectory_metrics.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 565,
+      "keys_count": 15
+    },
+    {
+      "filename": "model2_node_vulnerability_metrics.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\model2_node_vulnerability_metrics.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 370,
+      "keys_count": 12
+    },
+    {
+      "filename": "model3_spatial_region_metrics.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\model3_spatial_region_metrics.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 472,
+      "keys_count": 13
+    },
+    {
+      "filename": "model4_node_ranking_metrics.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\model4_node_ranking_metrics.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 556,
+      "keys_count": 16
+    },
+    {
+      "filename": "model5_cross_border_metrics.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\model5_cross_border_metrics.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 524,
+      "keys_count": 16
+    },
+    {
+      "filename": "model6_sop_fusion_metrics.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\model6_sop_fusion_metrics.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 680,
+      "keys_count": 14
+    },
+    {
+      "filename": "model7_fairness_metrics.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\model7_fairness_metrics.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 290,
+      "keys_count": 6
+    },
+    {
+      "filename": "model8_syndicate_metrics.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\model8_syndicate_metrics.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 463,
+      "keys_count": 12
+    },
+    {
+      "filename": "fairness_audit.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\fairness_audit.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 4400,
+      "keys_count": 0,
+      "items_count": 11
+    },
+    {
+      "filename": "model_registry.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\model_registry.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 10743,
+      "keys_count": 0,
+      "items_count": 8
+    },
+    {
+      "filename": "overall_model_comparison.json",
+      "path": "D:\\Vajra_AI\\backend\\evaluation\\overall_model_comparison.json",
+      "exists": true,
+      "valid_json": true,
+      "size_bytes": 1343,
+      "keys_count": 0,
+      "items_count": 7
+    }
+  ]
+}

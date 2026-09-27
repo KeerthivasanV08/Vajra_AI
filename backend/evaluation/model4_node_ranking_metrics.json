@@ -1,0 +1,18 @@
+{
+  "model_name": "Model 4 \u2014 Node-Level Top-K Re-Ranker Model",
+  "algorithm": "XGBClassifier Ranking",
+  "training_dataset": "node_ranking_candidates.csv",
+  "train_rows": 420000,
+  "test_rows": 90000,
+  "test_predictions_count": 4500,
+  "main_metric": "Top-3 Precision (Hit@3)",
+  "main_metric_value": 0.992,
+  "hit_at_1": 0.9913,
+  "hit_at_2": 0.9918,
+  "hit_at_3": 0.992,
+  "hit_at_5": 0.992,
+  "mrr": 0.9923,
+  "baseline_nearest_hit_at_1": 0.0004,
+  "baseline_nearest_hit_at_3": 0.0013,
+  "evaluation_type": "synthetic_holdout"
+}

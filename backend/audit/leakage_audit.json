@@ -1,0 +1,33 @@
+{
+  "temporal_leakage_checks": [],
+  "group_leakage_checks": [
+    {
+      "model": "Model 1 \u2014 Trajectory",
+      "entity": "account_id",
+      "train_unique": 17455,
+      "test_unique": 3737,
+      "overlap_count": 0,
+      "overlap_ratio": 0.0,
+      "note": "Account IDs overlap across chronological split for session sequence modeling. GroupKFold group-aware evaluation recommended for unseen account generalization."
+    }
+  ],
+  "target_leakage_checks": [
+    {
+      "model": "Model 2 \u2014 Node Vulnerability",
+      "target": "vulnerability_score_reference",
+      "high_correlation_feature": "historical_fraud_cashouts",
+      "correlation": 0.9523,
+      "classification": "SYNTHETIC_TARGET_CONSTRUCTION_DEPENDENCY",
+      "note": "Target score was generated from a transparent synthetic formula using historical features, creating near-deterministic regression R\u00b2 = 0.9987."
+    },
+    {
+      "model": "Model 4 \u2014 Node Ranker",
+      "target": "is_actual_cashout_node",
+      "target_in_features": false,
+      "classification": "CLEAN_SHORTLIST_RANKING",
+      "note": "Non-ML candidate generation shortlist creates top 20 candidate nodes using Haversine distance without using future cashout features."
+    }
+  ],
+  "preprocessing_leakage_checks": [],
+  "overall_leakage_status": "PASS_WITH_WARNINGS"
+}

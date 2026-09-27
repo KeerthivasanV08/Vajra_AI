@@ -1,0 +1,478 @@
+{
+  "audit_timestamp": "2026-09-27T08:34:30.196228",
+  "project": "VAJRA — Predictive Cybercrime Platform",
+  "dataset_status": "PASS",
+  "leakage_status": "PASS",
+  "models": {
+    "model1": {
+      "model_id": "model1_trajectory",
+      "model_name": "Model 1 \u2014 Trajectory Model",
+      "expected_algorithm": "XGBClassifier (Cell Classification)",
+      "status": "PASS_WITH_WARNINGS",
+      "issues": [],
+      "warnings": [
+        {
+          "code": "HIGH_ACCURACY_REQUIRES_LEAKAGE_REVIEW",
+          "detail": "Top-1 accuracy = 0.9541 (> 90%). Chronological split has account ID overlap."
+        }
+      ],
+      "checks": {
+        "dataset_used": "spatial/ip_geo_sessions_clean.csv",
+        "artifact_exists": true,
+        "preprocessor_exists": true,
+        "metrics_json_exists": true,
+        "architecture_compliance": "PASS (Predicts H3 spatial cell token, not raw lat/lon regression)",
+        "group_leakage_status": "HIGH_ACCOUNT_OVERLAP_IN_CHRONOLOGICAL_SPLIT",
+        "reported_metrics": {
+          "model_name": "Model 1 \u2014 IP-to-Geo Trajectory Model",
+          "algorithm": "RandomForest Sequence Classifier",
+          "training_dataset": "ip_geo_sessions_clean.csv",
+          "train_rows": 35000,
+          "test_rows": 7500,
+          "main_metric": "Top-1 Cell Accuracy",
+          "main_metric_value": 0.9541,
+          "top1_accuracy": 0.9541,
+          "top3_accuracy": 0.9688,
+          "top5_accuracy": 0.9843,
+          "baseline_top1_accuracy": 0.2352,
+          "mean_geographic_error_km": 3.45,
+          "median_geographic_error_km": 2.38,
+          "p95_geographic_error_km": 10.49,
+          "evaluation_type": "synthetic_holdout"
+        },
+        "chronological_top1_accuracy": 0.9541,
+        "target": "h3_cell_target",
+        "features": [
+          "geo_lat",
+          "geo_lon",
+          "vpn_flag",
+          "proxy_flag",
+          "tor_flag",
+          "session_sequence_number",
+          "distance_from_previous_km",
+          "time_since_previous_session_sec",
+          "movement_direction_deg",
+          "geo_accuracy_km"
+        ],
+        "recalculated_metrics": {
+          "top1_accuracy": 0.9541,
+          "reported_top1_accuracy": 0.9541
+        },
+        "group_unseen_account_top1_accuracy": 0.9854
+      }
+    },
+    "model2": {
+      "model_id": "model2_node_vulnerability",
+      "model_name": "Model 2 \u2014 Node Vulnerability Model",
+      "expected_algorithm": "XGBRegressor",
+      "status": "PASS_WITH_WARNINGS",
+      "issues": [],
+      "warnings": [
+        {
+          "code": "SYNTHETIC_TARGET_CONSTRUCTION_DEPENDENCY",
+          "detail": "Feature 'historical_fraud_cashouts' has very high correlation (0.9523) with target 'vulnerability_score_reference'."
+        },
+        {
+          "code": "HIGH_R2_REQUIRES_REVIEW",
+          "detail": "Extremely high R\u00b2 = 0.9987. Synthetic target construction dependency suspect."
+        }
+      ],
+      "checks": {
+        "dataset_path": "D:\\Vajra_AI\\data\\processed\\spatial\\node_features.csv",
+        "total_rows": 30000,
+        "columns_count": 16,
+        "features": [
+          "historical_txn_volume",
+          "average_daily_transactions",
+          "average_transaction_amount",
+          "off_hour_withdrawal_ratio",
+          "historical_cash_withdrawals",
+          "historical_fraud_cashouts",
+          "previous_fraud_flags",
+          "distance_to_known_corridor_km",
+          "cash_limit_daily",
+          "weekend_active",
+          "historical_cashout_ratio",
+          "historical_fraud_ratio",
+          "activity_density_reference"
+        ],
+        "target": "vulnerability_score_reference",
+        "top_feature_target_correlations": [
+          [
+            "historical_fraud_cashouts",
+            0.9523
+          ],
+          [
+            "previous_fraud_flags",
+            0.5125
+          ],
+          [
+            "historical_fraud_ratio",
+            0.2666
+          ],
+          [
+            "off_hour_withdrawal_ratio",
+            0.2138
+          ],
+          [
+            "distance_to_known_corridor_km",
+            -0.1441
+          ]
+        ],
+        "recalculated_metrics": {
+          "mae": 0.001,
+          "rmse": 0.0069,
+          "r2": 0.9987
+        },
+        "reported_metrics": {
+          "model_name": "Model 2 \u2014 Node Vulnerability Model",
+          "algorithm": "XGBRegressor",
+          "training_dataset": "node_features.csv",
+          "train_rows": 21000,
+          "test_rows": 4500,
+          "main_metric": "R2 Score",
+          "main_metric_value": 0.9987,
+          "mae": 0.001,
+          "rmse": 0.0069,
+          "r2": 0.9987,
+          "baseline_mae": 0.1477,
+          "evaluation_type": "synthetic_holdout"
+        }
+      }
+    },
+    "model3": {
+      "model_id": "model3_spatial_region",
+      "model_name": "Model 3 \u2014 Spatial Region Prediction Model",
+      "expected_algorithm": "XGBClassifier",
+      "status": "PASS_WITH_WARNINGS",
+      "issues": [],
+      "warnings": [
+        {
+          "code": "ACCURACY_BELOW_MAJORITY_BASELINE",
+          "detail": "Model Top-1 accuracy (0.1576) is lower than majority baseline (0.1667)."
+        }
+      ],
+      "checks": {
+        "num_classes": 11,
+        "majority_class": "Jharkhand",
+        "majority_baseline_accuracy": 0.1667,
+        "random_baseline_accuracy": 0.0909,
+        "features": [
+          "account_age_days",
+          "transaction_count",
+          "average_transaction_amount",
+          "total_transaction_amount",
+          "rolling_1h_sum",
+          "rolling_24h_sum",
+          "txn_count_1h",
+          "txn_count_24h",
+          "unique_counterparties_24h",
+          "drain_ratio_reference",
+          "fragmentation_score_reference"
+        ],
+        "target": "region_target",
+        "recalculated_metrics": {
+          "top1_accuracy": 0.1576,
+          "top3_accuracy": 0.4296,
+          "macro_f1": 0.0574,
+          "weighted_f1": 0.0948
+        },
+        "reported_metrics": {
+          "model_name": "Model 3 \u2014 Spatial Region Prediction Model",
+          "algorithm": "XGBClassifier Multiclass",
+          "training_dataset": "vajra_feature_dataset.csv",
+          "train_rows": 21000,
+          "test_rows": 4500,
+          "main_metric": "Top-1 Region Accuracy",
+          "main_metric_value": 0.1576,
+          "top1_accuracy": 0.1576,
+          "top3_accuracy": 0.4296,
+          "macro_f1": 0.0574,
+          "weighted_f1": 0.0948,
+          "baseline_top1_accuracy": 0.1667,
+          "evaluation_type": "synthetic_holdout"
+        }
+      }
+    },
+    "model4": {
+      "model_id": "model4_node_ranker",
+      "model_name": "Model 4 \u2014 Node-Level Top-K Re-Ranker Model",
+      "expected_algorithm": "XGBClassifier Ranking",
+      "status": "PASS_WITH_WARNINGS",
+      "issues": [],
+      "warnings": [
+        {
+          "code": "EXTREMELY_HIGH_HIT1_REQUIRES_LEAKAGE_REVIEW",
+          "detail": "Hit@1 = 0.9913 (> 95%). Candidate selection or ground-truth feature leak suspect."
+        }
+      ],
+      "checks": {
+        "dataset_path": "D:\\Vajra_AI\\data\\processed\\node_ranking_candidates.csv",
+        "total_rows": 600000,
+        "features": [
+          "candidate_distance_km",
+          "node_vulnerability_score",
+          "fraud_density_5km",
+          "historical_cashout_rate",
+          "trajectory_confidence",
+          "digital_risk_score",
+          "mule_probability",
+          "time_of_day",
+          "day_of_week"
+        ],
+        "target": "is_actual_cashout_node",
+        "avg_distance_target_node_km": 19.2237,
+        "avg_distance_nontarget_node_km": 1.5181,
+        "recalculated_metrics": {
+          "hit_at_1": 0.9913,
+          "hit_at_2": 0.9918,
+          "hit_at_3": 0.992,
+          "hit_at_5": 0.992,
+          "mrr": 0.9923,
+          "baseline_nearest_hit_at_1": 0.0004,
+          "baseline_nearest_hit_at_3": 0.0013
+        },
+        "reported_metrics": {
+          "model_name": "Model 4 \u2014 Node-Level Top-K Re-Ranker Model",
+          "algorithm": "XGBClassifier Ranking",
+          "training_dataset": "node_ranking_candidates.csv",
+          "train_rows": 420000,
+          "test_rows": 90000,
+          "test_predictions_count": 4500,
+          "main_metric": "Top-3 Precision (Hit@3)",
+          "main_metric_value": 0.992,
+          "hit_at_1": 0.9913,
+          "hit_at_2": 0.9918,
+          "hit_at_3": 0.992,
+          "hit_at_5": 0.992,
+          "mrr": 0.9923,
+          "baseline_nearest_hit_at_1": 0.0004,
+          "baseline_nearest_hit_at_3": 0.0013,
+          "evaluation_type": "synthetic_holdout"
+        }
+      }
+    },
+    "model5": {
+      "model_id": "model5_cross_border",
+      "model_name": "Model 5 \u2014 Cross-Border Early Warning Model",
+      "expected_algorithm": "LogisticRegression",
+      "status": "PASS_WITH_WARNINGS",
+      "issues": [],
+      "warnings": [
+        {
+          "code": "HIGH_ROC_AUC_REQUIRES_REVIEW",
+          "detail": "ROC-AUC = 0.9975 (> 0.98). Synthetic label rule dependency suspect."
+        }
+      ],
+      "checks": {
+        "dataset_rows": 30000,
+        "positive_samples": 284,
+        "negative_samples": 29716,
+        "positive_ratio": 0.0095,
+        "features": [
+          "foreign_session_count_7d",
+          "foreign_session_count_30d",
+          "foreign_country_count",
+          "vpn_usage_ratio_30d",
+          "foreign_ip_ratio",
+          "domestic_session_ratio_30d",
+          "days_since_onboarding",
+          "hours_since_first_foreign_ip",
+          "country_transition_count",
+          "is_foreign_session"
+        ],
+        "target": "imminent_overseas_shift_reference",
+        "recalculated_metrics": {
+          "accuracy": 0.9949,
+          "precision": 0.7105,
+          "recall": 0.6923,
+          "f1_score": 0.7013,
+          "roc_auc": 0.9975,
+          "pr_auc": 0.7548,
+          "false_negative_rate": 0.3077,
+          "false_positive_rate": 0.0025
+        },
+        "reported_metrics": {
+          "model_name": "Model 5 \u2014 Cross-Border Early Warning Model",
+          "algorithm": "LogisticRegression Classifier",
+          "training_dataset": "cross_border_features.csv",
+          "train_rows": 21000,
+          "test_rows": 4500,
+          "main_metric": "ROC-AUC",
+          "main_metric_value": 0.9975,
+          "accuracy": 0.9949,
+          "precision": 0.7105,
+          "recall": 0.6923,
+          "f1_score": 0.7013,
+          "roc_auc": 0.9975,
+          "pr_auc": 0.7548,
+          "false_negative_rate": 0.3077,
+          "false_positive_rate": 0.0025,
+          "evaluation_type": "synthetic_holdout"
+        }
+      }
+    },
+    "model6": {
+      "model_id": "model6_sop_fusion",
+      "model_name": "Model 6 \u2014 SOP Fusion Engine & Calibration",
+      "expected_weights": {
+        "digital": 0.45,
+        "physical": 0.35,
+        "context": 0.2
+      },
+      "status": "PASS_WITH_WARNINGS",
+      "issues": [],
+      "warnings": [
+        {
+          "code": "EXTREMELY_LOW_BRIER_SCORE",
+          "detail": "Calibrated Brier score = 0.0001 (< 0.01). Synthetic deterministic target dependency suspect."
+        }
+      ],
+      "checks": {
+        "actual_weights": {
+          "digital": 0.45,
+          "physical": 0.35,
+          "context": 0.2
+        },
+        "cross_border_override_isolated": true,
+        "recalculated_metrics": {
+          "raw_brier": 0.2146,
+          "calibrated_brier": 0.0001,
+          "brier_improvement": 0.2145
+        },
+        "reported_metrics": {
+          "model_name": "Model 6 \u2014 SOP Fusion Engine & Calibration",
+          "algorithm": "Weighted Fusion + Isotonic Calibration",
+          "weights": {
+            "digital": 0.45,
+            "physical": 0.35,
+            "context": 0.2
+          },
+          "train_rows": 21000,
+          "validation_rows": 4500,
+          "test_rows": 4500,
+          "main_metric": "Calibrated Brier Score",
+          "main_metric_value": 0.0001,
+          "brier_score_raw": 0.2146,
+          "brier_score_calibrated": 0.0001,
+          "brier_improvement": 0.2145,
+          "tier_distribution": {
+            "MONITOR": 4155,
+            "INTERNATIONAL_ALERT_OVERRIDE": 290,
+            "ESCALATE_FREEZE": 55
+          },
+          "calibration_status": "CALIBRATED_ON_VAL_SET",
+          "evaluation_type": "synthetic_holdout"
+        }
+      }
+    },
+    "model7": {
+      "model_id": "model7_fairness_audit",
+      "model_name": "Model 7 \u2014 Fairness & Governance Bias Audit",
+      "is_non_scoring_governance_layer": true,
+      "status": "PASS",
+      "issues": [],
+      "warnings": [],
+      "checks": {
+        "groups_analyzed_count": 11,
+        "groups_list": [
+          "Bihar",
+          "Delhi",
+          "Haryana",
+          "Jammu and Kashmir",
+          "Jharkhand",
+          "Karnataka",
+          "Maharashtra",
+          "Odisha",
+          "Rajasthan",
+          "Uttar Pradesh",
+          "West Bengal"
+        ],
+        "small_sample_groups": [],
+        "disparate_impact_groups": [],
+        "reported_metrics": {
+          "model_name": "Model 7 \u2014 Fairness & Governance Bias Audit",
+          "type": "Governance & Equity Monitoring (Non-Scoring Layer)",
+          "analyzed_groups_count": 11,
+          "overall_high_risk_rate": 0.1486,
+          "mean_disparate_impact_ratio": 1.0041,
+          "evaluation_type": "synthetic_holdout"
+        }
+      }
+    },
+    "model8": {
+      "model_id": "model8_syndicate_matcher",
+      "model_name": "Model 8 \u2014 Syndicate Fingerprint Matcher",
+      "is_investigative_similarity_system": true,
+      "status": "PASS",
+      "issues": [],
+      "warnings": [],
+      "checks": {
+        "dataset_rows": 30000,
+        "features": [
+          "hop_count",
+          "fan_out_factor",
+          "layering_time_mins",
+          "average_interhop_velocity_mins",
+          "terminal_node_risk_reference"
+        ],
+        "pattern_types": [
+          "TERMINAL_CASHOUT_COLLECTOR",
+          "RAPID_LAYERING_RING",
+          "HIGH_FANOUT_MULE_PATTERN",
+          "GURUGRAM_CORRIDOR_PATTERN",
+          "RAPID_PASS_THROUGH",
+          "COLLECTOR_FUNNEL",
+          "MULTI_HOP_LAYERING"
+        ],
+        "recalculated_metrics": {
+          "precision_at_1": 0.1475,
+          "precision_at_3": 0.4386,
+          "precision_at_5": 0.7242,
+          "average_top1_similarity": 0.7046
+        },
+        "reported_metrics": {
+          "model_name": "Model 8 \u2014 Syndicate Fingerprint Matcher",
+          "algorithm": "Cosine Similarity Pattern Matcher",
+          "training_dataset": "syndicate_patterns.csv",
+          "observation_count": 30000,
+          "pattern_types_count": 7,
+          "main_metric": "Precision@1",
+          "main_metric_value": 0.1475,
+          "precision_at_1": 0.1475,
+          "precision_at_3": 0.4386,
+          "precision_at_5": 0.7242,
+          "average_top1_similarity": 0.7046,
+          "evaluation_type": "synthetic_holdout"
+        }
+      }
+    }
+  },
+  "artifacts_summary": {
+    "total": 13,
+    "valid": 13,
+    "corrupted": 0
+  },
+  "evaluations_summary": {
+    "total": 11,
+    "valid": 11
+  },
+  "images_summary": {
+    "total_audited": 30,
+    "valid": 30,
+    "loose_files_count": 13
+  },
+  "critical_issues": [],
+  "warnings": [
+    "MODEL1: Top-1 accuracy = 0.9541 (> 90%). Chronological split has account ID overlap.",
+    "MODEL2: Feature 'historical_fraud_cashouts' has very high correlation (0.9523) with target 'vulnerability_score_reference'.",
+    "MODEL2: Extremely high R\u00b2 = 0.9987. Synthetic target construction dependency suspect.",
+    "MODEL3: Model Top-1 accuracy (0.1576) is lower than majority baseline (0.1667).",
+    "MODEL4: Hit@1 = 0.9913 (> 95%). Candidate selection or ground-truth feature leak suspect.",
+    "MODEL5: ROC-AUC = 0.9975 (> 0.98). Synthetic label rule dependency suspect.",
+    "MODEL6: Calibrated Brier score = 0.0001 (< 0.01). Synthetic deterministic target dependency suspect."
+  ],
+  "corrections": [],
+  "retrained_models": [],
+  "overall_status": "PASS_WITH_WARNINGS"
+}

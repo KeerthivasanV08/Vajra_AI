@@ -1,0 +1,2 @@
+audit_id,event_id,timestamp,runtime_session_id,officer_id,action,alert_id,case_id,old_state,new_state,reason,notes,metadata
+29717583-8e89-4a18-9d5f-445d6222a429,3d52171e-b0d3-4408-91d7-b8557c3e2a04,2026-09-27T08:11:58.577572+00:00,RUN-20260927-081148-FC5907,OFF_1,SAR_GENERATED,TXN-F303FB0C,CASE-20474C9A,OPEN,SAR_FILED,SAR generated for case CASE-20474C9A,,"{""filing_type"": ""INTERNAL""}"

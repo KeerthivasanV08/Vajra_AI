@@ -1,0 +1,5 @@
+band,min_score,max_score,description
+ALLOW,0.0,0.3,Normal low-risk activity
+MONITOR,0.3,0.6,Moderate risk requiring enhanced observation
+REVIEW,0.6,0.85,High risk requiring analyst review
+BLOCK,0.85,1.0,Critical risk requiring immediate automated hold

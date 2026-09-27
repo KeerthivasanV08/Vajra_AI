@@ -1,0 +1,27 @@
+{
+  "generation_timestamp": "2026-09-26T19:47:38Z",
+  "seed": 42,
+  "requested_rows": 30000,
+  "actual_rows": {
+    "Users Master": 30000,
+    "Devices Master": 30000,
+    "Transactions Master": 100000,
+    "Onboarding Telemetry": 30000,
+    "Withdrawal Node Master": 30000,
+    "IP Geo Sessions": 50000,
+    "Cross-Border Sessions": 30000,
+    "Complaints Master": 30000,
+    "Jurisdiction Units": 1000,
+    "Geofence Assignments": 30000,
+    "Corridor Hub Events": 30000,
+    "Prediction Outcomes": 30000,
+    "Prediction Candidates": 90000,
+    "Syndicate Patterns": 30000,
+    "Audit Logs Master": 30000,
+    "Legal Dossiers Master": 30000
+  },
+  "datasets_generated": 16,
+  "validation_status": "PASSED",
+  "errors": [],
+  "warnings": []
+}

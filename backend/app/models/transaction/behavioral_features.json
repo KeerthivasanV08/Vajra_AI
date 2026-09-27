@@ -47,7 +47,9 @@
     "structuring_pattern",
     "night_high_value_txn",
     "velocity_risk_score",
-    "network_risk_score"
+    "network_risk_score",
+    "transaction_type",
+    "channel"
   ],
   "numerical_features": [
     "amount",

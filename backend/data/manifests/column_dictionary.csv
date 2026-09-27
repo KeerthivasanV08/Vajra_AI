@@ -1,0 +1,311 @@
+dataset,column_name,data_type,description,example_value,nullable,synthetic,primary_key,foreign_key,future_target,allowed_range_or_values
+Users Master,user_id,object,Synthetic simulation column user_id for Users Master,U000000,False,True,True,False,False,Unrestricted / Range Bounded
+Users Master,account_id,object,Synthetic simulation column account_id for Users Master,ACC000000,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,customer_type,object,Synthetic simulation column customer_type for Users Master,INDIVIDUAL,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,full_name,object,Synthetic simulation column full_name for Users Master,Aryan Maharaj,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,date_of_birth,object,Synthetic simulation column date_of_birth for Users Master,1972-12-26,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,gender,object,Synthetic simulation column gender for Users Master,M,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,city,object,Synthetic simulation column city for Users Master,Nuh,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,district,object,Synthetic simulation column district for Users Master,Nuh,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,state,object,Synthetic simulation column state for Users Master,Haryana,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,pincode,int64,Synthetic simulation column pincode for Users Master,122107,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,country,object,Synthetic simulation column country for Users Master,India,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,created_at,object,Synthetic simulation column created_at for Users Master,2024-12-05 00:00:00,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,account_status,object,Synthetic simulation column account_status for Users Master,ACTIVE,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,kyc_status,object,Synthetic simulation column kyc_status for Users Master,VERIFIED,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,kyc_verified_at,object,Synthetic simulation column kyc_verified_at for Users Master,2024-12-05 02:00:00,True,True,False,False,False,Unrestricted / Range Bounded
+Users Master,has_pan,int64,Synthetic simulation column has_pan for Users Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,has_aadhaar,int64,Synthetic simulation column has_aadhaar for Users Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,device_id,object,Synthetic simulation column device_id for Users Master,DEV000000,False,True,False,True,False,Unrestricted / Range Bounded
+Users Master,primary_ip,object,Synthetic simulation column primary_ip for Users Master,192.168.24.172,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,sim_id,object,Synthetic simulation column sim_id for Users Master,SIM000000,False,True,False,True,False,Unrestricted / Range Bounded
+Users Master,sim_binding_ok,int64,Synthetic simulation column sim_binding_ok for Users Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,sim_swap_flag,int64,Synthetic simulation column sim_swap_flag for Users Master,0,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,multi_sim_flag,int64,Synthetic simulation column multi_sim_flag for Users Master,0,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,account_age_days,int64,Synthetic simulation column account_age_days for Users Master,27,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,domestic_session_ratio,float64,Synthetic simulation column domestic_session_ratio for Users Master,0.985,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,is_whitelisted,int64,Synthetic simulation column is_whitelisted for Users Master,0,False,True,False,False,False,Unrestricted / Range Bounded
+Users Master,synthetic_profile_type,object,Synthetic simulation column synthetic_profile_type for Users Master,NORMAL,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,device_id,object,Synthetic simulation column device_id for Devices Master,DEV000000,False,True,True,False,False,Unrestricted / Range Bounded
+Devices Master,device_type,object,Synthetic simulation column device_type for Devices Master,MOBILE,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,os_type,object,Synthetic simulation column os_type for Devices Master,ANDROID,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,os_version,int64,Synthetic simulation column os_version for Devices Master,15,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,device_age_days,int64,Synthetic simulation column device_age_days for Devices Master,1140,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,manufacturer,object,Synthetic simulation column manufacturer for Devices Master,Xiaomi,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,model_family,object,Synthetic simulation column model_family for Devices Master,Xiaomi Series-3,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,root_status,int64,Synthetic simulation column root_status for Devices Master,0,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,emulator_flag,int64,Synthetic simulation column emulator_flag for Devices Master,0,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,app_cloner_flag,int64,Synthetic simulation column app_cloner_flag for Devices Master,0,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,shared_device_flag,int64,Synthetic simulation column shared_device_flag for Devices Master,0,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,shared_user_count,int64,Synthetic simulation column shared_user_count for Devices Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,screen_resolution,object,Synthetic simulation column screen_resolution for Devices Master,1080x2340,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,hardware_hash,object,Synthetic simulation column hardware_hash for Devices Master,4278ac4cc3772e12,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,first_seen_at,object,Synthetic simulation column first_seen_at for Devices Master,2022-04-18 00:00:00,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,last_seen_at,object,Synthetic simulation column last_seen_at for Devices Master,2025-05-15 00:00:00,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,device_country,object,Synthetic simulation column device_country for Devices Master,US,False,True,False,False,False,Unrestricted / Range Bounded
+Devices Master,synthetic_device_risk_group,object,Synthetic simulation column synthetic_device_risk_group for Devices Master,MODERATE_RISK,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,transaction_id,object,Synthetic simulation column transaction_id for Transactions Master,TXN00000000,False,True,True,False,False,Unrestricted / Range Bounded
+Transactions Master,trans_id,object,Synthetic simulation column trans_id for Transactions Master,T0,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,timestamp,object,Synthetic simulation column timestamp for Transactions Master,2025-01-01 00:03:38+00:00,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,sender_account_id,object,Synthetic simulation column sender_account_id for Transactions Master,ACC024103,False,True,False,True,False,Unrestricted / Range Bounded
+Transactions Master,receiver_account_id,object,Synthetic simulation column receiver_account_id for Transactions Master,ACC014470,False,True,False,True,False,Unrestricted / Range Bounded
+Transactions Master,amount,float64,Synthetic simulation column amount for Transactions Master,500.0,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,currency,object,Synthetic simulation column currency for Transactions Master,INR,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,transaction_type,object,Synthetic simulation column transaction_type for Transactions Master,CASH_WITHDRAWAL,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,channel,object,Synthetic simulation column channel for Transactions Master,UPI,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,payment_mode,object,Synthetic simulation column payment_mode for Transactions Master,IMPS,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,sender_device_id,object,Synthetic simulation column sender_device_id for Transactions Master,DEV024103,False,True,False,True,False,Unrestricted / Range Bounded
+Transactions Master,receiver_device_id,object,Synthetic simulation column receiver_device_id for Transactions Master,DEV014470,False,True,False,True,False,Unrestricted / Range Bounded
+Transactions Master,sender_ip,object,Synthetic simulation column sender_ip for Transactions Master,100.92.58.40,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,receiver_ip,object,Synthetic simulation column receiver_ip for Transactions Master,10.238.215.239,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,sender_lat,float64,Synthetic simulation column sender_lat for Transactions Master,27.566425,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,sender_lon,float64,Synthetic simulation column sender_lon for Transactions Master,76.630385,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,receiver_lat,float64,Synthetic simulation column receiver_lat for Transactions Master,20.313605,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,receiver_lon,float64,Synthetic simulation column receiver_lon for Transactions Master,85.868388,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,sender_city,object,Synthetic simulation column sender_city for Transactions Master,Alwar,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,receiver_city,object,Synthetic simulation column receiver_city for Transactions Master,Bhubaneswar,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,sender_state,object,Synthetic simulation column sender_state for Transactions Master,Rajasthan,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,receiver_state,object,Synthetic simulation column receiver_state for Transactions Master,Odisha,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,sender_balance_before,float64,Synthetic simulation column sender_balance_before for Transactions Master,305849.97,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,sender_balance_after,float64,Synthetic simulation column sender_balance_after for Transactions Master,305349.97,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,receiver_balance_before,float64,Synthetic simulation column receiver_balance_before for Transactions Master,445102.64,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,receiver_balance_after,float64,Synthetic simulation column receiver_balance_after for Transactions Master,445602.64,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,time_to_pay_ms,int64,Synthetic simulation column time_to_pay_ms for Transactions Master,34406,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,transaction_status,object,Synthetic simulation column transaction_status for Transactions Master,SUCCESS,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,is_reversal,int64,Synthetic simulation column is_reversal for Transactions Master,0,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,is_cash_related,int64,Synthetic simulation column is_cash_related for Transactions Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Transactions Master,is_synthetic,int64,Synthetic simulation column is_synthetic for Transactions Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,onboarding_id,object,Synthetic simulation column onboarding_id for Onboarding Telemetry,ONB000000,False,True,True,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,user_id,object,Synthetic simulation column user_id for Onboarding Telemetry,U000000,False,True,False,True,False,Unrestricted / Range Bounded
+Onboarding Telemetry,account_id,object,Synthetic simulation column account_id for Onboarding Telemetry,ACC000000,False,True,False,True,False,Unrestricted / Range Bounded
+Onboarding Telemetry,timestamp,object,Synthetic simulation column timestamp for Onboarding Telemetry,2025-09-02 00:03:08,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,face_match_score,float64,Synthetic simulation column face_match_score for Onboarding Telemetry,0.435,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,identity_trust_score,float64,Synthetic simulation column identity_trust_score for Onboarding Telemetry,0.7957,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,kyc_flag,int64,Synthetic simulation column kyc_flag for Onboarding Telemetry,1,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,kyc_status,object,Synthetic simulation column kyc_status for Onboarding Telemetry,VERIFIED,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,device_id,object,Synthetic simulation column device_id for Onboarding Telemetry,DEV000000,False,True,False,True,False,Unrestricted / Range Bounded
+Onboarding Telemetry,device_trust_score,float64,Synthetic simulation column device_trust_score for Onboarding Telemetry,0.7179,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,emulator_flag,int64,Synthetic simulation column emulator_flag for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,root_flag,int64,Synthetic simulation column root_flag for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,app_cloner_flag,int64,Synthetic simulation column app_cloner_flag for Onboarding Telemetry,1,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,shared_device_flag,int64,Synthetic simulation column shared_device_flag for Onboarding Telemetry,1,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,shared_device_count,int64,Synthetic simulation column shared_device_count for Onboarding Telemetry,4,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,sim_id,object,Synthetic simulation column sim_id for Onboarding Telemetry,SIM000000,False,True,False,True,False,Unrestricted / Range Bounded
+Onboarding Telemetry,sim_age_days,int64,Synthetic simulation column sim_age_days for Onboarding Telemetry,1083,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,sim_binding_ok,int64,Synthetic simulation column sim_binding_ok for Onboarding Telemetry,1,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,sim_swap_flag,int64,Synthetic simulation column sim_swap_flag for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,multi_sim_flag,int64,Synthetic simulation column multi_sim_flag for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,vpn_flag,int64,Synthetic simulation column vpn_flag for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,hosting_flag,int64,Synthetic simulation column hosting_flag for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,proxy_flag,int64,Synthetic simulation column proxy_flag for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,tor_flag,int64,Synthetic simulation column tor_flag for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,geo_mismatch_flag,int64,Synthetic simulation column geo_mismatch_flag for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,ip_risk_score,float64,Synthetic simulation column ip_risk_score for Onboarding Telemetry,0.328,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,typing_speed,float64,Synthetic simulation column typing_speed for Onboarding Telemetry,128.4,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,form_completion_time,int64,Synthetic simulation column form_completion_time for Onboarding Telemetry,153,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,copy_paste_ratio,float64,Synthetic simulation column copy_paste_ratio for Onboarding Telemetry,0.5197,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,otp_retry_count,int64,Synthetic simulation column otp_retry_count for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,pep_hit,int64,Synthetic simulation column pep_hit for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,sanction_hit,int64,Synthetic simulation column sanction_hit for Onboarding Telemetry,0,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,onboarding_channel,object,Synthetic simulation column onboarding_channel for Onboarding Telemetry,MOBILE_APP,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,declared_city,object,Synthetic simulation column declared_city for Onboarding Telemetry,Nuh,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,declared_state,object,Synthetic simulation column declared_state for Onboarding Telemetry,Haryana,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,observed_city,object,Synthetic simulation column observed_city for Onboarding Telemetry,Nuh,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,observed_state,object,Synthetic simulation column observed_state for Onboarding Telemetry,Haryana,False,True,False,False,False,Unrestricted / Range Bounded
+Onboarding Telemetry,onboarding_decision,object,Synthetic simulation column onboarding_decision for Onboarding Telemetry,APPROVE,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,node_id,object,Synthetic simulation column node_id for Withdrawal Node Master,NODE000000,False,True,True,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,node_type,object,Synthetic simulation column node_type for Withdrawal Node Master,MICRO_ATM,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,bank_or_aggregator_id,object,Synthetic simulation column bank_or_aggregator_id for Withdrawal Node Master,BNK001,False,True,False,True,False,Unrestricted / Range Bounded
+Withdrawal Node Master,bank_name,object,Synthetic simulation column bank_name for Withdrawal Node Master,State Bank of Synthetic India,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,bc_id,object,Synthetic simulation column bc_id for Withdrawal Node Master,BC1860,True,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,latitude,float64,Synthetic simulation column latitude for Withdrawal Node Master,28.169424,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,longitude,float64,Synthetic simulation column longitude for Withdrawal Node Master,76.980619,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,pincode,int64,Synthetic simulation column pincode for Withdrawal Node Master,122107,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,city,object,Synthetic simulation column city for Withdrawal Node Master,Nuh,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,district,object,Synthetic simulation column district for Withdrawal Node Master,Nuh,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,state,object,Synthetic simulation column state for Withdrawal Node Master,Haryana,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,country,object,Synthetic simulation column country for Withdrawal Node Master,India,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,historical_txn_volume,int64,Synthetic simulation column historical_txn_volume for Withdrawal Node Master,2076,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,average_daily_transactions,float64,Synthetic simulation column average_daily_transactions for Withdrawal Node Master,20.55,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,average_transaction_amount,float64,Synthetic simulation column average_transaction_amount for Withdrawal Node Master,15568.47,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,off_hour_withdrawal_ratio,float64,Synthetic simulation column off_hour_withdrawal_ratio for Withdrawal Node Master,0.2123,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,historical_cash_withdrawals,int64,Synthetic simulation column historical_cash_withdrawals for Withdrawal Node Master,1516,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,historical_fraud_cashouts,int64,Synthetic simulation column historical_fraud_cashouts for Withdrawal Node Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,previous_fraud_flags,int64,Synthetic simulation column previous_fraud_flags for Withdrawal Node Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,distance_to_known_corridor_km,float64,Synthetic simulation column distance_to_known_corridor_km for Withdrawal Node Master,32.51,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,corridor_id,object,Synthetic simulation column corridor_id for Withdrawal Node Master,CORR_001,False,True,False,True,False,Unrestricted / Range Bounded
+Withdrawal Node Master,cash_limit_daily,float64,Synthetic simulation column cash_limit_daily for Withdrawal Node Master,1000000.0,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,operating_hours_start,object,Synthetic simulation column operating_hours_start for Withdrawal Node Master,08:00:00,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,operating_hours_end,object,Synthetic simulation column operating_hours_end for Withdrawal Node Master,20:00:00,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,weekend_active,int64,Synthetic simulation column weekend_active for Withdrawal Node Master,0,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,vulnerability_score_reference,float64,Synthetic simulation column vulnerability_score_reference for Withdrawal Node Master,0.3137,False,True,False,False,True,Unrestricted / Range Bounded
+Withdrawal Node Master,last_updated,object,Synthetic simulation column last_updated for Withdrawal Node Master,2025-04-25 00:00:00,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,is_active,int64,Synthetic simulation column is_active for Withdrawal Node Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Withdrawal Node Master,is_synthetic,int64,Synthetic simulation column is_synthetic for Withdrawal Node Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,session_id,object,Synthetic simulation column session_id for IP Geo Sessions,SESS00000000,False,True,True,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,account_id,object,Synthetic simulation column account_id for IP Geo Sessions,ACC000000,False,True,False,True,False,Unrestricted / Range Bounded
+IP Geo Sessions,user_id,object,Synthetic simulation column user_id for IP Geo Sessions,U000000,False,True,False,True,False,Unrestricted / Range Bounded
+IP Geo Sessions,device_id,object,Synthetic simulation column device_id for IP Geo Sessions,DEV000000,False,True,False,True,False,Unrestricted / Range Bounded
+IP Geo Sessions,ip_address,object,Synthetic simulation column ip_address for IP Geo Sessions,100.87.130.150,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,session_timestamp,object,Synthetic simulation column session_timestamp for IP Geo Sessions,2025-09-02 00:03:08,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,session_sequence_number,int64,Synthetic simulation column session_sequence_number for IP Geo Sessions,1,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,geo_lat,float64,Synthetic simulation column geo_lat for IP Geo Sessions,28.636275,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,geo_lon,float64,Synthetic simulation column geo_lon for IP Geo Sessions,77.201905,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,city,object,Synthetic simulation column city for IP Geo Sessions,Delhi,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,district,object,Synthetic simulation column district for IP Geo Sessions,New Delhi,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,state,object,Synthetic simulation column state for IP Geo Sessions,Delhi,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,country,object,Synthetic simulation column country for IP Geo Sessions,India,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,country_code,object,Synthetic simulation column country_code for IP Geo Sessions,IN,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,vpn_flag,int64,Synthetic simulation column vpn_flag for IP Geo Sessions,0,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,hosting_flag,int64,Synthetic simulation column hosting_flag for IP Geo Sessions,0,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,proxy_flag,int64,Synthetic simulation column proxy_flag for IP Geo Sessions,0,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,tor_flag,int64,Synthetic simulation column tor_flag for IP Geo Sessions,0,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,geo_accuracy_km,float64,Synthetic simulation column geo_accuracy_km for IP Geo Sessions,1.32,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,previous_geo_lat,float64,Synthetic simulation column previous_geo_lat for IP Geo Sessions,28.636275,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,previous_geo_lon,float64,Synthetic simulation column previous_geo_lon for IP Geo Sessions,77.201905,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,distance_from_previous_km,float64,Synthetic simulation column distance_from_previous_km for IP Geo Sessions,0.0,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,time_since_previous_session_sec,int64,Synthetic simulation column time_since_previous_session_sec for IP Geo Sessions,0,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,movement_direction_deg,float64,Synthetic simulation column movement_direction_deg for IP Geo Sessions,0.0,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,ip_asn_type,object,Synthetic simulation column ip_asn_type for IP Geo Sessions,CELLULAR,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,network_type,object,Synthetic simulation column network_type for IP Geo Sessions,WIFI,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,is_foreign_session,int64,Synthetic simulation column is_foreign_session for IP Geo Sessions,0,False,True,False,False,False,Unrestricted / Range Bounded
+IP Geo Sessions,is_synthetic,int64,Synthetic simulation column is_synthetic for IP Geo Sessions,1,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,cross_border_event_id,object,Synthetic simulation column cross_border_event_id for Cross-Border Sessions,XBE000000,False,True,True,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,account_id,object,Synthetic simulation column account_id for Cross-Border Sessions,ACC000000,False,True,False,True,False,Unrestricted / Range Bounded
+Cross-Border Sessions,session_timestamp,object,Synthetic simulation column session_timestamp for Cross-Border Sessions,2025-09-02 00:03:08,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,previous_country,object,Synthetic simulation column previous_country for Cross-Border Sessions,IN,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,current_country,object,Synthetic simulation column current_country for Cross-Border Sessions,AE,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,country_sequence,object,Synthetic simulation column country_sequence for Cross-Border Sessions,IN->AE,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,domestic_session_ratio_30d,float64,Synthetic simulation column domestic_session_ratio_30d for Cross-Border Sessions,0.19,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,vpn_usage_ratio_30d,float64,Synthetic simulation column vpn_usage_ratio_30d for Cross-Border Sessions,0.0479,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,foreign_ip_first_seen_at,object,Synthetic simulation column foreign_ip_first_seen_at for Cross-Border Sessions,2024-12-19 00:03:08,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,days_since_onboarding,int64,Synthetic simulation column days_since_onboarding for Cross-Border Sessions,313,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,foreign_session_count_7d,int64,Synthetic simulation column foreign_session_count_7d for Cross-Border Sessions,2,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,foreign_session_count_30d,int64,Synthetic simulation column foreign_session_count_30d for Cross-Border Sessions,5,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,foreign_country_count,int64,Synthetic simulation column foreign_country_count for Cross-Border Sessions,1,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,foreign_ip_ratio,float64,Synthetic simulation column foreign_ip_ratio for Cross-Border Sessions,0.283,False,True,False,False,False,Unrestricted / Range Bounded
+Cross-Border Sessions,imminent_overseas_shift_reference,int64,Synthetic simulation column imminent_overseas_shift_reference for Cross-Border Sessions,0,False,True,False,False,True,Unrestricted / Range Bounded
+Cross-Border Sessions,flagged_for_card_block_reference,int64,Synthetic simulation column flagged_for_card_block_reference for Cross-Border Sessions,0,False,True,False,False,True,Unrestricted / Range Bounded
+Complaints Master,complaint_id,object,Synthetic simulation column complaint_id for Complaints Master,CMP000000,False,True,True,False,False,Unrestricted / Range Bounded
+Complaints Master,timestamp,object,Synthetic simulation column timestamp for Complaints Master,2025-09-02 00:03:08,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,victim_account_id,object,Synthetic simulation column victim_account_id for Complaints Master,ACC023654,False,True,False,True,False,Unrestricted / Range Bounded
+Complaints Master,linked_account_id,object,Synthetic simulation column linked_account_id for Complaints Master,ACC015795,False,True,False,True,False,Unrestricted / Range Bounded
+Complaints Master,victim_city,object,Synthetic simulation column victim_city for Complaints Master,Nuh,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,victim_district,object,Synthetic simulation column victim_district for Complaints Master,Nuh,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,victim_state,object,Synthetic simulation column victim_state for Complaints Master,Haryana,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,victim_lat,float64,Synthetic simulation column victim_lat for Complaints Master,28.147049,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,victim_lon,float64,Synthetic simulation column victim_lon for Complaints Master,76.987679,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,fraud_category,object,Synthetic simulation column fraud_category for Complaints Master,UPI_FRAUD,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,amount_reported,float64,Synthetic simulation column amount_reported for Complaints Master,4739.91,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,initial_beneficiary_account_id,object,Synthetic simulation column initial_beneficiary_account_id for Complaints Master,ACC015795,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,fir_status,object,Synthetic simulation column fir_status for Complaints Master,REGISTERED,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,complaint_status,object,Synthetic simulation column complaint_status for Complaints Master,RESOLVED,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,channel,object,Synthetic simulation column channel for Complaints Master,HELPLINE_1930,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,complaint_source,object,Synthetic simulation column complaint_source for Complaints Master,NCRP,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,reported_at,object,Synthetic simulation column reported_at for Complaints Master,2025-09-02 21:03:08,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,linked_transaction_count,int64,Synthetic simulation column linked_transaction_count for Complaints Master,8,False,True,False,False,False,Unrestricted / Range Bounded
+Complaints Master,linked_node_id,object,Synthetic simulation column linked_node_id for Complaints Master,NODE011363,False,True,False,True,False,Unrestricted / Range Bounded
+Complaints Master,jurisdiction_id,object,Synthetic simulation column jurisdiction_id for Complaints Master,LEA001,False,True,False,True,False,Unrestricted / Range Bounded
+Complaints Master,sop_tier_reference,object,Synthetic simulation column sop_tier_reference for Complaints Master,TIER_1_IMMEDIATE_HOLD,False,True,False,False,True,Unrestricted / Range Bounded
+Complaints Master,is_synthetic,int64,Synthetic simulation column is_synthetic for Complaints Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,nearest_lea_unit_id,object,Synthetic simulation column nearest_lea_unit_id for Jurisdiction Units,LEA001,False,True,True,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,unit_name,object,Synthetic simulation column unit_name for Jurisdiction Units,Alwar Cyber Crime Cell Unit-1,False,True,False,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,unit_type,object,Synthetic simulation column unit_type for Jurisdiction Units,CYBER_CRIME_CELL,False,True,False,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,district,object,Synthetic simulation column district for Jurisdiction Units,Alwar,False,True,False,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,state,object,Synthetic simulation column state for Jurisdiction Units,Rajasthan,False,True,False,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,latitude,float64,Synthetic simulation column latitude for Jurisdiction Units,27.588799,False,True,False,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,longitude,float64,Synthetic simulation column longitude for Jurisdiction Units,76.62336,False,True,False,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,beat_code,object,Synthetic simulation column beat_code for Jurisdiction Units,BEAT_ALW_01,False,True,False,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,contact_channel,object,Synthetic simulation column contact_channel for Jurisdiction Units,DISPATCH_RADIO,False,True,False,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,contact_phone_synthetic,int64,Synthetic simulation column contact_phone_synthetic for Jurisdiction Units,919876500001,False,True,False,False,False,Unrestricted / Range Bounded
+Jurisdiction Units,is_active,int64,Synthetic simulation column is_active for Jurisdiction Units,1,False,True,False,False,False,Unrestricted / Range Bounded
+Geofence Assignments,geofence_id,object,Synthetic simulation column geofence_id for Geofence Assignments,GF000000,False,True,True,False,False,Unrestricted / Range Bounded
+Geofence Assignments,latitude,float64,Synthetic simulation column latitude for Geofence Assignments,28.029308,False,True,False,False,False,Unrestricted / Range Bounded
+Geofence Assignments,longitude,float64,Synthetic simulation column longitude for Geofence Assignments,76.984088,False,True,False,False,False,Unrestricted / Range Bounded
+Geofence Assignments,radius_km,float64,Synthetic simulation column radius_km for Geofence Assignments,12.02,False,True,False,False,False,Unrestricted / Range Bounded
+Geofence Assignments,district,object,Synthetic simulation column district for Geofence Assignments,Nuh,False,True,False,False,False,Unrestricted / Range Bounded
+Geofence Assignments,state,object,Synthetic simulation column state for Geofence Assignments,Haryana,False,True,False,False,False,Unrestricted / Range Bounded
+Geofence Assignments,nearest_lea_unit_id,object,Synthetic simulation column nearest_lea_unit_id for Geofence Assignments,LEA001,False,True,False,True,False,Unrestricted / Range Bounded
+Geofence Assignments,beat_officer_id,object,Synthetic simulation column beat_officer_id for Geofence Assignments,OFFICER_319,False,True,False,False,False,Unrestricted / Range Bounded
+Geofence Assignments,assignment_timestamp,object,Synthetic simulation column assignment_timestamp for Geofence Assignments,2025-01-01 05:27:55,False,True,False,False,False,Unrestricted / Range Bounded
+Corridor Hub Events,hub_event_id,object,Synthetic simulation column hub_event_id for Corridor Hub Events,HBE000000,False,True,True,False,False,Unrestricted / Range Bounded
+Corridor Hub Events,corridor_id,object,Synthetic simulation column corridor_id for Corridor Hub Events,CORR_001,False,True,False,True,False,Unrestricted / Range Bounded
+Corridor Hub Events,timestamp,object,Synthetic simulation column timestamp for Corridor Hub Events,2025-09-02 00:03:08,False,True,False,False,False,Unrestricted / Range Bounded
+Corridor Hub Events,active_mule_count_reference,int64,Synthetic simulation column active_mule_count_reference for Corridor Hub Events,8,False,True,False,False,True,Unrestricted / Range Bounded
+Corridor Hub Events,complaint_count_reference,int64,Synthetic simulation column complaint_count_reference for Corridor Hub Events,13,False,True,False,False,True,Unrestricted / Range Bounded
+Corridor Hub Events,intensity_score_reference,float64,Synthetic simulation column intensity_score_reference for Corridor Hub Events,0.91,False,True,False,False,True,Unrestricted / Range Bounded
+Corridor Hub Events,cashout_activity_reference,object,Synthetic simulation column cashout_activity_reference for Corridor Hub Events,LOW,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Outcomes,prediction_id,object,Synthetic simulation column prediction_id for Prediction Outcomes,PRED000000,False,True,True,False,False,Unrestricted / Range Bounded
+Prediction Outcomes,account_id,object,Synthetic simulation column account_id for Prediction Outcomes,ACC000000,False,True,False,True,False,Unrestricted / Range Bounded
+Prediction Outcomes,complaint_id,object,Synthetic simulation column complaint_id for Prediction Outcomes,CMP000000,False,True,False,True,False,Unrestricted / Range Bounded
+Prediction Outcomes,scenario_timestamp,object,Synthetic simulation column scenario_timestamp for Prediction Outcomes,2025-09-02 00:03:08,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Outcomes,predicted_lat_reference,float64,Synthetic simulation column predicted_lat_reference for Prediction Outcomes,28.115725,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Outcomes,predicted_lon_reference,float64,Synthetic simulation column predicted_lon_reference for Prediction Outcomes,76.997564,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Outcomes,actual_withdrawal_lat,float64,Synthetic simulation column actual_withdrawal_lat for Prediction Outcomes,28.124478,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Outcomes,actual_withdrawal_lon,float64,Synthetic simulation column actual_withdrawal_lon for Prediction Outcomes,77.020899,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Outcomes,actual_withdrawal_node_id,object,Synthetic simulation column actual_withdrawal_node_id for Prediction Outcomes,NODE000000,False,True,False,True,True,Unrestricted / Range Bounded
+Prediction Outcomes,actual_withdrawal_timestamp,object,Synthetic simulation column actual_withdrawal_timestamp for Prediction Outcomes,2025-09-02 00:28:08,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Outcomes,time_to_cashout_mins,int64,Synthetic simulation column time_to_cashout_mins for Prediction Outcomes,25,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Outcomes,corridor_id,object,Synthetic simulation column corridor_id for Prediction Outcomes,CORR_001,False,True,False,True,False,Unrestricted / Range Bounded
+Prediction Outcomes,distance_from_corridor_km,float64,Synthetic simulation column distance_from_corridor_km for Prediction Outcomes,37.19,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Outcomes,candidate_rank,int64,Synthetic simulation column candidate_rank for Prediction Outcomes,1,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Outcomes,candidate_node_id,object,Synthetic simulation column candidate_node_id for Prediction Outcomes,NODE000000,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Outcomes,candidate_reference_probability,float64,Synthetic simulation column candidate_reference_probability for Prediction Outcomes,0.8358,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Outcomes,prediction_correct_reference,int64,Synthetic simulation column prediction_correct_reference for Prediction Outcomes,1,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Outcomes,time_to_intervention_mins,int64,Synthetic simulation column time_to_intervention_mins for Prediction Outcomes,161,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Outcomes,intervention_outcome,object,Synthetic simulation column intervention_outcome for Prediction Outcomes,FREEZE_EXECUTED,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Outcomes,is_synthetic,int64,Synthetic simulation column is_synthetic for Prediction Outcomes,1,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Candidates,prediction_id,object,Synthetic simulation column prediction_id for Prediction Candidates,PRED000000,False,True,True,False,False,Unrestricted / Range Bounded
+Prediction Candidates,account_id,object,Synthetic simulation column account_id for Prediction Candidates,ACC000000,False,True,False,True,False,Unrestricted / Range Bounded
+Prediction Candidates,candidate_rank,int64,Synthetic simulation column candidate_rank for Prediction Candidates,1,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Candidates,candidate_node_id,object,Synthetic simulation column candidate_node_id for Prediction Candidates,NODE000000,False,True,False,True,False,Unrestricted / Range Bounded
+Prediction Candidates,candidate_lat,float64,Synthetic simulation column candidate_lat for Prediction Candidates,28.111506,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Candidates,candidate_lon,float64,Synthetic simulation column candidate_lon for Prediction Candidates,76.992781,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Candidates,candidate_node_type,object,Synthetic simulation column candidate_node_type for Prediction Candidates,CDM,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Candidates,distance_from_projected_corridor_km,float64,Synthetic simulation column distance_from_projected_corridor_km for Prediction Candidates,38.19,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Candidates,candidate_reference_score,float64,Synthetic simulation column candidate_reference_score for Prediction Candidates,0.8358,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Candidates,predicted_window_start,object,Synthetic simulation column predicted_window_start for Prediction Candidates,2025-09-02 00:04:08,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Candidates,predicted_window_end,object,Synthetic simulation column predicted_window_end for Prediction Candidates,2025-09-02 02:00:08,False,True,False,False,False,Unrestricted / Range Bounded
+Prediction Candidates,actual_node_match,int64,Synthetic simulation column actual_node_match for Prediction Candidates,1,False,True,False,False,True,Unrestricted / Range Bounded
+Prediction Candidates,is_synthetic,int64,Synthetic simulation column is_synthetic for Prediction Candidates,1,False,True,False,False,False,Unrestricted / Range Bounded
+Syndicate Patterns,pattern_observation_id,object,Synthetic simulation column pattern_observation_id for Syndicate Patterns,PAT_OBS_000000,False,True,True,False,False,Unrestricted / Range Bounded
+Syndicate Patterns,pattern_id,object,Synthetic simulation column pattern_id for Syndicate Patterns,PAT_RULE_01,False,True,False,True,False,Unrestricted / Range Bounded
+Syndicate Patterns,pattern_name,object,Synthetic simulation column pattern_name for Syndicate Patterns,Terminal Cashout Collector,False,True,False,False,False,Unrestricted / Range Bounded
+Syndicate Patterns,pattern_type,object,Synthetic simulation column pattern_type for Syndicate Patterns,TERMINAL_CASHOUT_COLLECTOR,False,True,False,False,False,Unrestricted / Range Bounded
+Syndicate Patterns,hop_count,int64,Synthetic simulation column hop_count for Syndicate Patterns,6,False,True,False,False,False,Unrestricted / Range Bounded
+Syndicate Patterns,fan_out_factor,float64,Synthetic simulation column fan_out_factor for Syndicate Patterns,3.14,False,True,False,False,False,Unrestricted / Range Bounded
+Syndicate Patterns,layering_time_mins,float64,Synthetic simulation column layering_time_mins for Syndicate Patterns,9.63,False,True,False,False,False,Unrestricted / Range Bounded
+Syndicate Patterns,average_interhop_velocity_mins,float64,Synthetic simulation column average_interhop_velocity_mins for Syndicate Patterns,1.61,False,True,False,False,False,Unrestricted / Range Bounded
+Syndicate Patterns,terminal_node_risk_reference,float64,Synthetic simulation column terminal_node_risk_reference for Syndicate Patterns,0.7381,False,True,False,False,True,Unrestricted / Range Bounded
+Syndicate Patterns,associated_corridor_id,object,Synthetic simulation column associated_corridor_id for Syndicate Patterns,CORR_001,False,True,False,True,False,Unrestricted / Range Bounded
+Syndicate Patterns,matching_rule_signature,object,Synthetic simulation column matching_rule_signature for Syndicate Patterns,RULE_SIG_TERMINAL_CASHOUT_COLLECTOR_6H_3F,False,True,False,False,False,Unrestricted / Range Bounded
+Syndicate Patterns,match_confidence_reference,float64,Synthetic simulation column match_confidence_reference for Syndicate Patterns,0.7228,False,True,False,False,True,Unrestricted / Range Bounded
+Syndicate Patterns,timestamp,object,Synthetic simulation column timestamp for Syndicate Patterns,2025-09-02 00:03:08,False,True,False,False,False,Unrestricted / Range Bounded
+Syndicate Patterns,is_synthetic,int64,Synthetic simulation column is_synthetic for Syndicate Patterns,1,False,True,False,False,False,Unrestricted / Range Bounded
+Audit Logs Master,event_id,object,Synthetic simulation column event_id for Audit Logs Master,AUD_00000000,False,True,True,False,False,Unrestricted / Range Bounded
+Audit Logs Master,timestamp,object,Synthetic simulation column timestamp for Audit Logs Master,2025-01-01 00:00:51,False,True,False,False,False,Unrestricted / Range Bounded
+Audit Logs Master,officer_id,object,Synthetic simulation column officer_id for Audit Logs Master,OFFICER_960,False,True,False,True,False,Unrestricted / Range Bounded
+Audit Logs Master,officer_role,object,Synthetic simulation column officer_role for Audit Logs Master,INVESTIGATOR,False,True,False,False,False,Unrestricted / Range Bounded
+Audit Logs Master,action_type,object,Synthetic simulation column action_type for Audit Logs Master,MARK_INTERCEPTED,False,True,False,False,False,Unrestricted / Range Bounded
+Audit Logs Master,target_entity_type,object,Synthetic simulation column target_entity_type for Audit Logs Master,PREDICTION,False,True,False,False,False,Unrestricted / Range Bounded
+Audit Logs Master,target_entity_id,object,Synthetic simulation column target_entity_id for Audit Logs Master,PRE_154886,False,True,False,False,False,Unrestricted / Range Bounded
+Audit Logs Master,case_id,object,Synthetic simulation column case_id for Audit Logs Master,CASE_16265,False,True,False,True,False,Unrestricted / Range Bounded
+Audit Logs Master,ip_address_synthetic,object,Synthetic simulation column ip_address_synthetic for Audit Logs Master,192.168.214.75,False,True,False,False,False,Unrestricted / Range Bounded
+Audit Logs Master,event_payload_hash_reference,object,Synthetic simulation column event_payload_hash_reference for Audit Logs Master,33dd2ae8af293c0aaf19acfdd0b070d6500bfb4ec6fdcd5ff7,False,True,False,False,True,Unrestricted / Range Bounded
+Audit Logs Master,event_hash_sha256_reference,object,Synthetic simulation column event_hash_sha256_reference for Audit Logs Master,1824ad1653ac5980c7194e97dde44fb706764683d8836f8690,False,True,False,False,True,Unrestricted / Range Bounded
+Audit Logs Master,prev_hash_sha256_reference,object,Synthetic simulation column prev_hash_sha256_reference for Audit Logs Master,00000000000000000000000000000000000000000000000000,False,True,False,False,True,Unrestricted / Range Bounded
+Audit Logs Master,verified_flag_reference,int64,Synthetic simulation column verified_flag_reference for Audit Logs Master,1,False,True,False,False,True,Unrestricted / Range Bounded
+Audit Logs Master,is_synthetic,int64,Synthetic simulation column is_synthetic for Audit Logs Master,1,False,True,False,False,False,Unrestricted / Range Bounded
+Legal Dossiers Master,dossier_id,object,Synthetic simulation column dossier_id for Legal Dossiers Master,DOS000000,False,True,True,False,False,Unrestricted / Range Bounded
+Legal Dossiers Master,complaint_id,object,Synthetic simulation column complaint_id for Legal Dossiers Master,CMP000000,False,True,False,True,False,Unrestricted / Range Bounded
+Legal Dossiers Master,generated_at,object,Synthetic simulation column generated_at for Legal Dossiers Master,2025-09-02 00:03:08,False,True,False,False,False,Unrestricted / Range Bounded
+Legal Dossiers Master,notice_ref_no,object,Synthetic simulation column notice_ref_no for Legal Dossiers Master,NOTICE/91A/2025/000000,False,True,False,False,False,Unrestricted / Range Bounded
+Legal Dossiers Master,evidence_hash_sha256_reference,object,Synthetic simulation column evidence_hash_sha256_reference for Legal Dossiers Master,33c67e706cb0e677a4cc91e4e4a142f017fb1171c325d6dd92,False,True,False,False,True,Unrestricted / Range Bounded
+Legal Dossiers Master,sections_included,object,Synthetic simulation column sections_included for Legal Dossiers Master,SEC_102_CRPC,False,True,False,False,False,Unrestricted / Range Bounded
+Legal Dossiers Master,issuing_officer_id,object,Synthetic simulation column issuing_officer_id for Legal Dossiers Master,OFFICER_221,False,True,False,False,False,Unrestricted / Range Bounded
+Legal Dossiers Master,prediction_id,object,Synthetic simulation column prediction_id for Legal Dossiers Master,PRED000000,False,True,False,True,False,Unrestricted / Range Bounded
+Legal Dossiers Master,target_node_id,object,Synthetic simulation column target_node_id for Legal Dossiers Master,NODE000000,False,True,False,True,False,Unrestricted / Range Bounded
+Legal Dossiers Master,preservation_directive_type,object,Synthetic simulation column preservation_directive_type for Legal Dossiers Master,IMMEDIATE_ACCOUNT_FREEZE,False,True,False,False,False,Unrestricted / Range Bounded
+Legal Dossiers Master,download_count,int64,Synthetic simulation column download_count for Legal Dossiers Master,8,False,True,False,False,False,Unrestricted / Range Bounded
+Legal Dossiers Master,verification_status_reference,object,Synthetic simulation column verification_status_reference for Legal Dossiers Master,VERIFIED_VALID,False,True,False,False,True,Unrestricted / Range Bounded
+Legal Dossiers Master,is_synthetic,int64,Synthetic simulation column is_synthetic for Legal Dossiers Master,1,False,True,False,False,False,Unrestricted / Range Bounded

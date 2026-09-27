@@ -3,14 +3,15 @@
 import pandas as pd
 from pathlib import Path
 
+from app.core import storage_paths
+
 
 # ---------------------------------------------------
 # PATH SETUP
 # ---------------------------------------------------
 
-BASE_DIR = Path(__file__).resolve().parents[4]
+ONBOARDING_PATH = storage_paths.ONBOARDING_RISK_SNAPSHOT_PATH
 
-ONBOARDING_PATH = BASE_DIR / "data" / "processed" / "onboarding" / "account_risk_snapshot.csv"
 
 
 # ---------------------------------------------------

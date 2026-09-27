@@ -157,8 +157,8 @@ def _seed_sequence_history(sender: str, txn: Dict[str, Any]) -> None:
 
     hist.append(txn)
 
-    if len(hist) > 20:
-        del hist[:-20]
+    while len(hist) > 20:
+        hist.popleft()
 
 
 def _apply_realtime_component_fallbacks(

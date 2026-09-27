@@ -4,9 +4,10 @@ import pandas as pd
 
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parents[4]
+from app.core import storage_paths
 
-ONBOARDING_RESULTS = BASE_DIR / "data" / "processed" / "onboarding" / "account_risk_snapshot.csv"
+ONBOARDING_RESULTS = storage_paths.ONBOARDING_RISK_SNAPSHOT_PATH
+
 
 
 class DeviceIntelligenceService:

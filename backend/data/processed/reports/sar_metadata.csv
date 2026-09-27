@@ -1,0 +1,2 @@
+sar_id,case_id,alert_id,user_id,generated_by,generated_at,status,pdf_filename,filing_type,runtime_session_id,pdf_path
+SAR-20260927-081157-E34CF3,CASE-20474C9A,TXN-F303FB0C,U-1079,OFF_1,2026-09-27T08:11:58.561510+00:00,GENERATED,SAR_CASE-20474C9A_SAR-20260927-081157-E34CF3.pdf,INTERNAL,RUN-20260927-081148-FC5907,D:\Vajra_AI\data\processed\reports\sar\SAR_CASE-20474C9A_SAR-20260927-081157-E34CF3.pdf

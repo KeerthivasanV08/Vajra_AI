@@ -1,0 +1,6 @@
+node_type,description
+ATM,Automated Teller Machine for cash withdrawal/deposit
+MICRO_ATM,Handheld point-of-sale device operated by business correspondents
+AEPS_CSP,Aadhaar Enabled Payment System Customer Service Point outlet
+POS,Point of Sale merchant cash-out or retail terminal
+CDM,Cash Deposit Machine / Cash Recycler

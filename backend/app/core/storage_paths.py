@@ -1,9 +1,13 @@
 from pathlib import Path
 
-# Base directory: repository root TrustVault/
-BASE_DIR = Path(__file__).resolve().parents[3]
+# BACKEND_DIR: resolves to Vajra_AI/backend/ regardless of CWD.
+# This makes DATA_DIR = backend/data, so the backend is fully self-contained
+# for both local development (run from repo root) and Render deployment
+# (run from inside backend/).
+BACKEND_DIR = Path(__file__).resolve().parents[2]
+BASE_DIR = BACKEND_DIR  # legacy alias kept for backward-compat
 
-DATA_DIR = BASE_DIR / "data"
+DATA_DIR = BACKEND_DIR / "data"
 
 PROCESSED_DIR = DATA_DIR / "processed"
 
@@ -39,7 +43,7 @@ TRAINING_GRAPH_FEATURES_PATH = TRAINING_DIR / "graph_features.csv"
 
 POLICY_RULES_PATH = REFERENCE_DIR / "policy_rules.json"
 
-LOGS_DIR = BASE_DIR / "logs"
+LOGS_DIR = BACKEND_DIR / "logs"
 
 ALL_STORAGE_DIRS = [
     DATA_DIR,

@@ -10,8 +10,10 @@ from dotenv import load_dotenv
 from app.db.neo4j_client import Neo4jClient
 
 
-BASE_DIR = Path(__file__).resolve().parents[3]
-DATA_DIR = BASE_DIR / "data" / "raw"
+# File lives at backend/scripts/transaction/load_to_neo4j.py
+# parents[2] = backend/  <- canonical anchor after data move
+BACKEND_DIR = Path(__file__).resolve().parents[2]
+DATA_DIR = BACKEND_DIR / "data" / "raw"
 
 
 def _read_csv(path: Path) -> List[Dict[str, Any]]:

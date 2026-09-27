@@ -1,0 +1,14 @@
+{
+  "model_name": "Model 8 \u2014 Syndicate Fingerprint Matcher",
+  "algorithm": "Cosine Similarity Pattern Matcher",
+  "training_dataset": "syndicate_patterns.csv",
+  "observation_count": 30000,
+  "pattern_types_count": 7,
+  "main_metric": "Precision@1",
+  "main_metric_value": 0.1475,
+  "precision_at_1": 0.1475,
+  "precision_at_3": 0.4386,
+  "precision_at_5": 0.7242,
+  "average_top1_similarity": 0.7046,
+  "evaluation_type": "synthetic_holdout"
+}

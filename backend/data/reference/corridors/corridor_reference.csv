@@ -1,0 +1,6 @@
+id,name,hub_name,city,state,lat,lon,radius_km,description
+CORR_001,NCR Cash-Out Highway,Delhi-Gurugram Corridor,Gurugram,Haryana,28.4595,77.0266,45.0,High velocity cashout hub between Delhi NCR and Mewat region
+CORR_002,Eastern Layering Belt,Jamtara-Dhanbad Corridor,Jamtara,Jharkhand,23.962,86.8,60.0,"Multi-hop layering corridor connecting Jamtara, Deoghar and Dhanbad"
+CORR_003,Border Gateway Corridor,Malda International Transit,English Bazar,West Bengal,25.0108,88.1411,35.0,Cross-border rapid transfer and CSP cashout hub
+CORR_004,Western Metro Cash-Out Ring,Mumbai-Navi Mumbai Hub,Navi Mumbai,Maharashtra,19.033,73.0297,50.0,Metro POS and ATM high-volume extraction corridor
+CORR_005,Mewat Triangle Transit,Nuh-Alwar-Bharatpur Hub,Nuh,Haryana,28.1023,77.0018,75.0,Interstate Micro-ATM and AEPS distribution cluster

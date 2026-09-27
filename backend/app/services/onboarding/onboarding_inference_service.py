@@ -53,7 +53,12 @@ class OnboardingInferenceService:
         feature_df: pd.DataFrame
     ):
 
-        expected_features = self.features["features"]
+        if isinstance(self.features, dict) and "features" in self.features:
+            expected_features = self.features["features"]
+        elif isinstance(self.features, list):
+            expected_features = self.features
+        else:
+            expected_features = list(self.features)
 
         feature_df = feature_df[
             expected_features

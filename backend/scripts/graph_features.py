@@ -8,25 +8,20 @@ import sys
 # FIX PYTHON IMPORT PATH
 # -----------------------------
 BACKEND_DIR = Path(__file__).resolve().parents[1]
-AML_DIR = Path(__file__).resolve().parents[2]
 
 sys.path.append(str(BACKEND_DIR))
 
-from app.services.graph_service import (
+from app.services.transaction.graph_service import (
     get_graph_intelligence
 )
+from app.core import storage_paths
 
 # -----------------------------
 # PATH CONFIG
 # -----------------------------
-RAW_PATH = (
-    AML_DIR
-    / "data"
-    / "raw"
-    / "users.csv"
-)
+RAW_PATH = storage_paths.DATA_DIR / "raw" / "users.csv"
 
-OUT_PATH = AML_DIR / "data" / "processed" / "training" / "graph_features.csv"
+OUT_PATH = storage_paths.TRAINING_GRAPH_FEATURES_PATH
 
 
 def build_graph_features():

@@ -11,19 +11,16 @@ from app.realtime.transaction_memory_store import (
     initialize_runtime_store,
 )
 
-BASE_DIR = Path(__file__).resolve().parents[4]
-
-TXN_DIR = BASE_DIR / "data" / "processed"
-ONBOARDING_DIR = BASE_DIR / "data" / "processed"
-
-USER_FEATURES_PATH = TXN_DIR / "user_features.csv"
+USER_FEATURES_PATH = storage_paths.PROCESSED_DIR / "user_features.csv"
 USER_VELOCITY_PATH = storage_paths.RUNTIME_VELOCITY_STATE_PATH
 ONBOARDING_RESULTS_PATH = storage_paths.ONBOARDING_RISK_SNAPSHOT_PATH
 RECENT_FALLBACK_PATHS = [
     RECENT_TRANSACTIONS_PATH,
     RAW_TRANSACTION_SEED_PATH,
-    BASE_DIR / "data" / "processed" / "final_dataset.csv",
+    storage_paths.PROCESSED_DIR / "final_dataset.csv",
 ]
+
+
 
 
 class ContextService:

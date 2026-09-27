@@ -1,21 +1,11 @@
 import pandas as pd
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parents[4]
+from app.core import storage_paths
 
-IP_RISK_PATH = (
-    BASE_DIR
-    / "data"
-    / "reference"
-    / "ip_risk_reference.csv"
-)
+IP_RISK_PATH = storage_paths.REFERENCE_DIR / "ip_risk_reference.csv"
 
-DEVICE_REF_PATH = (
-    BASE_DIR
-    / "data"
-    / "raw"
-    / "device_age_reference.csv"
-)
+DEVICE_REF_PATH = storage_paths.DATA_DIR / "raw" / "device_age_reference.csv"
 
 
 class OnboardingContextService:

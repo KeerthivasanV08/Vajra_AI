@@ -10,7 +10,8 @@ import pandas as pd
 ROOT_DIR = Path(__file__).resolve().parents[3]
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 
-DATA_DIR = ROOT_DIR / "data"
+# Data now lives inside backend/data/ (self-contained deployment)
+DATA_DIR = BACKEND_DIR / "data"
 MODEL_DIR = BACKEND_DIR / "app" / "models" / "onboarding"
 
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
@@ -145,11 +146,11 @@ def prepare_onboarding_training_data():
         / "user_features.csv"
     )
 
-    df_results = pd.read_csv(
-        DATA_DIR
-        / "processed"
-        / "onboarding" / "account_risk_snapshot.csv"
-    )
+    results_file = DATA_DIR / "processed" / "onboarding_results.csv"
+    if not results_file.exists():
+        results_file = DATA_DIR / "processed" / "onboarding" / "onboarding_clean.csv"
+
+    df_results = pd.read_csv(results_file)
 
     df_labels = pd.read_csv(
         DATA_DIR

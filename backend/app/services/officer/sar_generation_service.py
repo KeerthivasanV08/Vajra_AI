@@ -2,7 +2,7 @@
 SAR (Suspicious Activity Report) Generation Service
 
 Generates professional PDF SAR reports with:
-- TrustVault header/logo
+- VAJRA AI header/logo
 - Case/Alert details
 - Risk scores
 - Timeline
@@ -635,7 +635,7 @@ class SARGenerationService:
         canvas.setStrokeColor(colors.HexColor("#CBD5E1"))
         canvas.setFillColor(colors.HexColor("#0F172A"))
         canvas.setFont("Helvetica-Bold", 11)
-        canvas.drawCentredString(width / 2.0, height - 32, "TRUSTVAULT AML SYSTEM")
+        canvas.drawCentredString(width / 2.0, height - 32, "VAJRA AI DEFENSIVE INTELLIGENCE")
         canvas.setFont("Helvetica-Bold", 9)
         canvas.setFillColor(colors.HexColor("#1D4ED8"))
         canvas.drawCentredString(width / 2.0, height - 46, "Suspicious Activity Report (SAR)")
@@ -648,9 +648,9 @@ class SARGenerationService:
         canvas.line(doc.leftMargin, 44, width - doc.rightMargin, 44)
         canvas.setFont("Helvetica", 7.5)
         canvas.setFillColor(colors.HexColor("#475569"))
-        canvas.drawCentredString(width / 2.0, 33, "TrustVault AML Compliance Platform")
+        canvas.drawCentredString(width / 2.0, 33, "VAJRA AI Defensive Intelligence Platform")
         canvas.drawCentredString(width / 2.0, 24, "Confidential Document")
-        canvas.drawCentredString(width / 2.0, 15, "Generated automatically by TrustVault AML Engine")
+        canvas.drawCentredString(width / 2.0, 15, "Generated automatically by VAJRA AI Core Engine")
         canvas.restoreState()
 
     def _generate_pdf(self, sar_content: Dict[str, Any], output_path: Path) -> None:
@@ -687,7 +687,7 @@ class SARGenerationService:
         runtime_session = self._safe_text(get_runtime_session_id(), fallback="Not Available")
 
         story.append(Spacer(1, 0.35 * inch))
-        story.append(Paragraph("TRUSTVAULT AML SYSTEM", styles["ReportTitle"]))
+        story.append(Paragraph("VAJRA AI DEFENSIVE INTELLIGENCE", styles["ReportTitle"]))
         story.append(Paragraph("Suspicious Activity Report (SAR)", styles["ReportSubtitle"]))
         story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#334155"), spaceBefore=4, spaceAfter=8))
 
@@ -809,7 +809,7 @@ class SARGenerationService:
         story.append(audit_table)
 
         story.append(Spacer(1, 0.12 * inch))
-        story.append(Paragraph("TrustVault AML Compliance Platform · Confidential Document · Generated automatically by TrustVault AML Engine", styles["SmallBody"]))
+        story.append(Paragraph("VAJRA AI Defensive Intelligence Platform · Confidential Document · Generated automatically by VAJRA AI Core Engine", styles["SmallBody"]))
 
         frame = Frame(
             letter[0] * 0 + 0.72 * inch,
@@ -829,8 +829,8 @@ class SARGenerationService:
             rightMargin=0.72 * inch,
             topMargin=0.92 * inch,
             bottomMargin=0.78 * inch,
-            title="TrustVault AML Suspicious Activity Report",
-            author="TrustVault AML Engine",
+            title="VAJRA AI Suspicious Activity Report",
+            author="VAJRA AI Core Engine",
         )
         doc.addPageTemplates([PageTemplate(id="sar", frames=[frame], onPage=self._render_header_footer)])
         doc.build(story, canvasmaker=_NumberedCanvas)
@@ -839,7 +839,7 @@ class SARGenerationService:
         """Generate a minimal PDF SAR when ReportLab is unavailable."""
         ensure_parent_dir(output_path)
         lines = [
-            "TRUSTVAULT AML SYSTEM",
+            "VAJRA AI DEFENSIVE INTELLIGENCE",
             "Suspicious Activity Report (SAR)",
             "",
             f"Report ID: {self._safe_text(sar_content.get('sar_id'))}",
@@ -916,9 +916,9 @@ class SARGenerationService:
             f"Timestamp: {self._safe_datetime_text(sar_content.get('generated_at'))} | Action: SAR Generated | Performed By: {self._safe_text(sar_content.get('generated_by'))}",
             f"Timestamp: {self._safe_datetime_text(sar_content.get('updated_at'))} | Action: Case Updated | Performed By: {self._safe_text(sar_content.get('assigned_officer'))}",
             "",
-            "TrustVault AML Compliance Platform",
+            "VAJRA AI Defensive Intelligence Platform",
             "Confidential Document",
-            "Generated automatically by TrustVault AML Engine",
+            "Generated automatically by VAJRA AI Core Engine",
         ])
 
         def _escape_pdf_text(text: str) -> str:

@@ -31,10 +31,11 @@ from tensorflow.keras.callbacks import (
     EarlyStopping
 )
 
-ROOT_DIR = Path(__file__).resolve().parents[3]
-BACKEND_DIR = Path(__file__).resolve().parents[2]
+ROOT_DIR = Path(__file__).resolve().parents[3]  # repo root (kept for reference)
+BACKEND_DIR = Path(__file__).resolve().parents[2]  # backend/
 
-DATASET_PATH = ROOT_DIR / "data" / "processed" / "final_dataset.csv"
+# Data now lives inside backend/data/ (self-contained deployment)
+DATASET_PATH = BACKEND_DIR / "data" / "processed" / "final_dataset.csv"
 
 MODEL_DIR = BACKEND_DIR / "app" / "models" / "transaction"
 

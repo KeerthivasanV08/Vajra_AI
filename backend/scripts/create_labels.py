@@ -8,10 +8,8 @@ from app.core import storage_paths
 # ---------------------------------------------------
 # PATH CONFIG
 # ---------------------------------------------------
-BASE_DIR = Path(__file__).resolve().parents[2]
-
-PROCESSED_DIR = BASE_DIR / "data" / "processed"
-RAW_DIR = BASE_DIR / "data" / "raw"
+PROCESSED_DIR = storage_paths.PROCESSED_DIR
+RAW_DIR = storage_paths.DATA_DIR / "raw"
 
 # ---------------------------------------------------
 # LABEL GENERATION ENGINE

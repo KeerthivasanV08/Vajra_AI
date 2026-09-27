@@ -101,8 +101,24 @@ def escalate_case(payload: dict):
 @router.post("/sar")
 def generate_sar(payload: dict):
     case_id = payload.get("case_id")
+    alert_id = payload.get("alert_id")
+
+    if not case_id and alert_id:
+        try:
+            return sar_generation_service.generate_sar_from_alert(
+                alert_id=alert_id,
+                generated_by=payload.get("officer_id", "OFFICER_UNKNOWN"),
+                officer_notes=payload.get("notes", ""),
+                alert_type=payload.get("alert_type", "transaction"),
+                filing_type=payload.get("filing_type", "INTERNAL"),
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=404, detail=str(exc))
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=str(exc))
+
     if not case_id:
-        raise HTTPException(status_code=404, detail="Case not found")
+        raise HTTPException(status_code=400, detail="case_id or alert_id is required")
 
     try:
         result = sar_generation_service.generate_sar_from_case(

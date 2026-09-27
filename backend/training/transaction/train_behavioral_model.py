@@ -21,7 +21,8 @@ ROOT_DIR = Path(__file__).resolve().parents[3]
 # backend folder used for model storage (aml_system/backend)
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 
-DATASET_PATH = ROOT_DIR / "data" / "processed" / "final_dataset.csv"
+# Data now lives inside backend/data/ (self-contained deployment)
+DATASET_PATH = BACKEND_DIR / "data" / "processed" / "final_dataset.csv"
 
 MODEL_DIR = BACKEND_DIR / "app" / "models" / "transaction"
 

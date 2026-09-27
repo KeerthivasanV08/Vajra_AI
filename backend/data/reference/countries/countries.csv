@@ -1,0 +1,9 @@
+code,name,region,is_domestic
+IN,India,South Asia,1
+AE,UAE,Middle East,0
+HK,Hong Kong,East Asia,0
+TH,Thailand,Southeast Asia,0
+SG,Singapore,Southeast Asia,0
+RU,Russia,Eastern Europe,0
+GB,United Kingdom,Western Europe,0
+US,United States,North America,0

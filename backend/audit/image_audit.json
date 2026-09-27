@@ -1,0 +1,452 @@
+{
+  "images_dir": "D:\\Vajra_AI\\images",
+  "subfolders_checked": {
+    "model1": {
+      "folder_path": "images\\model1_trajectory",
+      "image_count": 3
+    },
+    "model2": {
+      "folder_path": "images\\model2_node_vulnerability",
+      "image_count": 4
+    },
+    "model3": {
+      "folder_path": "images\\model3_spatial_region",
+      "image_count": 3
+    },
+    "model4": {
+      "folder_path": "images\\model4_node_ranking",
+      "image_count": 4
+    },
+    "model5": {
+      "folder_path": "images\\model5_cross_border",
+      "image_count": 5
+    },
+    "model6": {
+      "folder_path": "images\\model6_sop_fusion",
+      "image_count": 4
+    },
+    "model7": {
+      "folder_path": "images\\model7_fairness",
+      "image_count": 3
+    },
+    "model8": {
+      "folder_path": "images\\model8_syndicate",
+      "image_count": 2
+    },
+    "overall": {
+      "folder_path": "images\\overall",
+      "image_count": 2
+    }
+  },
+  "total_images_audited": 30,
+  "valid_images": 30,
+  "corrupted_images": 0,
+  "loose_files_count": 13,
+  "image_details": [
+    {
+      "filename": "model1_trajectory_confusion_matrix.png",
+      "subfolder": "model1",
+      "relative_path": "images\\model1_trajectory\\model1_trajectory_confusion_matrix.png",
+      "file_size_bytes": 83545,
+      "valid": true,
+      "width": 1050,
+      "height": 900,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model1_trajectory_error_distribution.png",
+      "subfolder": "model1",
+      "relative_path": "images\\model1_trajectory\\model1_trajectory_error_distribution.png",
+      "file_size_bytes": 60234,
+      "valid": true,
+      "width": 1200,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model1_trajectory_metrics.png",
+      "subfolder": "model1",
+      "relative_path": "images\\model1_trajectory\\model1_trajectory_metrics.png",
+      "file_size_bytes": 37036,
+      "valid": true,
+      "width": 1200,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model2_node_vulnerability_confusion_matrix.png",
+      "subfolder": "model2",
+      "relative_path": "images\\model2_node_vulnerability\\model2_node_vulnerability_confusion_matrix.png",
+      "file_size_bytes": 41325,
+      "valid": true,
+      "width": 900,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model2_node_vulnerability_feature_importance.png",
+      "subfolder": "model2",
+      "relative_path": "images\\model2_node_vulnerability\\model2_node_vulnerability_feature_importance.png",
+      "file_size_bytes": 67936,
+      "valid": true,
+      "width": 1200,
+      "height": 900,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model2_node_vulnerability_metrics.png",
+      "subfolder": "model2",
+      "relative_path": "images\\model2_node_vulnerability\\model2_node_vulnerability_metrics.png",
+      "file_size_bytes": 36086,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model2_node_vulnerability_residuals.png",
+      "subfolder": "model2",
+      "relative_path": "images\\model2_node_vulnerability\\model2_node_vulnerability_residuals.png",
+      "file_size_bytes": 67742,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model3_spatial_region_confusion_matrix.png",
+      "subfolder": "model3",
+      "relative_path": "images\\model3_spatial_region\\model3_spatial_region_confusion_matrix.png",
+      "file_size_bytes": 78594,
+      "valid": true,
+      "width": 1200,
+      "height": 900,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model3_spatial_region_feature_importance.png",
+      "subfolder": "model3",
+      "relative_path": "images\\model3_spatial_region\\model3_spatial_region_feature_importance.png",
+      "file_size_bytes": 55865,
+      "valid": true,
+      "width": 1200,
+      "height": 900,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model3_spatial_region_metrics.png",
+      "subfolder": "model3",
+      "relative_path": "images\\model3_spatial_region\\model3_spatial_region_metrics.png",
+      "file_size_bytes": 33084,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model4_node_ranker_feature_importance.png",
+      "subfolder": "model4",
+      "relative_path": "images\\model4_node_ranking\\model4_node_ranker_feature_importance.png",
+      "file_size_bytes": 49760,
+      "valid": true,
+      "width": 1200,
+      "height": 900,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model4_node_ranking_metrics.png",
+      "subfolder": "model4",
+      "relative_path": "images\\model4_node_ranking\\model4_node_ranking_metrics.png",
+      "file_size_bytes": 27450,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model4_rank_distribution.png",
+      "subfolder": "model4",
+      "relative_path": "images\\model4_node_ranking\\model4_rank_distribution.png",
+      "file_size_bytes": 32206,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model4_topk_accuracy.png",
+      "subfolder": "model4",
+      "relative_path": "images\\model4_node_ranking\\model4_topk_accuracy.png",
+      "file_size_bytes": 39414,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model5_cross_border_confusion_matrix.png",
+      "subfolder": "model5",
+      "relative_path": "images\\model5_cross_border\\model5_cross_border_confusion_matrix.png",
+      "file_size_bytes": 42345,
+      "valid": true,
+      "width": 900,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model5_cross_border_feature_importance.png",
+      "subfolder": "model5",
+      "relative_path": "images\\model5_cross_border\\model5_cross_border_feature_importance.png",
+      "file_size_bytes": 58377,
+      "valid": true,
+      "width": 1200,
+      "height": 900,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model5_cross_border_metrics.png",
+      "subfolder": "model5",
+      "relative_path": "images\\model5_cross_border\\model5_cross_border_metrics.png",
+      "file_size_bytes": 37587,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model5_cross_border_pr_curve.png",
+      "subfolder": "model5",
+      "relative_path": "images\\model5_cross_border\\model5_cross_border_pr_curve.png",
+      "file_size_bytes": 33486,
+      "valid": true,
+      "width": 900,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model5_cross_border_roc_curve.png",
+      "subfolder": "model5",
+      "relative_path": "images\\model5_cross_border\\model5_cross_border_roc_curve.png",
+      "file_size_bytes": 46027,
+      "valid": true,
+      "width": 900,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model6_calibration_before_after.png",
+      "subfolder": "model6",
+      "relative_path": "images\\model6_sop_fusion\\model6_calibration_before_after.png",
+      "file_size_bytes": 35719,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model6_reliability_curve.png",
+      "subfolder": "model6",
+      "relative_path": "images\\model6_sop_fusion\\model6_reliability_curve.png",
+      "file_size_bytes": 68944,
+      "valid": true,
+      "width": 900,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model6_sop_distribution.png",
+      "subfolder": "model6",
+      "relative_path": "images\\model6_sop_fusion\\model6_sop_distribution.png",
+      "file_size_bytes": 29232,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model6_sop_fusion_metrics.png",
+      "subfolder": "model6",
+      "relative_path": "images\\model6_sop_fusion\\model6_sop_fusion_metrics.png",
+      "file_size_bytes": 39804,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model7_fairness_dir.png",
+      "subfolder": "model7",
+      "relative_path": "images\\model7_fairness\\model7_fairness_dir.png",
+      "file_size_bytes": 53704,
+      "valid": true,
+      "width": 1200,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model7_fairness_group_rates.png",
+      "subfolder": "model7",
+      "relative_path": "images\\model7_fairness\\model7_fairness_group_rates.png",
+      "file_size_bytes": 60436,
+      "valid": true,
+      "width": 1350,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model7_historical_density_vs_risk.png",
+      "subfolder": "model7",
+      "relative_path": "images\\model7_fairness\\model7_historical_density_vs_risk.png",
+      "file_size_bytes": 47428,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model8_precision_at_k.png",
+      "subfolder": "model8",
+      "relative_path": "images\\model8_syndicate\\model8_precision_at_k.png",
+      "file_size_bytes": 32521,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model8_syndicate_similarity.png",
+      "subfolder": "model8",
+      "relative_path": "images\\model8_syndicate\\model8_syndicate_similarity.png",
+      "file_size_bytes": 67318,
+      "valid": true,
+      "width": 1050,
+      "height": 750,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "all_models_performance_summary.png",
+      "subfolder": "overall",
+      "relative_path": "images\\overall\\all_models_performance_summary.png",
+      "file_size_bytes": 57963,
+      "valid": true,
+      "width": 1500,
+      "height": 900,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    },
+    {
+      "filename": "model_comparison_baselines.png",
+      "subfolder": "overall",
+      "relative_path": "images\\overall\\model_comparison_baselines.png",
+      "file_size_bytes": 54196,
+      "valid": true,
+      "width": 1500,
+      "height": 900,
+      "dpi": [
+        150.01239999999999,
+        150.01239999999999
+      ]
+    }
+  ],
+  "loose_files": [
+    "behaviour_model.jpg",
+    "graph_embeddings.jpg",
+    "graph_model.jpg",
+    "graph_model_features.jpg",
+    "graph_service_details.jpg",
+    "lstm_sequence_model.jpg",
+    "lstm_sequence_model_metrics.jpg",
+    "Onboarding_model_features.jpg",
+    "onboarding_model_performance_evaluation.jpg",
+    "Onboarding_model_training.jpg",
+    "transaction_model_features.jpg",
+    "transaction_model_metrics.jpg",
+    "transaction_model_performance_evaluation.jpg"
+  ]
+}

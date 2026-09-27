@@ -83,7 +83,7 @@ def archive_legacy_case_files() -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Reset bounded runtime CSV snapshots for TrustVault.")
+    parser = argparse.ArgumentParser(description="Reset bounded runtime CSV snapshots for VAJRA AI.")
     parser.add_argument(
         "--alerts",
         action="store_true",

@@ -1,0 +1,291 @@
+[
+  {
+    "name": "Users Master",
+    "path": "data/raw/trustvault/users.csv",
+    "purpose": "Account & Identity master",
+    "row_count": 30000,
+    "column_count": 27,
+    "synthetic": true,
+    "primary_key": "user_id",
+    "foreign_keys": [
+      "device_id",
+      "sim_id"
+    ],
+    "generation_script": "generate_users.py",
+    "preprocessing_script": "preprocess_users.py",
+    "feature_script": "build_user_features.py",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Devices Master",
+    "path": "data/raw/trustvault/devices.csv",
+    "purpose": "Device hardware telemetry & risk profile",
+    "row_count": 30000,
+    "column_count": 18,
+    "synthetic": true,
+    "primary_key": "device_id",
+    "foreign_keys": [],
+    "generation_script": "generate_devices.py",
+    "preprocessing_script": "preprocess_devices.py",
+    "feature_script": "build_onboarding_features.py",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Transactions Master",
+    "path": "data/raw/transactions/transactions.csv",
+    "purpose": "Financial transaction ledger & movement streams",
+    "row_count": 100000,
+    "column_count": 31,
+    "synthetic": true,
+    "primary_key": "transaction_id",
+    "foreign_keys": [
+      "sender_account_id",
+      "receiver_account_id",
+      "sender_device_id",
+      "receiver_device_id"
+    ],
+    "generation_script": "generate_transactions.py",
+    "preprocessing_script": "preprocess_transactions.py",
+    "feature_script": "build_transaction_features.py",
+    "minimum_rows": 100000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Onboarding Telemetry",
+    "path": "data/raw/onboarding/onboarding_telemetry.csv",
+    "purpose": "KYC, biometric & session telemetry at signup",
+    "row_count": 30000,
+    "column_count": 38,
+    "synthetic": true,
+    "primary_key": "onboarding_id",
+    "foreign_keys": [
+      "user_id",
+      "account_id",
+      "device_id",
+      "sim_id"
+    ],
+    "generation_script": "generate_onboarding_telemetry.py",
+    "preprocessing_script": "preprocess_onboarding.py",
+    "feature_script": "build_onboarding_features.py",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Withdrawal Node Master",
+    "path": "data/raw/spatial/withdrawal_nodes_master.csv",
+    "purpose": "Terminal node master (ATM, Micro-ATM, CSP, POS, CDM)",
+    "row_count": 30000,
+    "column_count": 29,
+    "synthetic": true,
+    "primary_key": "node_id",
+    "foreign_keys": [
+      "bank_or_aggregator_id",
+      "corridor_id"
+    ],
+    "generation_script": "generate_withdrawal_nodes.py",
+    "preprocessing_script": "preprocess_withdrawal_nodes.py",
+    "feature_script": "build_node_features.py",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "IP Geo Sessions",
+    "path": "data/raw/spatial/ip_geo_sessions.csv",
+    "purpose": "IP geolocation and mobility trajectories",
+    "row_count": 50000,
+    "column_count": 28,
+    "synthetic": true,
+    "primary_key": "session_id",
+    "foreign_keys": [
+      "account_id",
+      "user_id",
+      "device_id"
+    ],
+    "generation_script": "generate_ip_geo_sessions.py",
+    "preprocessing_script": "preprocess_ip_geo.py",
+    "feature_script": "build_geo_trajectory_features.py",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Cross-Border Sessions",
+    "path": "data/raw/cross_border/cross_border_sessions.csv",
+    "purpose": "International IP session jumps & VPN telemetry",
+    "row_count": 30000,
+    "column_count": 16,
+    "synthetic": true,
+    "primary_key": "cross_border_event_id",
+    "foreign_keys": [
+      "account_id"
+    ],
+    "generation_script": "generate_cross_border_sessions.py",
+    "preprocessing_script": "preprocess_cross_border.py",
+    "feature_script": "build_cross_border_features.py",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Complaints Master",
+    "path": "data/raw/complaints/complaints.csv",
+    "purpose": "Cybercrime victim complaints & NCRP cases",
+    "row_count": 30000,
+    "column_count": 22,
+    "synthetic": true,
+    "primary_key": "complaint_id",
+    "foreign_keys": [
+      "victim_account_id",
+      "linked_account_id",
+      "linked_node_id",
+      "jurisdiction_id"
+    ],
+    "generation_script": "generate_complaints.py",
+    "preprocessing_script": "preprocess_complaints.py",
+    "feature_script": "build_complaint_features.py",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Jurisdiction Units",
+    "path": "data/raw/jurisdiction/jurisdiction_units.csv",
+    "purpose": "Law Enforcement Agency (LEA) unit directory",
+    "row_count": 1000,
+    "column_count": 11,
+    "synthetic": true,
+    "primary_key": "nearest_lea_unit_id",
+    "foreign_keys": [],
+    "generation_script": "generate_jurisdiction.py",
+    "preprocessing_script": "preprocess_jurisdiction.py",
+    "feature_script": "build_jurisdiction_features.py",
+    "minimum_rows": 1000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Geofence Assignments",
+    "path": "data/raw/jurisdiction/geofence_assignments.csv",
+    "purpose": "Spatial geofence police beat coverage assignments",
+    "row_count": 30000,
+    "column_count": 9,
+    "synthetic": true,
+    "primary_key": "geofence_id",
+    "foreign_keys": [
+      "nearest_lea_unit_id"
+    ],
+    "generation_script": "generate_jurisdiction.py",
+    "preprocessing_script": "preprocess_jurisdiction.py",
+    "feature_script": "build_jurisdiction_features.py",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Corridor Hub Events",
+    "path": "data/raw/spatial/corridor_hubs.csv",
+    "purpose": "Operational corridor hub intensity events",
+    "row_count": 30000,
+    "column_count": 7,
+    "synthetic": true,
+    "primary_key": "hub_event_id",
+    "foreign_keys": [
+      "corridor_id"
+    ],
+    "generation_script": "generate_corridor_hubs.py",
+    "preprocessing_script": "None",
+    "feature_script": "None",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Prediction Outcomes",
+    "path": "data/raw/operations/prediction_outcomes.csv",
+    "purpose": "Ground-truth predictive cashout scenarios",
+    "row_count": 30000,
+    "column_count": 20,
+    "synthetic": true,
+    "primary_key": "prediction_id",
+    "foreign_keys": [
+      "account_id",
+      "complaint_id",
+      "actual_withdrawal_node_id",
+      "corridor_id"
+    ],
+    "generation_script": "generate_prediction_outcomes.py",
+    "preprocessing_script": "preprocess_prediction_outcomes.py",
+    "feature_script": "build_integrated_features.py",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Prediction Candidates",
+    "path": "data/raw/operations/prediction_candidates.csv",
+    "purpose": "Top-K candidate node rank scenarios",
+    "row_count": 90000,
+    "column_count": 13,
+    "synthetic": true,
+    "primary_key": "prediction_id",
+    "foreign_keys": [
+      "account_id",
+      "candidate_node_id"
+    ],
+    "generation_script": "generate_prediction_outcomes.py",
+    "preprocessing_script": "preprocess_operations.py",
+    "feature_script": "None",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Syndicate Patterns",
+    "path": "data/raw/investigation/syndicate_patterns.csv",
+    "purpose": "Synthetic crime ring pattern observations",
+    "row_count": 30000,
+    "column_count": 14,
+    "synthetic": true,
+    "primary_key": "pattern_observation_id",
+    "foreign_keys": [
+      "pattern_id",
+      "associated_corridor_id"
+    ],
+    "generation_script": "generate_syndicate_patterns.py",
+    "preprocessing_script": "None",
+    "feature_script": "None",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Audit Logs Master",
+    "path": "data/raw/operations/audit_logs.csv",
+    "purpose": "Immutable system audit trail",
+    "row_count": 30000,
+    "column_count": 14,
+    "synthetic": true,
+    "primary_key": "event_id",
+    "foreign_keys": [
+      "officer_id",
+      "case_id"
+    ],
+    "generation_script": "generate_audit_logs.py",
+    "preprocessing_script": "preprocess_operations.py",
+    "feature_script": "None",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  },
+  {
+    "name": "Legal Dossiers Master",
+    "path": "data/raw/operations/legal_dossiers.csv",
+    "purpose": "Section 91/102 CrPC legal notice metadata",
+    "row_count": 30000,
+    "column_count": 13,
+    "synthetic": true,
+    "primary_key": "dossier_id",
+    "foreign_keys": [
+      "complaint_id",
+      "prediction_id",
+      "target_node_id"
+    ],
+    "generation_script": "generate_legal_dossiers.py",
+    "preprocessing_script": "preprocess_operations.py",
+    "feature_script": "None",
+    "minimum_rows": 25000,
+    "status": "GENERATED"
+  }
+]

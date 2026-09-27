@@ -8,17 +8,14 @@ from onboarding_feature_pipeline import (
     prepare_onboarding_training_data
 )
 
-BASE_DIR = Path(__file__).resolve().parents[3]
+# parents[3] = repo root, parents[2] = backend/ ← canonical anchor
+BACKEND_DIR = Path(__file__).resolve().parents[2]
 
-MODEL_DIR = (
-    BASE_DIR
-    / "app"
-    / "models"
-    / "onboarding"
-)
+MODEL_DIR = BACKEND_DIR / "app" / "models" / "onboarding"
 
+# Data now lives inside backend/data/ (self-contained deployment)
 DATASET_PATH = (
-    BASE_DIR
+    BACKEND_DIR
     / "data"
     / "processed"
     / "onboarding_final_dataset.csv"

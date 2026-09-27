@@ -46,7 +46,8 @@ from training.transaction.behavioral_feature_pipeline import (
 
 MODEL_DIR = BACKEND_DIR / "app" / "models" / "transaction"
 
-DATASET_PATH = ROOT_DIR / "data" / "processed" / "final_dataset.csv"
+# Data now lives inside backend/data/ (self-contained deployment)
+DATASET_PATH = BACKEND_DIR / "data" / "processed" / "final_dataset.csv"
 
 # -----------------------------------
 # MAIN EVALUATION

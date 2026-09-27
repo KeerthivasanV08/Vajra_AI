@@ -93,7 +93,7 @@ async def escalations():
     return results
 
 
-@router.post("/{alert_id}/acknowledge")
+@router.api_route("/{alert_id}/acknowledge", methods=["POST", "PUT"])
 async def acknowledge(alert_id: str, payload: dict | None = None):
     payload = payload or {}
     try:
@@ -108,7 +108,7 @@ async def acknowledge(alert_id: str, payload: dict | None = None):
         raise HTTPException(status_code=status_code, detail=detail)
 
 
-@router.post("/{alert_id}/close")
+@router.api_route("/{alert_id}/close", methods=["POST", "PUT"])
 async def close(alert_id: str, payload: dict | None = None):
     payload = payload or {}
     try:
@@ -125,7 +125,7 @@ async def close(alert_id: str, payload: dict | None = None):
         raise HTTPException(status_code=status_code, detail=detail)
 
 
-@router.post("/{alert_id}/escalate")
+@router.api_route("/{alert_id}/escalate", methods=["POST", "PUT"])
 async def escalate(alert_id: str, payload: dict | None = None):
     payload = payload or {}
     try:

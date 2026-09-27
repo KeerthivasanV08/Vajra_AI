@@ -4,14 +4,10 @@ import pandas as pd
 
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parents[4]
+from app.core import storage_paths
 
-SANCTION_PATH = (
-    BASE_DIR /
-    "data" /
-    "reference" /
-    "sanction_list.csv"
-)
+SANCTION_PATH = storage_paths.REFERENCE_DIR / "sanction_list.csv"
+
 
 
 class SanctionService:

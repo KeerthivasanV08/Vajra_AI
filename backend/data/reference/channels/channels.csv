@@ -1,0 +1,11 @@
+channel,description
+BANK,Core Banking Branch / Online Banking
+UPI,Unified Payments Interface
+IMPS,Immediate Payment Service
+NEFT,National Electronic Funds Transfer
+RTGS,Real Time Gross Settlement
+AEPS,Aadhaar Enabled Payment System
+ATM,ATM Network Terminal
+MICRO_ATM,Micro-ATM Terminal
+POS,Merchant POS Terminal
+CSP,Customer Service Point Outlet

@@ -1,0 +1,65 @@
+# ==========================================
+# Python Bytecode & Runtime Caches
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# ==========================================
+# Testing, Linting & Coverage
+# ==========================================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+
+# ==========================================
+# Virtual Environments
+# ==========================================
+.venv/
+venv/
+env/
+ENV/
+
+# ==========================================
+# Environment & Secret Files
+# ==========================================
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.*.local
+*.local
+
+# Safe environment templates (never ignore)
+!.env.example
+!.env.example.*
+!*.example
+
+# ==========================================
+# Logs & Temporary Files
+# ==========================================
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.temp
+*.sw?
+*~
+
+# ==========================================
+# IDE & Operating System Files
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea/

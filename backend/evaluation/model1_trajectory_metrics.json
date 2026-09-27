@@ -1,0 +1,17 @@
+{
+  "model_name": "Model 1 \u2014 IP-to-Geo Trajectory Model",
+  "algorithm": "RandomForest Sequence Classifier",
+  "training_dataset": "ip_geo_sessions_clean.csv",
+  "train_rows": 35000,
+  "test_rows": 7500,
+  "main_metric": "Top-1 Cell Accuracy",
+  "main_metric_value": 0.9541,
+  "top1_accuracy": 0.9541,
+  "top3_accuracy": 0.9688,
+  "top5_accuracy": 0.9843,
+  "baseline_top1_accuracy": 0.2352,
+  "mean_geographic_error_km": 3.45,
+  "median_geographic_error_km": 2.38,
+  "p95_geographic_error_km": 10.49,
+  "evaluation_type": "synthetic_holdout"
+}

@@ -3,9 +3,9 @@ from pathlib import Path
 
 from app.core import storage_paths
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-RAW_DIR = BASE_DIR / "data" / "raw"
-PROCESSED_DIR = BASE_DIR / "data" / "processed"
+# scripts live at backend/scripts/ → parents[1] = backend/
+RAW_DIR = storage_paths.DATA_DIR / "raw"
+PROCESSED_DIR = storage_paths.PROCESSED_DIR
 
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 

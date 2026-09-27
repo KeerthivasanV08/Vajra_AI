@@ -1,0 +1,8 @@
+{
+  "model_name": "Model 7 \u2014 Fairness & Governance Bias Audit",
+  "type": "Governance & Equity Monitoring (Non-Scoring Layer)",
+  "analyzed_groups_count": 11,
+  "overall_high_risk_rate": 0.1486,
+  "mean_disparate_impact_ratio": 1.0041,
+  "evaluation_type": "synthetic_holdout"
+}

@@ -9,9 +9,7 @@ from app.core import storage_paths
 # ---------------------------------------------------
 # PATH CONFIG
 # ---------------------------------------------------
-BASE_DIR = Path(__file__).resolve().parents[2]
-
-PROCESSED_DIR = BASE_DIR / "data" / "processed"
+PROCESSED_DIR = storage_paths.PROCESSED_DIR
 
 
 def init():

@@ -1,0 +1,18 @@
+{
+  "model_name": "Model 5 \u2014 Cross-Border Early Warning Model",
+  "algorithm": "LogisticRegression Classifier",
+  "training_dataset": "cross_border_features.csv",
+  "train_rows": 21000,
+  "test_rows": 4500,
+  "main_metric": "ROC-AUC",
+  "main_metric_value": 0.9975,
+  "accuracy": 0.9949,
+  "precision": 0.7105,
+  "recall": 0.6923,
+  "f1_score": 0.7013,
+  "roc_auc": 0.9975,
+  "pr_auc": 0.7548,
+  "false_negative_rate": 0.3077,
+  "false_positive_rate": 0.0025,
+  "evaluation_type": "synthetic_holdout"
+}

@@ -1,1 +1,1 @@
-"""Versioned API routes for TrustVault AML."""
+"""Versioned API routes for VAJRA AI AML."""

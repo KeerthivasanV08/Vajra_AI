@@ -9,13 +9,13 @@ from pathlib import Path
 # PATH CONFIG
 # ---------------------------------------------------
 
-BASE_DIR = Path(__file__).resolve().parents[2]
+from app.core import storage_paths
 
-DATA_DIR = BASE_DIR / "data"
+DATA_DIR = storage_paths.DATA_DIR
 
-RAW_DIR = DATA_DIR / "raw"
+RAW_DIR = storage_paths.DATA_DIR / "raw"
 
-PROCESSED_DIR = DATA_DIR / "processed"
+PROCESSED_DIR = storage_paths.PROCESSED_DIR
 
 
 # ---------------------------------------------------

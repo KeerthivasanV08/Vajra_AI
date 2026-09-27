@@ -301,6 +301,53 @@ class ModelLoader:
             self._loaded.get("behavioral_features"),
         )
 
+    def get_onboarding_model(self) -> Tuple[Any, Any, Any]:
+        if "onboarding_model" not in self._loaded:
+            onboarding_dir = self._app_dir / "models" / "onboarding"
+            model_path = onboarding_dir / "onboarding_lightgbm.pkl"
+            scaler_path = onboarding_dir / "onboarding_scaler.pkl"
+            schema_path = onboarding_dir / "onboarding_features.json"
+
+            try:
+                model = self._load_artifact(model_path, expected_kind="pickle_or_joblib")
+                scaler = self._load_artifact(scaler_path, expected_kind="pickle_or_joblib")
+                schema = self._load_artifact(schema_path, expected_kind="json")
+
+                if not hasattr(model, "predict_proba"):
+                    raise ModelValidationError("Onboarding model missing predict_proba")
+                if not hasattr(scaler, "transform"):
+                    raise ModelValidationError("Onboarding scaler missing transform")
+                if isinstance(schema, list):
+                    schema = {"features": schema}
+                elif not isinstance(schema, dict):
+                    raise ModelValidationError("Onboarding schema is neither dict nor list")
+
+                self._loaded["onboarding_model"] = model
+                self._loaded["onboarding_scaler"] = scaler
+                self._loaded["onboarding_features"] = schema
+                self._status["onboarding_model"] = {"state": "healthy", "path": str(model_path)}
+                self._status["onboarding_scaler"] = {"state": "healthy", "path": str(scaler_path)}
+                self._status["onboarding_features"] = {"state": "healthy", "path": str(schema_path)}
+            except Exception as exc:
+                logger.error("Onboarding model bundle failed to load: %s", exc)
+                self._loaded["onboarding_model"] = None
+                self._loaded["onboarding_scaler"] = None
+                self._loaded["onboarding_features"] = {}
+                self._status["onboarding_model"] = {
+                    "state": "failed",
+                    "reason": str(exc),
+                    "path": str(model_path),
+                    "training_command": "python -m training.onboarding.train_onboarding_model",
+                }
+                self._status["onboarding_scaler"] = {"state": "failed", "reason": str(exc), "path": str(scaler_path)}
+                self._status["onboarding_features"] = {"state": "failed", "reason": str(exc), "path": str(schema_path)}
+
+        return (
+            self._loaded.get("onboarding_model"),
+            self._loaded.get("onboarding_scaler"),
+            self._loaded.get("onboarding_features"),
+        )
+
     def get_sequence_model(self) -> Tuple[Any, Any, Any]:
         if "sequence_model" not in self._loaded:
             model_path_keras = self._models_dir / "lstm_sequence_model.keras"
@@ -476,69 +523,92 @@ class ModelLoader:
                 versions[name] = "unknown"
         return versions
 
-    def validate_all(self) -> Dict[str, Any]:
+    def validate_all(self, strict: bool = True) -> Dict[str, Any]:
         behavioral_model, behavioral_scaler, behavioral_features = self.get_behavioral_model()
+        onboarding_model, onboarding_scaler, onboarding_features = self.get_onboarding_model()
         sequence_model, sequence_scaler, sequence_metadata = self.get_sequence_model()
         graph_engine, graph_health, graph_index, graph_metadata = self.get_graph_model()
 
         sequence_self_test = self._run_sequence_self_test(sequence_model, sequence_scaler, sequence_metadata)
 
-        runtime_mode = "FULL"
         bundle_states = {
             "behavioral_model": self._status.get("behavioral_model", {}).get("state", "unknown"),
             "behavioral_scaler": self._status.get("behavioral_scaler", {}).get("state", "unknown"),
             "behavioral_features": self._status.get("behavioral_features", {}).get("state", "unknown"),
+            "onboarding_model": self._status.get("onboarding_model", {}).get("state", "unknown"),
+            "onboarding_scaler": self._status.get("onboarding_scaler", {}).get("state", "unknown"),
+            "onboarding_features": self._status.get("onboarding_features", {}).get("state", "unknown"),
             "sequence_model": self._status.get("sequence_model", {}).get("state", "unknown"),
             "sequence_scaler": self._status.get("sequence_scaler", {}).get("state", "unknown"),
             "sequence_metadata": self._status.get("sequence_metadata", {}).get("state", "unknown"),
             "graph_engine": self._status.get("graph_engine", {}).get("state", "unknown"),
         }
-        if any(state != "healthy" for state in bundle_states.values()):
-            runtime_mode = "DEGRADED"
-        if sequence_self_test.get("state") != "healthy":
-            runtime_mode = "DEGRADED"
+
+        # Identify required digital ML model bundles
+        required_bundles = ["behavioral_model", "onboarding_model", "sequence_model"]
+        failed_required = [key for key in required_bundles if bundle_states.get(key) != "healthy"]
+
+        if failed_required and strict:
+            details = []
+            for key in failed_required:
+                st = self._status.get(key, {})
+                path = st.get("path", "unknown")
+                cmd = st.get("training_command", "python -m training.train_all_models")
+                details.append(f"• {key} (Path: {path} | Train via: '{cmd}')")
+            err_msg = "CRITICAL: Missing required ML model artifacts:\n" + "\n".join(details)
+            logger.error(err_msg)
+            raise ModelLoaderError(err_msg)
+
+        runtime_mode = "FULL" if not failed_required and sequence_self_test.get("state") == "healthy" else "DEGRADED"
 
         self._health_snapshot = {
             "behavioral_model": self._status.get("behavioral_model", {}).get("state", "failed"),
+            "onboarding_model": self._status.get("onboarding_model", {}).get("state", "failed"),
             "sequence_model": self._status.get("sequence_model", {}).get("state", "failed"),
             "graph_model": self._status.get("graph_engine", {}).get("state", "failed"),
             "graph_engine": self._status.get("graph_engine", {}).get("state", "failed"),
-            "scalers": "healthy" if self._status.get("behavioral_scaler", {}).get("state") == "healthy" and self._status.get("sequence_scaler", {}).get("state") == "healthy" else "failed",
-            "encoders": "healthy" if self._status.get("behavioral_features", {}).get("state") == "healthy" else "failed",
+            "scalers": "healthy" if self._status.get("behavioral_scaler", {}).get("state") == "healthy" and self._status.get("sequence_scaler", {}).get("state") == "healthy" and self._status.get("onboarding_scaler", {}).get("state") == "healthy" else "failed",
+            "encoders": "healthy" if self._status.get("behavioral_features", {}).get("state") == "healthy" and self._status.get("onboarding_features", {}).get("state") == "healthy" else "failed",
             "runtime_mode": runtime_mode,
             "sequence_self_test": sequence_self_test,
             "versions": self._runtime_versions(),
             "artifacts": {
                 **self._status,
                 "behavioral_model_type": type(behavioral_model).__name__ if behavioral_model is not None else None,
+                "onboarding_model_type": type(onboarding_model).__name__ if onboarding_model is not None else None,
                 "sequence_model_type": type(sequence_model).__name__ if sequence_model is not None else None,
                 "graph_engine_type": type(graph_engine).__name__ if graph_engine is not None else None,
                 "behavioral_scaler_type": type(behavioral_scaler).__name__ if behavioral_scaler is not None else None,
+                "onboarding_scaler_type": type(onboarding_scaler).__name__ if onboarding_scaler is not None else None,
                 "sequence_scaler_type": type(sequence_scaler).__name__ if sequence_scaler is not None else None,
                 "graph_engine_health": graph_health,
                 "sequence_metadata_type": type(sequence_metadata).__name__ if sequence_metadata is not None else None,
                 "behavioral_features_type": type(behavioral_features).__name__ if behavioral_features is not None else None,
+                "onboarding_features_type": type(onboarding_features).__name__ if onboarding_features is not None else None,
             },
         }
         return self._health_snapshot
 
     def get_health_snapshot(self) -> Dict[str, Any]:
         if not self._health_snapshot:
-            return self.validate_all()
+            return self.validate_all(strict=False)
         return self._health_snapshot
 
-    def initialize_runtime(self) -> Dict[str, Any]:
-        snapshot = self.validate_all()
+    def initialize_runtime(self, strict: bool = True) -> Dict[str, Any]:
+        snapshot = self.validate_all(strict=strict)
         self._log_startup_report(snapshot)
         return snapshot
 
     def _log_startup_report(self, snapshot: Dict[str, Any]) -> None:
-        logger.info("Model runtime mode: %s", snapshot.get("runtime_mode"))
-        for key in ("behavioral_model", "sequence_model", "graph_engine", "scalers", "encoders"):
-            logger.info("%s=%s", key, snapshot.get(key))
-        versions = snapshot.get("versions", {})
-        logger.info("runtime_versions=%s", versions)
-        logger.info("sequence_self_test=%s", snapshot.get("sequence_self_test"))
+        logger.info("=" * 60)
+        logger.info("VAJRA AI — Digital ML Model Initialization")
+        logger.info("=" * 60)
+        logger.info("[OK] Behavioral LightGBM loaded : %s", self._status.get("behavioral_model", {}).get("path"))
+        logger.info("[OK] Onboarding LightGBM loaded : %s", self._status.get("onboarding_model", {}).get("path"))
+        logger.info("[OK] LSTM sequence model loaded: %s", self._status.get("sequence_model", {}).get("path"))
+        logger.info("Model versions: %s", snapshot.get("versions", {}))
+        logger.info("ML pipeline status: %s", snapshot.get("runtime_mode"))
+        logger.info("=" * 60)
 
     def _run_sequence_self_test(self, model: Any, scaler: Any, metadata: Any) -> Dict[str, Any]:
         if model is None or scaler is None or not isinstance(metadata, dict):
@@ -576,6 +646,10 @@ def behavioral_model() -> Tuple[Any, Any, Any]:
     return get_model_loader().get_behavioral_model()
 
 
+def onboarding_model() -> Tuple[Any, Any, Any]:
+    return get_model_loader().get_onboarding_model()
+
+
 def sequence_model() -> Tuple[Any, Any, Any]:
     return get_model_loader().get_sequence_model()
 
@@ -588,5 +662,5 @@ def get_model_health() -> Dict[str, Any]:
     return get_model_loader().get_health_snapshot()
 
 
-def initialize_model_runtime() -> Dict[str, Any]:
-    return get_model_loader().initialize_runtime()
+def initialize_model_runtime(strict: bool = True) -> Dict[str, Any]:
+    return get_model_loader().initialize_runtime(strict=strict)

@@ -4,19 +4,15 @@ import pandas as pd
 
 from pathlib import Path
 
+from app.core import storage_paths
+
 
 # =====================================================
 # PATH CONFIG
 # =====================================================
 
-BASE_DIR = Path(__file__).resolve().parents[4]
-
-WHITELIST_PATH = (
-    BASE_DIR /
-    "data" /
-    "processed" /
-    "whitelist.csv"
-)
+# Canonical: reads from backend/data/processed/whitelist.csv
+WHITELIST_PATH = storage_paths.PROCESSED_DIR / "whitelist.csv"
 
 
 # =====================================================

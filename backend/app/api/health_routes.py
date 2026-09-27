@@ -16,7 +16,7 @@ START_TIME = time.time()
 def health_check():
     return {
         "status": "OK",
-        "service": "TrustVault AML Engine",
+        "service": "VAJRA AI Digital Risk Core",
         "uptime_sec": int(time.time() - START_TIME),
         "runtime_session_id": get_runtime_session_id(),
         "started_at": get_runtime_started_at(),
