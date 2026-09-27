@@ -1,738 +1,226 @@
-# TrustVault AML System
-## Real-Time Anti Money Laundering Intelligence Platform
+# VAJRA AI — Predictive Cybercrime Cash-Out Interception Platform
+
+Predictive Cybercrime Intelligence, Cash-Out Forecasting, Risk Fusion, Multi-Hop Investigation, Tactical Dispatch, Compliance Governance and Cryptographic Audit Ledger.
 
 ---
 
-# 1. Introduction
+## 1. Executive System Overview
 
-TrustVault is a real-time Anti Money Laundering (AML) intelligence platform designed to simulate how modern banks and financial institutions detect suspicious onboarding activity, mule accounts, fraud networks, and laundering behavior.
+**VAJRA AI** is an enterprise-grade defensive cybercrime analytics and predictive interception platform. Built to combat organized financial cybercrime, mule account networks, and rapid physical ATM cash-outs, VAJRA AI bridges the gap between digital fraud detection and physical law enforcement dispatch.
 
-This system is not just a fraud dashboard.
+Unlike traditional reactive AML systems that only generate alerts after money has vanished, **VAJRA AI** forecasts physical cash-out locations up to **30 minutes in advance**, enabling proactive police patrol dispatch, bank step-up authentication, court-admissible legal dossier compilation, and tamper-evident audit logging.
 
-It is designed as a complete AML Operations Platform that combines:
-
-- Real-time transaction monitoring
-- AI/ML risk detection
-- Graph-based fraud analysis
-- Officer review workflows
-- Alert prioritization
-- Case management
-- Explainability systems
-- Realtime dashboards
-- Live AML intelligence streaming
-
-Current operating model:
-
-- The Graph Explorer is driven from the live SSE transaction window and shows only the latest investigation slice.
-- Neo4j is the backing graph engine for graph intelligence and health checks.
-- Local settings pages are frontend preferences unless explicitly connected to a backend persistence API.
-
-The architecture is inspired by enterprise-grade AML systems used by organizations such as:
-
-- Feedzai
-- Unit21
-- Featurespace
-- SEON
-- BioCatch
-- Sardine
-- Chainalysis
-- Visa Risk Manager
-- Stripe Radar
-
----
-
-# 2. Main Objective of the System
-
-The platform focuses on two major AML stages:
-
-## A. Onboarding AML Monitoring
-
-This stage analyzes whether a user trying to create an account appears suspicious.
-
-The system checks:
-
-- Device integrity
-- SIM binding
-- VPN usage
-- Emulator usage
-- Face match confidence
-- KYC consistency
-- Sanctions and PEP checks
-- Behavioral indicators during onboarding
-
-Goal:
-
-> Detect fake accounts, mule onboarding, synthetic identities, or risky onboarding attempts before activation.
+```
+              Digital AML Risk Engine
+          (Onboarding & Transaction Core)
+                         │
+                         ▼
+               VAJRA AI Orchestrator
+                         │
+        ┌────────────────┼────────────────┐
+        ▼                ▼                ▼
+     Model 1          Model 2          Model 5
+   Trajectory        Node Risk       Cross-Border
+        │                │                │
+        └────────────────┼────────────────┘
+                         ▼
+              Spatial Candidate Gen (Top-20)
+                         │
+                         ▼
+               Model 3 Region Classifier
+                         │
+                         ▼
+               Model 4 Node Top-K Re-Ranker
+                         │
+                      Top-3 Nodes
+                         │
+                         ▼
+               Model 5 Cross-Border Override Check
+                         │
+        ┌────────────────┴────────────────┐
+        │                                 │
+  FALSE (Normal)                   TRUE (Override)
+        │                                 │
+        ▼                                 ▼
+   Model 6 Fusion & Calibration    INTERNATIONAL_ALERT_OVERRIDE
+   (0.45 Dig + 0.35 Phys + 0.20 Ctx)      │
+        │                                 │
+        └────────────────┬────────────────┘
+                         ▼
+                  SOP Action Tier
+                         │
+        ┌────────────────┴────────────────┐
+        ▼                                 ▼
+   Police / PCR Patrol Dispatch    Bank / SOC Step-Up Auth
+        │                                 │
+        └────────────────┬────────────────┘
+                         ▼
+               Court Legal Dossier Vault (PDF)
+                         │
+                         ▼
+           Append-Only Cryptographic Audit Ledger (SHA-256)
+```
 
 ---
 
-## B. Post-Transaction AML Monitoring
+## 2. Platform Capabilities
 
-Once an account becomes active, the system continuously monitors transactions in real time.
-
-The platform analyzes:
-
-- Transaction velocity
-- Rapid drain behavior
-- Layering patterns
-- Gather-scatter movement
-- Mule account routing
-- Fraud network proximity
-- Sequence anomalies
-- Graph-based suspicious clusters
-
-Goal:
-
-> Detect active laundering behavior after account activation.
+- **Digital Risk Analysis**: 4-tier digital fusion combining Rules (25%), Behavioral LightGBM (30%), Sequence LSTM (25%), and Graph ML (20%) with decision bands (`>=0.92 BLOCK`, `>=0.70 REVIEW`, `>=0.50 MONITOR`, `<0.50 ALLOW`).
+- **IP-to-Geo Trajectory Projection (Model 1)**: Forecasts target geographic coordinates and movement vectors from session telemetry.
+- **Terminal Node Vulnerability Scoring (Model 2)**: Evaluates terminal risk across ATMs, Micro-ATMs, AePS CSPs, and POS nodes.
+- **Coarse Spatial Region Prediction (Model 3)**: Spatial XGBoost classifier predicting regional cash-out corridors.
+- **Top-K Candidate Re-Ranking (Model 4)**: Re-ranks Top-20 spatial candidates to select Top-3 operational cash-out terminals with **99.20% Hit@3 Precision**.
+- **Cross-Border Early Warning (Model 5)**: Detects overseas flight risks and executes an **isolated override** bypassing standard weighted fusion sums.
+- **SOP Fusion Engine & Isotonic Calibration (Model 6)**: Fuses Digital (45%), Physical (35%), and Contextual (20%) scores, applying Isotonic Calibration to map scores to operational SOP tiers.
+- **Fairness & Bias Governance (Model 7)**: Non-scoring diagnostic layer calculating Disparate Impact Ratios (DIR) across 11 regional demographic groups.
+- **Syndicate Fingerprint Matcher (Model 8)**: Investigative cosine pattern matcher classifying multi-hop layering tactics (`RAPID_MULE_FANOUT`, etc.).
+- **Tactical Dispatch**: Police PCR patrol unit geofence dispatch & Bank SOC step-up authentication.
+- **Legal Dossier Vault**: Court-admissible PDF generation with embedded SHA-256 evidence hashing.
+- **Cryptographic Audit Ledger**: Tamper-evident append-only SHA-256 block-linked audit log.
+- **Beat Officer Field Mode**: PWA touch-optimized interface for mobile patrol officers with live SSE alert streaming.
 
 ---
 
-# 3. High-Level System Architecture
+## 3. Machine Learning Architecture Summary
 
-The complete system contains two major layers:
+All 8 ML models are verified against holdout datasets in `backend/evaluation/`:
 
-| Layer | Purpose |
-|---|---|
-| Backend | Risk detection, ML inference, alerts, orchestration |
-| Frontend | AML operations console for analysts and investigators |
+| Model | Purpose | Algorithm | Dataset | Main Metric | Score | Baseline |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Model 1** | IP-Geo Trajectory | RandomForest | `ip_geo_sessions_clean.csv` | Top-1 Accuracy | **95.41%** | 23.52% |
+| **Model 2** | Node Vulnerability | XGBRegressor | `node_features.csv` | $R^2$ Score | **0.9987** | 0.1477 (MAE) |
+| **Model 3** | Spatial Region | XGBClassifier | `vajra_feature_dataset.csv` | Top-1 Accuracy | **15.76%** | 16.67% |
+| **Model 4** | Node Re-Ranker | XGBClassifier | `node_ranking_candidates.csv` | Hit@3 (Precision) | **99.20%** | 0.13% |
+| **Model 5** | Cross-Border Warning | LogisticRegression | `cross_border_features.csv` | ROC-AUC | **0.9975** | — |
+| **Model 6** | SOP Calibration | Isotonic Fusion | `vajra_feature_dataset.csv` | Brier Score | **0.0001** | 0.2146 (Raw) |
+| **Model 7** | Fairness Audit | Equity Auditor | `users_clean.csv` | Mean DIR | **1.0041** | 1.00 |
+| **Model 8** | Syndicate Matcher | Cosine Similarity | `syndicate_patterns.csv` | Precision@1 | **14.75%** | — |
 
-The system works in real time.
-
-Transactions are continuously generated, processed, scored, prioritized, and streamed to the frontend dashboard.
-
----
-
-# 4. Complete System Flow
-
-# A. Onboarding Flow
-
-This flow handles suspicious account creation attempts.
-
-## Step-by-Step Flow
-
-User Starts Registration
-↓
-KYC + Device + SIM + Behavioral Data Collected
-↓
-Context Intelligence Layer
-↓
-Feature Engineering
-↓
-Rule Engine
-↓
-ML Risk Scoring
-↓
-Decision Engine
-↓
-Alert Prioritization
-↓
-Officer Review Queue
-↓
-Case Creation (if needed)
-↓
-Final Decision
+Detailed model documentation is available in [**`docs/models/`**](docs/models/).
 
 ---
 
-## Onboarding Intelligence Used
+## 4. Repository Structure
 
-### Identity Intelligence
-
-- Aadhaar verification
-- PAN verification
-- Face match score
-- PEP detection
-- Sanctions screening
-
-### Device Intelligence
-
-- Emulator detection
-- Root detection
-- App cloner detection
-- Shared device analysis
-- Device age analysis
-
-### SIM Intelligence
-
-- SIM binding verification
-- SIM swap detection
-- SIM age analysis
-- Multi-SIM behavior
-
-### Behavioral Intelligence
-
-- Typing speed
-- OTP retry behavior
-- Copy-paste ratio
-- Form completion speed
-
----
-
-## Onboarding ML Features
-
-The onboarding ML model uses features such as:
-
-| Feature | Purpose |
-|---|---|
-| identity_trust_score | Measures KYC trustworthiness |
-| device_trust_score | Measures device legitimacy |
-| sim_binding_ok | SIM-device binding validation |
-| sim_swap_flag | Detects SIM swap risks |
-| vpn_flag | Detects anonymized traffic |
-| ip_risk_score | IP reputation analysis |
-| device_shared_count | Shared device intelligence |
-| emulator_flag | Emulator detection |
-| face_match_score | Biometric verification confidence |
-| sanction_hit | Sanctions screening result |
-| pep_hit | Politically exposed person detection |
-| typing_speed | Behavioral typing pattern |
-| copy_paste_ratio | Synthetic onboarding indicator |
-| otp_retry_count | OTP abuse detection |
-| behavior_risk_score | User behavior anomaly score |
+```
+Vajra_AI/
+├── docs/                             # Authoritative Documentation
+│   ├── README.md                     # Documentation Index
+│   ├── architecture/                 # System & Data Flow Architecture
+│   ├── models/                       # Models 1-8 Detailed Specifications
+│   ├── features/                     # Candidate Gen, Dossier, Audit, Dispatch
+│   ├── workflows/                    # Operational Workflows
+│   ├── api/                          # REST & SSE API Reference
+│   ├── data/                         # Datasets & Provenance
+│   ├── security/                     # Security Architecture & Disclaimers
+│   ├── deployment/                   # Frontend/Backend Deployment Guides
+│   ├── audit/                        # Independent ML Audit Reports
+│   └── images/                       # Model Visualizations & Charts
+├── backend/                          # FastAPI Backend Engine
+│   ├── app/                          # Core, API Routes, Services, Repositories
+│   ├── evaluation/                   # Model Evaluation JSON Metrics & Registry
+│   ├── models/                       # Model Artifacts (.joblib)
+│   ├── tests/                        # Backend Test Suite (Pytest)
+│   ├── main.py                       # Master App Entry Point
+│   └── requirements.txt              # Python Dependencies
+├── frontend/                         # React 19 + Vite Operational Console
+│   ├── src/                          # Routes, Components, Stores, Services
+│   ├── public/                       # PWA Manifest & Static Assets
+│   └── package.json                  # Node Dependencies
+└── data/                             # Raw & Processed Demonstration Datasets
+    ├── raw/
+    └── processed/
+```
 
 ---
 
-## Onboarding Decisions
+## 5. Quick Start & Installation Guide
 
-The onboarding decision engine can:
+### Prerequisites
+- Python 3.11+
+- Node.js 18+ / npm 9+
+- PowerShell / Bash terminal
 
-| Decision | Meaning |
-|---|---|
-| ALLOW | Account approved |
-| REVIEW | Manual officer review required |
-| BLOCK | High-risk onboarding blocked |
+### 1. Environment Setup & Dependency Installation
+```powershell
+# Navigate to repository root
+cd d:\Vajra_AI
 
-Additional controls:
+# Create virtual environment (if not present)
+python -m venv .venv
 
-- Enhanced Due Diligence (EDD)
-- Officer escalation
-- Explainability generation
-- Audit logging
+# Activate virtual environment
+# Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+# Linux / macOS:
+# source .venv/bin/activate
 
----
+# Install backend dependencies
+pip install -r backend/requirements.txt
+```
 
-# B. Transaction Monitoring Flow
+### 2. Model Training & Artifact Generation
+> [!IMPORTANT]
+> **VAJRA AI strictly requires trained ML model artifacts for runtime operation.** Missing required ML model artifacts will cause startup validation failures rather than silently falling back to heuristics.
 
-This flow continuously monitors transaction behavior after onboarding.
+Execute the reproducible training scripts to generate all operational model artifacts:
 
----
+```powershell
+cd backend
 
-## Real-Time Transaction Pipeline
+# 1. Train Onboarding LightGBM Model
+python -m training.onboarding.train_onboarding_model
 
-Every 2.5 seconds:
+# 2. Train Behavioral LightGBM Model
+python -m training.transaction.train_behavioral_model
 
-1. A realistic transaction is generated
-2. Features are engineered
-3. ML models evaluate the transaction
-4. Decision engine calculates final risk
-5. Alerts are generated
-6. SSE pushes events to frontend
-7. Dashboard updates live
+# 3. Train LSTM Sequence Model
+python -m training.transaction.train_sequence_model
 
----
+# 4. Train Master VAJRA ML Suite (Models 1–8)
+python -m training.train_all_models
+```
 
-## Transaction Generation
+### 3. Model Artifact Validation
+Verify that all model artifacts pass health check and self-test verification:
+```powershell
+cd backend
+python verify_complete_pipeline.py
+```
 
-The simulator creates both:
+### 4. Backend Server Launch
+```powershell
+cd backend
+python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+```
+- Interactive API Documentation: `http://127.0.0.1:8000/docs`
+- Health & Model Readiness Endpoint: `http://127.0.0.1:8000/api/ready`
 
-### Normal Transactions
+### 5. Run Test Suite
+```powershell
+cd backend
+python -m unittest tests/test_model_pipeline_strict.py
+python -m unittest tests/test_readiness_and_streams.py
+```
 
-Examples:
+### 6. Frontend Console Launch
+```powershell
+cd frontend
 
-- UPI payments
-- Salary transfers
-- Merchant purchases
-- Wallet top-ups
+# Install Node dependencies
+npm install
 
-### Suspicious Transactions
+# Launch Vite development server
+npm run dev
 
-Examples:
-
-- Rapid outbound drains
-- Gather-scatter laundering
-- Mule forwarding
-- High velocity transfers
-- Layering behavior
-- Fraud rings
-
----
-
-## Transaction Fields Generated
-
-Each transaction contains:
-
-| Field | Description |
-|---|---|
-| trans_id | Unique transaction ID |
-| sender_id | Sender account |
-| receiver_id | Receiver account |
-| amount | Transaction amount |
-| transaction_type | UPI/IMPS/NEFT/etc |
-| channel | Mobile/Web/API |
-| sender_bal_before | Sender balance before transaction |
-| sender_bal_after | Sender balance after transaction |
-| receiver_bal_after | Receiver balance after transaction |
-| timestamp | Transaction timestamp |
-| location | Geographic location |
-| is_sim_bound | SIM-device validation |
-| device_id | Device fingerprint |
-| time_to_pay_ms | Transaction execution speed |
+# Verify production build
+npm run build
+```
 
 ---
 
-# 5. Transaction ML Architecture
-
-The transaction system uses multiple AI/ML models together.
-
-This is called:
-
-> Multi-Model AML Fusion Architecture
-
----
-
-## A. Behavioral ML Model
-
-Purpose:
-
-Detect abnormal transaction behavior.
-
-Checks:
-
-- Transaction velocity
-- Drain ratio
-- Transfer frequency
-- Device anomalies
-- Time-based patterns
-
-### Example Features
-
-| Feature | Purpose |
-|---|---|
-| txn_velocity_1h | Transaction count spike |
-| drain_ratio | Account draining behavior |
-| forwarding_delay_mins | Rapid pass-through movement |
-| amount_zscore | Amount anomaly |
-| device_risk | Device fraud score |
-
----
-
-## B. Sequence ML Model
-
-Purpose:
-
-Detect temporal laundering behavior.
-
-Analyzes:
-
-- Last 10 transactions
-- Sequential laundering flow
-- Gather-scatter patterns
-- Mule movement timing
-
-The model identifies suspicious transaction sequences that normal rules may miss.
-
----
-
-## C. Graph ML Model
-
-Purpose:
-
-Detect fraud networks and suspicious account relationships.
-
-Current runtime note:
-
-- The graph engine is Neo4j-backed in the backend runtime.
-- The Graph Explorer in the frontend shows the latest live SSE transaction window instead of a static historical graph snapshot.
-
-Checks:
-
-- Fraud proximity
-- Shared devices
-- Shared IPs
-- Mule clusters
-- Network influence
-- Suspicious graph communities
-
-This simulates how real banks detect organized laundering networks.
-
----
-
-# 6. Decision Engine
-
-The platform combines:
-
-| Component | Weight |
-|---|---|
-| Rules Engine | 25% |
-| Behavioral ML | 30% |
-| Sequence ML | 25% |
-| Graph ML | 20% |
-
-The final score determines:
-
-| Score Range | Decision |
-|---|---|
-| 0.92+ | BLOCK |
-| 0.70+ | REVIEW |
-| 0.50+ | MONITOR |
-| Below 0.50 | ALLOW |
-
----
-
-# 7. Alert Prioritization System
-
-The platform contains separate alert systems for:
-
-- Onboarding alerts
-- Transaction alerts
-
----
-
-## Alert Priority Levels
-
-| Priority | Meaning |
-|---|---|
-| P1 | Critical risk |
-| P2 | High risk |
-| P3 | Medium risk |
-| INFO | Informational |
-
----
-
-## Example Alert Types
-
-### Onboarding Alerts
-
-- Synthetic identity
-- Emulator onboarding
-- SIM swap onboarding
-- Sanction onboarding
-- PEP escalation
-
-### Transaction Alerts
-
-- Rapid drain
-- Mule cluster
-- Gather-scatter pattern
-- High velocity transfers
-- Layering detection
-
----
-
-# 8. SLA and Escalation System
-
-The system tracks investigation deadlines.
-
-| Priority | SLA |
-|---|---|
-| P1 | 15 minutes |
-| P2 | 2 hours |
-| P3 | 24 hours |
-
-If alerts exceed SLA:
-
-- Supervisors are notified
-- Escalation queues are triggered
-- Officer reassignment can occur
-
----
-
-# 9. Case Management System
-
-Suspicious alerts can automatically convert into investigation cases.
-
-Each case contains:
-
-- Linked alerts
-- Transaction evidence
-- ML explainability
-- Graph intelligence
-- Officer notes
-- Escalation history
-- SAR generation status
-
----
-
-# 10. Explainability System
-
-One of the most important parts of the platform is explainability.
-
-The system does not only say:
-
-“Transaction is risky.”
-
-It also explains:
-
-WHY it is risky.
-
----
-
-## Explainability Includes
-
-### Model Contributions
-
-- Behavioral ML contribution
-- Sequence ML contribution
-- Graph ML contribution
-- Rule engine contribution
-
-### Feature Importance
-
-Examples:
-
-- High transaction velocity
-- Known mule proximity
-- Rapid forwarding behavior
-- Shared fraud device
-
-### Decision Timeline
-
-1. Rule triggered
-2. Behavioral ML elevated
-3. Sequence anomaly detected
-4. Graph risk identified
-5. Final decision blocked
-
----
-
-# 11. Real-Time Frontend Dashboard
-
-The frontend acts as a live AML operations console.
-
-It is designed to resemble real financial crime monitoring systems.
-
----
-
-# Main Frontend Pages
-
-| Page | Purpose |
-|---|---|
-| Dashboard | Real-time AML monitoring overview |
-| Transaction Monitor | Live transaction intelligence feed |
-| Graph Explorer | Fraud network investigation |
-| Alert Center | Prioritized AML alerts |
-| Officer Review | Investigation workflow console |
-| Case Management | Investigation tracking |
-| Reports Center | SAR and AML reporting |
-| Account 360° | Complete customer intelligence |
-| Settings | System configuration |
-
----
-
-# 12. Frontend Real-Time Features
-
-The frontend updates live using:
-
-- Server Sent Events (SSE)
-- Zustand state management
-- React Query synchronization
-
-Realtime updates include:
-
-- New transactions
-- Alert escalation
-- SLA breaches
-- Officer assignments
-- Graph propagation
-- Dashboard metrics
-
----
-
-# 13. Officer Review Workbench
-
-This is the operational heart of the platform.
-
-AML officers can:
-
-- Review alerts
-- Investigate suspicious accounts
-- Analyze transaction timelines
-- View graph intelligence
-- Freeze accounts
-- Escalate investigations
-- Generate SAR reports
-- Assign cases
-
----
-
-# 14. Graph Investigation System
-
-The graph explorer visualizes relationships between:
-
-- Customers
-- Mule accounts
-- Devices
-- Shared IPs
-- Transaction routes
-- Suspicious clusters
-
-Analysts can click any node to:
-
-- View profile details
-- See connected fraud accounts
-- Analyze ML scores
-- Review transaction history
-
----
-
-# 15. Reports Generated by the System
-
-The platform supports:
-
-| Report Type | Purpose |
-|---|---|
-| SAR | Suspicious Activity Report |
-| STR | Suspicious Transaction Report |
-| EDD | Enhanced Due Diligence |
-| Mule Report | Mule account investigation |
-| Network Report | Fraud cluster intelligence |
-| Officer Audit | Investigator activity tracking |
-
----
-
-# 16. Backend Technologies
-
-| Technology | Purpose |
-|---|---|
-| FastAPI | Backend API framework |
-| Pandas | Data processing |
-| LightGBM | Behavioral ML |
-| TensorFlow/Keras | Sequence ML |
-| Graph ML | Fraud network intelligence |
-| SSE | Real-time streaming |
-| CSV Storage | Simulation persistence |
-| Joblib | Model loading |
-
----
-
-# 17. Frontend Technologies
-
-| Technology | Purpose |
-|---|---|
-| React | Frontend framework |
-| TypeScript | Type safety |
-| Vite | Frontend tooling |
-| Zustand | Real-time state management |
-| React Query | Data synchronization |
-| Framer Motion | Animations |
-| Recharts | AML visualizations |
-| Cytoscape.js | Graph investigations |
-| Sonner | Realtime notifications |
-
----
-
-# 18. Realtime Streaming Architecture
-
-The platform uses:
-
-Server Sent Events (SSE)
-
-to stream:
-
-- Live transactions
-- Alert events
-- Graph updates
-- Officer assignments
-- SLA breaches
-
-This creates:
-
-- Live AML dashboards
-- Fraud war-room simulation
-- Realtime investigation experience
-
----
-
-# 19. Data Storage Structure
-
-The platform currently uses structured CSV storage for simulation purposes.
-
-Data stored includes:
-
-- Onboarding results
-- Transaction results
-- Alert queues
-- Officer queues
-- Cases
-- Explainability logs
-- Reports
-- SLA tracking
-
----
-
-# 20. Why This System is Different
-
-Most student AML projects only show:
-
-- Static dashboards
-- Simple fraud rules
-- Basic transaction tables
-
-TrustVault goes much deeper.
-
-It combines:
-
-- AI-driven risk detection
-- Real-time streaming
-- Graph intelligence
-- Operational workflows
-- Explainability systems
-- Officer review tooling
-- Case management
-- Alert prioritization
-- SLA escalation
-
-This makes the platform behave more like a real enterprise AML operations system.
-
----
-
-# 21. Final System Vision
-
-TrustVault is designed as:
-
-A Real-Time AML Intelligence & Operations Platform
-
-that simulates how modern banks:
-
-- Detect suspicious onboarding
-- Monitor transactions live
-- Identify mule networks
-- Prioritize high-risk alerts
-- Manage investigations
-- Support AML officers
-- Track escalations
-- Generate regulatory reports
-
-The platform combines:
-
-Machine Learning
-+
-Graph Intelligence
-+
-Realtime Monitoring
-+
-Operational Workflows
-+
-Case Management
-+
-Explainability
-
-into one unified AML ecosystem.
-
----
-
-# 22. Final Outcome
-
-By combining backend intelligence and frontend operational workflows, the system now simulates:
-
-- Enterprise AML monitoring
-- Fraud intelligence operations
-- Realtime transaction surveillance
-- Officer investigation workflows
-- Alert management systems
-- Graph-based laundering detection
-- Explainable AI-driven risk scoring
-
-The result is not just a dashboard.
-
-It is a complete AML Operations Console.
+## 6. Operational & Legal Disclaimers
+
+1. **Prototype Decision Support**: All SOP action tiers represent decision support recommendations. Seizure, freezing, or arrest requires configured law enforcement or banking human authorization.
+2. **Data Provenance**: All demonstration telemetry, withdrawal node coordinates, and transaction chains are labeled with `DATA_PROVENANCE_SYNTHETIC` to prevent confusing prototype demonstrations with live law enforcement telemetry.
+3. **Non-Scoring Governance**: Fairness evaluation (Model 7) is an isolated diagnostic governance layer and does not alter real-time decision scores.
