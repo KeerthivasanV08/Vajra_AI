@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useStore, mergeHistoricalAlerts } from "@/store/realtime";
@@ -15,7 +15,7 @@ import { ArrowUpRight, CheckCircle2, FileSignature, Loader2, Snowflake, UserChec
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/alerts")({
-  head: () => ({ meta: [{ title: "Alert Center — TrustVault" }] }),
+  head: () => ({ meta: [{ title: "Alert Center — VAJRA AI" }] }),
   component: AlertsPage,
 });
 
@@ -290,9 +290,31 @@ function AlertDrawer({ a, onClose }: { a: Alert; onClose: () => void }) {
             <Field label="Officer" value={a.assignedOfficer ?? "—"} />
             <Field label="SLA" value={<SLATimer dueAt={a.slaDueAt} />} />
             <Field label="Channel" value={a.channel} />
-            <Field label="Amount" value={a.amount != null ? `$ ${a.amount.toLocaleString()}` : "—"} />
+            <Field label="Amount" value={a.amount != null ? `₹ ${a.amount.toLocaleString()}` : "—"} />
             <Field label="Status" value={<StatusBadge status={a.status} />} />
           </div>
+
+          {/* Quick VAJRA Interception Actions */}
+          <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800 space-y-2 text-xs">
+            <span className="text-[10px] font-mono text-slate-400 uppercase font-semibold">VAJRA Interception Shortcuts</span>
+            <div className="grid grid-cols-2 gap-2 font-mono">
+              <Link
+                to="/mule-ring-investigator"
+                search={{ accountId: a.userId, caseId: `CASE-${a.id}` }}
+                className="p-2 rounded bg-slate-800 hover:bg-slate-700 text-rose-300 text-center transition"
+              >
+                Mule Ring Analysis →
+              </Link>
+              <Link
+                to="/legal-dossier-vault"
+                search={{ caseId: `CASE-${a.id}` }}
+                className="p-2 rounded bg-slate-800 hover:bg-slate-700 text-emerald-300 text-center transition"
+              >
+                Legal Dossier PDF →
+              </Link>
+            </div>
+          </div>
+
           <ExplainabilityPanel finalScore={a.riskScore} decision={a.priority === "P1" ? "BLOCK" : "REVIEW"} />
         </div>
       </aside>

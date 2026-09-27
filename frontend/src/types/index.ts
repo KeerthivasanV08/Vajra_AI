@@ -267,4 +267,9 @@ export interface Explainability {
 
 export interface OfficerQueueItem { id: string; alertId?: string; assignedTo?: string; priority?: Priority; }
 
-// (types exported above)
+export type AmlCase = Case;
+
+export interface ReportsData {
+  officers: string[];
+  auditTrail: unknown[];
+}

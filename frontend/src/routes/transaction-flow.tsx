@@ -35,7 +35,7 @@ function formatINR(amount?: number): string {
 }
 
 export const Route = createFileRoute("/transaction-flow")({
-  head: () => ({ meta: [{ title: "Transaction Monitor — TrustVault" }] }),
+  head: () => ({ meta: [{ title: "Transaction Monitor — VAJRA AI" }] }),
   component: TransactionFlow,
 });
 
@@ -146,7 +146,7 @@ function TransactionFlow() {
                       {t.signals.length > 2 && <span className="text-[9px] mono text-muted-foreground">+{t.signals.length - 2}</span>}
                     </div>
                   </td>
-                  <td><StatusBadge status={t.status} /></td>
+                  <td><StatusBadge status={t.status ?? 'OPEN'} /></td>
                 </tr>
               ))}
             </tbody>
@@ -177,7 +177,7 @@ function TxnDrawer({ t, onClose }: { t: Transaction; onClose: () => void }) {
             <Field label="Amount" value={formatINR(t.amount)} />
             <Field label="Channel" value={t.channel} />
             <Field label="Decision" value={<DecisionBadge d={t.decision} />} />
-            <Field label="Status" value={<StatusBadge status={t.status} />} />
+            <Field label="Status" value={<StatusBadge status={t.status ?? 'OPEN'} />} />
           </div>
           <div className="rounded-md border border-border bg-card/40 p-3">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Counterparties</div>

@@ -11,7 +11,7 @@ import { Briefcase, CheckCircle2, FileText, Plus, Snowflake, X } from "lucide-re
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/cases")({
-  head: () => ({ meta: [{ title: "Case Registry — TrustVault" }] }),
+  head: () => ({ meta: [{ title: "Case Registry — VAJRA AI" }] }),
   component: CasesPage,
 });
 

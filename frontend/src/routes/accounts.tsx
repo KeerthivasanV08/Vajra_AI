@@ -7,7 +7,7 @@ import { useAccount, useAccountList } from '@/hooks/useAccounts';
 import { Globe, Shield, ShieldAlert, Smartphone, Wifi } from "lucide-react";
 
 export const Route = createFileRoute("/accounts")({
-  head: () => ({ meta: [{ title: "Account 360 — TrustVault" }] }),
+  head: () => ({ meta: [{ title: "Account 360 — VAJRA AI" }] }),
   component: AccountsPage,
 });
 

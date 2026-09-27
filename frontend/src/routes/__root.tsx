@@ -57,8 +57,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "TrustVault — AML Operations Console" },
-      { name: "description", content: "Real-time AML intelligence platform for fraud analysts, investigators and compliance officers." },
+      { title: "VAJRA AI — Predictive Cybercrime Interception Console" },
+      { name: "description", content: "VAJRA AI: Real-time predictive cybercrime intelligence, physical cash-out forecasting, SOP triage, tactical dispatch, and court legal dossier vault." },
       { name: "theme-color", content: "#0a1019" },
     ],
     links: [{ rel: "stylesheet", href: appCss }],

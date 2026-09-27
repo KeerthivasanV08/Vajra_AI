@@ -6,6 +6,7 @@ import { DecisionBadge, PriorityBadge, RiskScoreBadge } from "@/components/aml/B
 import { useDashboardMetrics } from '@/hooks/useDashboard';
 import { useRecentTransactions } from '@/hooks/useTransactions';
 import { useAlerts } from '@/hooks/useAlerts';
+import { useCases } from '@/hooks/useCases';
 import { useGraphSnapshot } from '@/hooks/useGraph';
 import type { Transaction } from '@/types';
 import {
@@ -24,7 +25,7 @@ import {
 } from '@/lib/dashboardSelectors';
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "Command Center — TrustVault AML" }] }),
+  head: () => ({ meta: [{ title: "Command Center — VAJRA AI" }] }),
   component: Dashboard,
 });
 
@@ -58,6 +59,7 @@ function Dashboard() {
   const metricsQ = useDashboardMetrics();
   const txnsQ = useRecentTransactions();
   const alertsQ = useAlerts();
+  const casesQ = useCases();
   const graphQ = useGraphSnapshot();
 
   useEffect(() => {
@@ -70,11 +72,13 @@ function Dashboard() {
 
   const recentTransactions: Transaction[] = txnsQ.data ?? [];
   const liveTransactions: Transaction[] = liveTxns ?? [];
+  const casesList = casesQ.data ?? [];
 
   const dashboardTransactions = useMemo(() => {
     const merged = new Map<string, Transaction>();
     for (const txn of [...liveTransactions, ...recentTransactions]) {
-      const id = txn.transactionId || txn.transId || txn.trans_id || txn.id;
+      const raw = txn as any;
+      const id = txn.transactionId || raw.transId || raw.trans_id || txn.id;
       if (id) merged.set(id, txn);
     }
     return Array.from(merged.values());
@@ -85,7 +89,7 @@ function Dashboard() {
     blocked: metricsQ.data?.blocked_transactions ?? m.blocked_transactions ?? m.blocked ?? 0,
     reviewQueue: metricsQ.data?.review_queue ?? m.review_queue ?? m.reviewQueue ?? 0,
     p1: metricsQ.data?.high_risk_count ?? m.high_risk_count ?? m.p1 ?? 0,
-    activeCases: metricsQ.data?.cases ?? m.cases ?? m.activeCases ?? 0,
+    activeCases: metricsQ.data?.cases ?? (casesList.length > 0 ? casesList.length : (m.cases ?? m.activeCases ?? 0)),
     sar: metricsQ.data?.sar ?? m.sar ?? 0,
     mules: metricsQ.data?.mules ?? m.mules ?? 0,
     networkRisk: metricsQ.data?.escalations ?? m.escalations ?? m.networkRisk ?? 0,
@@ -256,7 +260,7 @@ function Dashboard() {
               <tbody>
                 {dashboardTransactions.slice(0, 14).map((t, i) => (
                   <tr key={t.id} className={`border-t border-border/50 hover:bg-accent/30 ${i === 0 ? "row-enter" : ""}`}>
-                    <td className="px-3 py-1.5 mono text-[10px] text-muted-foreground">{new Date(t.ts).toLocaleTimeString()}</td>
+                    <td className="px-3 py-1.5 mono text-[10px] text-muted-foreground">{new Date(t.ts ?? Date.now()).toLocaleTimeString()}</td>
                     <td className="mono text-[10px]">{t.id.slice(0, 18)}</td>
                     <td className="text-[11px]"><span className="text-muted-foreground">{t.sender.slice(-7)}</span> <ArrowRight className="inline h-3 w-3 text-muted-foreground" /> {t.receiver.slice(-7)}</td>
                     <td className="text-right mono">{t.currency} {t.amount.toLocaleString()}</td>
@@ -271,23 +275,29 @@ function Dashboard() {
 
         <Panel title="Active Investigations" className="h-72" dense>
           <ul className="divide-y divide-border/50 overflow-y-auto h-full scrollbar-thin">
-            {[
-              { id: "CASE-7012", t: "Mule cluster · 14 accounts", p: "P1" as const, o: "A. Khan" },
-              { id: "CASE-7008", t: "Cross-border layering EU→AE", p: "P1" as const, o: "M. Singh" },
-              { id: "CASE-7003", t: "Synthetic identity onboarding", p: "P2" as const, o: "R. Costa" },
-              { id: "CASE-6998", t: "Sanctions near-match", p: "P1" as const, o: "L. Park" },
-              { id: "CASE-6991", t: "Crypto off-ramp", p: "P2" as const, o: "J. Werner" },
-              { id: "CASE-6986", t: "Structuring sub-threshold", p: "P3" as const, o: "N. Adebayo" },
-            ].map((c) => (
-              <li key={c.id} className="p-2.5 flex items-center gap-2 hover:bg-accent/20">
-                <PriorityBadge p={c.p} />
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs truncate">{c.t}</div>
-                  <div className="text-[10px] text-muted-foreground mono">{c.id} · {c.o}</div>
-                </div>
-                <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
+            {casesList.length === 0 ? (
+              <li className="p-4 text-center text-xs text-muted-foreground">
+                No active investigations recorded
               </li>
-            ))}
+            ) : (
+              casesList.slice(0, 10).map((c) => {
+                const priority = (c.priority as any) || "P2";
+                const displayId = c.caseId || c.id || "CASE";
+                const displayTitle = c.title || `Investigation ${displayId}`;
+                const officerName = c.officer || "Unassigned";
+
+                return (
+                  <li key={c.id || displayId} className="p-2.5 flex items-center gap-2 hover:bg-accent/20">
+                    <PriorityBadge p={priority} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs truncate">{displayTitle}</div>
+                      <div className="text-[10px] text-muted-foreground mono">{displayId} · {officerName}</div>
+                    </div>
+                    <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
+                  </li>
+                );
+              })
+            )}
           </ul>
         </Panel>
       </div>

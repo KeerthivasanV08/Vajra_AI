@@ -9,7 +9,7 @@ import { useCases } from '@/hooks/useCases';
 import { useExportReport, useHighRiskReports, useManualReviewReports, useReports, useSarReports, useStrReports } from '@/hooks/useReports';
 
 export const Route = createFileRoute("/reports")({
-  head: () => ({ meta: [{ title: "Reports — TrustVault" }] }),
+  head: () => ({ meta: [{ title: "Reports — VAJRA AI" }] }),
   component: ReportsPage,
 });
 

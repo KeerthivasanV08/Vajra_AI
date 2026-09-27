@@ -1,14 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Network, ShieldAlert, TriangleAlert } from "lucide-react";
+import { Network, ShieldAlert, TriangleAlert, RefreshCw } from "lucide-react";
 
 import NetworkGraph from "@/components/NetworkGraph";
 import { Panel } from "@/components/aml/Panel";
 import { useStore } from "@/store/realtime";
+import { useGraph } from "@/hooks/useGraph";
 import type { ClusterSummary, GraphData, GraphEdge, GraphNode, Transaction } from "@/types";
 
 export const Route = createFileRoute("/graph")({
-  head: () => ({ meta: [{ title: "Graph Explorer — TrustVault" }] }),
+  head: () => ({ meta: [{ title: "Graph Explorer — VAJRA AI" }] }),
   component: GraphPage,
 });
 
@@ -18,10 +19,21 @@ function GraphPage() {
   const liveTransactions = useStore((state) => state.liveTransactions);
   const connected = useStore((state) => state.connected);
 
-  const investigationGraph = useMemo(
+  // Seed from REST snapshot when SSE has no data yet
+  const graphQ = useGraph();
+  const restGraph = graphQ.data ?? null;
+
+  const sseGraph = useMemo(
     () => buildInvestigationGraph(liveTransactions),
     [liveTransactions],
   );
+
+  // Prefer live SSE graph if we have data; fall back to REST snapshot
+  const investigationGraph: GraphData = useMemo(() => {
+    if (sseGraph.nodes.length > 0) return sseGraph;
+    if (restGraph && restGraph.nodes && restGraph.nodes.length > 0) return restGraph;
+    return sseGraph;
+  }, [sseGraph, restGraph]);
 
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
   const [riskFilter, setRiskFilter] =
@@ -133,10 +145,14 @@ function GraphPage() {
                 <ShieldAlert className="h-4 w-4 text-primary" />
                 <div>
                   <div className="font-medium">
-                    {hydrated ? (connected ? "Connected" : "SSE Waiting") : "SSE Waiting"}
+                    {hydrated ? (connected ? "SSE Connected" : "SSE Waiting") : "SSE Waiting"}
                   </div>
                   <div className="text-[11px] text-muted-foreground">
-                    Graph is built from SSE realtime transactions only
+                    {sseGraph.nodes.length > 0
+                      ? `Live SSE graph (${sseGraph.nodes.length} nodes)`
+                      : restGraph?.nodes?.length
+                      ? `REST snapshot (${restGraph.nodes.length} nodes)`
+                      : 'Awaiting graph data'}
                   </div>
                 </div>
               </div>
@@ -175,9 +191,13 @@ function GraphPage() {
                 showCircularOnly={showCircularOnly}
                 showHighRiskClusters={showHighRiskClusters}
               />
+            ) : graphQ.isLoading ? (
+              <div className="flex h-full items-center justify-center gap-3 text-sm text-muted-foreground">
+                <RefreshCw className="h-4 w-4 animate-spin" /> Loading graph from backend…
+              </div>
             ) : (
               <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
-                No SSE transaction graph data available. Wait for live transactions or resume the stream.
+                No graph data available. Waiting for live SSE transactions or backend graph snapshot.
               </div>
             )}
           </div>

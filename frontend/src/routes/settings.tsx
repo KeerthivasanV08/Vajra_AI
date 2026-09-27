@@ -5,7 +5,7 @@ import { Bell, ShieldCheck, Sliders, Zap } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/settings")({
-  head: () => ({ meta: [{ title: "Settings — TrustVault" }] }),
+  head: () => ({ meta: [{ title: "Settings — VAJRA AI" }] }),
   component: SettingsPage,
 });
 

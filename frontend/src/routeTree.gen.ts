@@ -10,12 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TransactionFlowRouteImport } from './routes/transaction-flow'
+import { Route as SopTriageRouteImport } from './routes/sop-triage'
+import { Route as SimulationRouteImport } from './routes/simulation'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as OfficerReviewRouteImport } from './routes/officer-review'
+import { Route as NodeManagementRouteImport } from './routes/node-management'
+import { Route as MuleRingInvestigatorRouteImport } from './routes/mule-ring-investigator'
+import { Route as ModelPerformanceRouteImport } from './routes/model-performance'
+import { Route as LegalDossierVaultRouteImport } from './routes/legal-dossier-vault'
 import { Route as InvestigationRouteImport } from './routes/investigation'
+import { Route as HeatmapRouteImport } from './routes/heatmap'
 import { Route as GraphRouteImport } from './routes/graph'
+import { Route as FieldRouteImport } from './routes/field'
+import { Route as FairnessAuditRouteImport } from './routes/fairness-audit'
+import { Route as CorridorsRouteImport } from './routes/corridors'
 import { Route as CasesRouteImport } from './routes/cases'
+import { Route as AuditComplianceLedgerRouteImport } from './routes/audit-compliance-ledger'
 import { Route as AlertsRouteImport } from './routes/alerts'
 import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +34,16 @@ import { Route as IndexRouteImport } from './routes/index'
 const TransactionFlowRoute = TransactionFlowRouteImport.update({
   id: '/transaction-flow',
   path: '/transaction-flow',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SopTriageRoute = SopTriageRouteImport.update({
+  id: '/sop-triage',
+  path: '/sop-triage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SimulationRoute = SimulationRouteImport.update({
+  id: '/simulation',
+  path: '/simulation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -40,9 +61,34 @@ const OfficerReviewRoute = OfficerReviewRouteImport.update({
   path: '/officer-review',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NodeManagementRoute = NodeManagementRouteImport.update({
+  id: '/node-management',
+  path: '/node-management',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MuleRingInvestigatorRoute = MuleRingInvestigatorRouteImport.update({
+  id: '/mule-ring-investigator',
+  path: '/mule-ring-investigator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModelPerformanceRoute = ModelPerformanceRouteImport.update({
+  id: '/model-performance',
+  path: '/model-performance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalDossierVaultRoute = LegalDossierVaultRouteImport.update({
+  id: '/legal-dossier-vault',
+  path: '/legal-dossier-vault',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InvestigationRoute = InvestigationRouteImport.update({
   id: '/investigation',
   path: '/investigation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HeatmapRoute = HeatmapRouteImport.update({
+  id: '/heatmap',
+  path: '/heatmap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GraphRoute = GraphRouteImport.update({
@@ -50,9 +96,29 @@ const GraphRoute = GraphRouteImport.update({
   path: '/graph',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FieldRoute = FieldRouteImport.update({
+  id: '/field',
+  path: '/field',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FairnessAuditRoute = FairnessAuditRouteImport.update({
+  id: '/fairness-audit',
+  path: '/fairness-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CorridorsRoute = CorridorsRouteImport.update({
+  id: '/corridors',
+  path: '/corridors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CasesRoute = CasesRouteImport.update({
   id: '/cases',
   path: '/cases',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditComplianceLedgerRoute = AuditComplianceLedgerRouteImport.update({
+  id: '/audit-compliance-ledger',
+  path: '/audit-compliance-ledger',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AlertsRoute = AlertsRouteImport.update({
@@ -75,24 +141,46 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/alerts': typeof AlertsRoute
+  '/audit-compliance-ledger': typeof AuditComplianceLedgerRoute
   '/cases': typeof CasesRoute
+  '/corridors': typeof CorridorsRoute
+  '/fairness-audit': typeof FairnessAuditRoute
+  '/field': typeof FieldRoute
   '/graph': typeof GraphRoute
+  '/heatmap': typeof HeatmapRoute
   '/investigation': typeof InvestigationRoute
+  '/legal-dossier-vault': typeof LegalDossierVaultRoute
+  '/model-performance': typeof ModelPerformanceRoute
+  '/mule-ring-investigator': typeof MuleRingInvestigatorRoute
+  '/node-management': typeof NodeManagementRoute
   '/officer-review': typeof OfficerReviewRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
+  '/simulation': typeof SimulationRoute
+  '/sop-triage': typeof SopTriageRoute
   '/transaction-flow': typeof TransactionFlowRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/alerts': typeof AlertsRoute
+  '/audit-compliance-ledger': typeof AuditComplianceLedgerRoute
   '/cases': typeof CasesRoute
+  '/corridors': typeof CorridorsRoute
+  '/fairness-audit': typeof FairnessAuditRoute
+  '/field': typeof FieldRoute
   '/graph': typeof GraphRoute
+  '/heatmap': typeof HeatmapRoute
   '/investigation': typeof InvestigationRoute
+  '/legal-dossier-vault': typeof LegalDossierVaultRoute
+  '/model-performance': typeof ModelPerformanceRoute
+  '/mule-ring-investigator': typeof MuleRingInvestigatorRoute
+  '/node-management': typeof NodeManagementRoute
   '/officer-review': typeof OfficerReviewRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
+  '/simulation': typeof SimulationRoute
+  '/sop-triage': typeof SopTriageRoute
   '/transaction-flow': typeof TransactionFlowRoute
 }
 export interface FileRoutesById {
@@ -100,12 +188,23 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/alerts': typeof AlertsRoute
+  '/audit-compliance-ledger': typeof AuditComplianceLedgerRoute
   '/cases': typeof CasesRoute
+  '/corridors': typeof CorridorsRoute
+  '/fairness-audit': typeof FairnessAuditRoute
+  '/field': typeof FieldRoute
   '/graph': typeof GraphRoute
+  '/heatmap': typeof HeatmapRoute
   '/investigation': typeof InvestigationRoute
+  '/legal-dossier-vault': typeof LegalDossierVaultRoute
+  '/model-performance': typeof ModelPerformanceRoute
+  '/mule-ring-investigator': typeof MuleRingInvestigatorRoute
+  '/node-management': typeof NodeManagementRoute
   '/officer-review': typeof OfficerReviewRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
+  '/simulation': typeof SimulationRoute
+  '/sop-triage': typeof SopTriageRoute
   '/transaction-flow': typeof TransactionFlowRoute
 }
 export interface FileRouteTypes {
@@ -114,36 +213,69 @@ export interface FileRouteTypes {
     | '/'
     | '/accounts'
     | '/alerts'
+    | '/audit-compliance-ledger'
     | '/cases'
+    | '/corridors'
+    | '/fairness-audit'
+    | '/field'
     | '/graph'
+    | '/heatmap'
     | '/investigation'
+    | '/legal-dossier-vault'
+    | '/model-performance'
+    | '/mule-ring-investigator'
+    | '/node-management'
     | '/officer-review'
     | '/reports'
     | '/settings'
+    | '/simulation'
+    | '/sop-triage'
     | '/transaction-flow'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/accounts'
     | '/alerts'
+    | '/audit-compliance-ledger'
     | '/cases'
+    | '/corridors'
+    | '/fairness-audit'
+    | '/field'
     | '/graph'
+    | '/heatmap'
     | '/investigation'
+    | '/legal-dossier-vault'
+    | '/model-performance'
+    | '/mule-ring-investigator'
+    | '/node-management'
     | '/officer-review'
     | '/reports'
     | '/settings'
+    | '/simulation'
+    | '/sop-triage'
     | '/transaction-flow'
   id:
     | '__root__'
     | '/'
     | '/accounts'
     | '/alerts'
+    | '/audit-compliance-ledger'
     | '/cases'
+    | '/corridors'
+    | '/fairness-audit'
+    | '/field'
     | '/graph'
+    | '/heatmap'
     | '/investigation'
+    | '/legal-dossier-vault'
+    | '/model-performance'
+    | '/mule-ring-investigator'
+    | '/node-management'
     | '/officer-review'
     | '/reports'
     | '/settings'
+    | '/simulation'
+    | '/sop-triage'
     | '/transaction-flow'
   fileRoutesById: FileRoutesById
 }
@@ -151,12 +283,23 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountsRoute: typeof AccountsRoute
   AlertsRoute: typeof AlertsRoute
+  AuditComplianceLedgerRoute: typeof AuditComplianceLedgerRoute
   CasesRoute: typeof CasesRoute
+  CorridorsRoute: typeof CorridorsRoute
+  FairnessAuditRoute: typeof FairnessAuditRoute
+  FieldRoute: typeof FieldRoute
   GraphRoute: typeof GraphRoute
+  HeatmapRoute: typeof HeatmapRoute
   InvestigationRoute: typeof InvestigationRoute
+  LegalDossierVaultRoute: typeof LegalDossierVaultRoute
+  ModelPerformanceRoute: typeof ModelPerformanceRoute
+  MuleRingInvestigatorRoute: typeof MuleRingInvestigatorRoute
+  NodeManagementRoute: typeof NodeManagementRoute
   OfficerReviewRoute: typeof OfficerReviewRoute
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
+  SimulationRoute: typeof SimulationRoute
+  SopTriageRoute: typeof SopTriageRoute
   TransactionFlowRoute: typeof TransactionFlowRoute
 }
 
@@ -167,6 +310,20 @@ declare module '@tanstack/react-router' {
       path: '/transaction-flow'
       fullPath: '/transaction-flow'
       preLoaderRoute: typeof TransactionFlowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sop-triage': {
+      id: '/sop-triage'
+      path: '/sop-triage'
+      fullPath: '/sop-triage'
+      preLoaderRoute: typeof SopTriageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/simulation': {
+      id: '/simulation'
+      path: '/simulation'
+      fullPath: '/simulation'
+      preLoaderRoute: typeof SimulationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -190,11 +347,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OfficerReviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/node-management': {
+      id: '/node-management'
+      path: '/node-management'
+      fullPath: '/node-management'
+      preLoaderRoute: typeof NodeManagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mule-ring-investigator': {
+      id: '/mule-ring-investigator'
+      path: '/mule-ring-investigator'
+      fullPath: '/mule-ring-investigator'
+      preLoaderRoute: typeof MuleRingInvestigatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/model-performance': {
+      id: '/model-performance'
+      path: '/model-performance'
+      fullPath: '/model-performance'
+      preLoaderRoute: typeof ModelPerformanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal-dossier-vault': {
+      id: '/legal-dossier-vault'
+      path: '/legal-dossier-vault'
+      fullPath: '/legal-dossier-vault'
+      preLoaderRoute: typeof LegalDossierVaultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/investigation': {
       id: '/investigation'
       path: '/investigation'
       fullPath: '/investigation'
       preLoaderRoute: typeof InvestigationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/heatmap': {
+      id: '/heatmap'
+      path: '/heatmap'
+      fullPath: '/heatmap'
+      preLoaderRoute: typeof HeatmapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/graph': {
@@ -204,11 +396,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GraphRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/field': {
+      id: '/field'
+      path: '/field'
+      fullPath: '/field'
+      preLoaderRoute: typeof FieldRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fairness-audit': {
+      id: '/fairness-audit'
+      path: '/fairness-audit'
+      fullPath: '/fairness-audit'
+      preLoaderRoute: typeof FairnessAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/corridors': {
+      id: '/corridors'
+      path: '/corridors'
+      fullPath: '/corridors'
+      preLoaderRoute: typeof CorridorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cases': {
       id: '/cases'
       path: '/cases'
       fullPath: '/cases'
       preLoaderRoute: typeof CasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audit-compliance-ledger': {
+      id: '/audit-compliance-ledger'
+      path: '/audit-compliance-ledger'
+      fullPath: '/audit-compliance-ledger'
+      preLoaderRoute: typeof AuditComplianceLedgerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/alerts': {
@@ -239,12 +459,23 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountsRoute: AccountsRoute,
   AlertsRoute: AlertsRoute,
+  AuditComplianceLedgerRoute: AuditComplianceLedgerRoute,
   CasesRoute: CasesRoute,
+  CorridorsRoute: CorridorsRoute,
+  FairnessAuditRoute: FairnessAuditRoute,
+  FieldRoute: FieldRoute,
   GraphRoute: GraphRoute,
+  HeatmapRoute: HeatmapRoute,
   InvestigationRoute: InvestigationRoute,
+  LegalDossierVaultRoute: LegalDossierVaultRoute,
+  ModelPerformanceRoute: ModelPerformanceRoute,
+  MuleRingInvestigatorRoute: MuleRingInvestigatorRoute,
+  NodeManagementRoute: NodeManagementRoute,
   OfficerReviewRoute: OfficerReviewRoute,
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
+  SimulationRoute: SimulationRoute,
+  SopTriageRoute: SopTriageRoute,
   TransactionFlowRoute: TransactionFlowRoute,
 }
 export const routeTree = rootRouteImport

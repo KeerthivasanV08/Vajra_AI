@@ -1,32 +1,75 @@
-# Logs
-logs
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+
+# ==========================================
+# Build Outputs & Bundler Caches
+# ==========================================
+dist/
+dist-ssr/
+.output/
+.vinxi/
+.nitro/
+.tanstack/**
+.vite/
+.cache/
+
+# ==========================================
+# Cloudflare & Wrangler Local Artifacts
+# ==========================================
+.wrangler/
+.dev.vars
+.dev.vars.local
+
+# ==========================================
+# Environment & Secret Files
+# ==========================================
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
+
+# Safe environment templates (never ignore)
+!.env.example
+!.env.example.*
+!*.example
+
+# ==========================================
+# Logs & Temporary Files
+# ==========================================
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+*.tmp
+*.temp
+temp/
+tmp/
+*.sw?
 
-node_modules
-dist
-dist-ssr
-.output
-.vinxi
-.tanstack/**
-.nitro
-*.local
+# ==========================================
+# Tooling & Test Coverage
+# ==========================================
+.eslintcache
+coverage/
 
-# Wrangler / Cloudflare
-.wrangler/
-.dev.vars
-
-# Editor directories and files
+# ==========================================
+# IDE & Operating System Files
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?

@@ -26,7 +26,7 @@ type QueueKey = (typeof QUEUE_OPTIONS)[number]['id'];
 type QueueItem = Alert;
 
 export const Route = createFileRoute("/officer-review")({
-  head: () => ({ meta: [{ title: "Officer Review — TrustVault" }] }),
+  head: () => ({ meta: [{ title: "Officer Review — VAJRA AI" }] }),
   component: OfficerReview,
 });
 

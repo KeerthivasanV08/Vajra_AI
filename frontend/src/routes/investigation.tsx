@@ -10,7 +10,7 @@ import { RiskScoreBadge } from "@/components/aml/Badges";
 import { ArrowLeftRight, CheckCircle2, Smartphone, Wifi, XCircle } from "lucide-react";
 
 export const Route = createFileRoute("/investigation")({
-  head: () => ({ meta: [{ title: "Investigation Sandbox — TrustVault" }] }),
+  head: () => ({ meta: [{ title: "Investigation Sandbox — VAJRA AI" }] }),
   component: InvestigationPage,
 });
 

@@ -1,11 +1,11 @@
 import type {
   Account,
   Alert,
+  AmlCase,
   GraphData,
   ReportsData,
   Transaction,
 } from '@/types/api';
-import type { AmlCase } from '@/types/aml';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000';
 
@@ -167,3 +167,170 @@ export async function fetchReports(): Promise<ReportsData> {
 export async function exportReports(format: 'json' | 'csv' | 'pdf' = 'json'): Promise<string> {
   return requestText(`${API_ENDPOINTS.reportsExport}?format=${encodeURIComponent(format)}`);
 }
+
+// === VAJRA AI PLATFORM EXTENSIONS ===
+import type {
+  VajraCaseAnalysis,
+  PhysicalPredictionResponse,
+  SOPEvaluationResponse,
+  WithdrawalNode,
+  HighRiskCorridor,
+  DispatchResponse,
+  LegalDossierResponse,
+  CryptographicAuditEvent,
+  AuditReverifyResponse,
+  FairnessSummary,
+  SyndicateMatchResponse,
+  SimulationResult,
+  ModelMetricsResponse,
+} from '@/types/vajra';
+
+export async function analyzeVajraCase(payload: {
+  account_id: string;
+  geo_lat: number;
+  geo_lon: number;
+  session_data?: Record<string, any>;
+  complaint_context?: Record<string, any>;
+}): Promise<VajraCaseAnalysis> {
+  return requestJson<VajraCaseAnalysis>('/api/v1/vajra/analyze', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function predictCashout(payload: {
+  account_id: string;
+  geo_lat: number;
+  geo_lon: number;
+  digital_risk_score?: number;
+  mule_probability?: number;
+  session_data?: Record<string, any>;
+}): Promise<PhysicalPredictionResponse> {
+  return requestJson<PhysicalPredictionResponse>('/api/v1/prediction/cashout', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function fetchPredictionHistory(): Promise<{ items: any[]; page: number; total: number }> {
+  return requestJson<{ items: any[]; page: number; total: number }>('/api/v1/prediction/history');
+}
+
+export async function evaluateSOP(payload: {
+  digital_risk_score: number;
+  physical_prediction_score: number;
+  context_score?: number;
+  imminent_overseas_shift?: boolean;
+  cross_border_risk_score?: number;
+}): Promise<SOPEvaluationResponse> {
+  return requestJson<SOPEvaluationResponse>('/api/v1/sop/evaluate', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function fetchWithdrawalNodes(params?: {
+  node_type?: string;
+  bank?: string;
+  district?: string;
+  state?: string;
+  risk_min?: number;
+  risk_max?: number;
+  page?: number;
+  page_size?: number;
+}): Promise<{ items: WithdrawalNode[]; total: number; page: number; page_size: number }> {
+  const query = new URLSearchParams();
+  if (params?.node_type) query.set('node_type', params.node_type);
+  if (params?.bank) query.set('bank', params.bank);
+  if (params?.district) query.set('district', params.district);
+  if (params?.state) query.set('state', params.state);
+  if (params?.risk_min !== undefined) query.set('risk_min', String(params.risk_min));
+  if (params?.risk_max !== undefined) query.set('risk_max', String(params.risk_max));
+  if (params?.page) query.set('page', String(params.page));
+  if (params?.page_size) query.set('page_size', String(params.page_size));
+
+  const url = `/api/v1/nodes${query.toString() ? `?${query.toString()}` : ''}`;
+  return requestJson<{ items: WithdrawalNode[]; total: number; page: number; page_size: number }>(url);
+}
+
+export async function fetchCorridors(): Promise<HighRiskCorridor[]> {
+  const res = await requestJson<HighRiskCorridor[] | { items?: HighRiskCorridor[]; corridors?: HighRiskCorridor[] }>('/api/v1/corridors');
+  if (Array.isArray(res)) return res;
+  // Backend returns { items, total, page, page_size }
+  if (Array.isArray((res as any).items)) return (res as any).items as HighRiskCorridor[];
+  return (res as any).corridors ?? [];
+}
+
+export async function dispatchPCRPatrol(payload: {
+  case_id: string;
+  prediction_id?: string;
+  target_node_id: string;
+  target_lat: number;
+  target_lon: number;
+}): Promise<DispatchResponse> {
+  return requestJson<DispatchResponse>('/api/v1/dispatch/pcr', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function dispatchBankStepUp(payload: {
+  account_id: string;
+  case_id: string;
+}): Promise<DispatchResponse> {
+  return requestJson<DispatchResponse>('/api/v1/dispatch/bank-stepup', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function generateLegalDossier(payload: {
+  case_id: string;
+  prediction_data: Record<string, any>;
+  sop_data: Record<string, any>;
+  complaint_data?: Record<string, any>;
+}): Promise<LegalDossierResponse> {
+  return requestJson<LegalDossierResponse>('/api/v1/legal-dossier/generate', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function fetchAuditChain(): Promise<{ events_count: number; chain: CryptographicAuditEvent[] }> {
+  return requestJson<{ events_count: number; chain: CryptographicAuditEvent[] }>('/api/v1/audit/chain');
+}
+
+export async function reverifyAuditChain(): Promise<AuditReverifyResponse> {
+  return requestJson<AuditReverifyResponse>('/api/v1/audit/reverify', {
+    method: 'POST',
+  });
+}
+
+export async function fetchFairnessAudit(): Promise<FairnessSummary> {
+  return requestJson<FairnessSummary>('/api/v1/fairness-audit');
+}
+
+export async function matchSyndicate(payload: { account_id: string }): Promise<SyndicateMatchResponse> {
+  return requestJson<SyndicateMatchResponse>('/api/v1/syndicate/match', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function runLiveAttackSimulation(payload: {
+  victim_account_id?: string;
+  mule_chain?: string[];
+  initial_amount_inr?: number;
+  origin_lat?: number;
+  origin_lon?: number;
+}): Promise<SimulationResult> {
+  return requestJson<SimulationResult>('/api/v1/simulation/live-attack', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function fetchModelRegistryMetrics(): Promise<ModelMetricsResponse> {
+  return requestJson<ModelMetricsResponse>('/api/v1/metrics/models');
+}
+
