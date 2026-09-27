@@ -5,7 +5,7 @@ Endpoints:
 - GET /api/v1/syndicate/patterns
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from app.schemas.syndicate import SyndicateMatchRequest, SyndicateMatchResponse
 from app.services.vajra.syndicate_service import syndicate_service
 
@@ -13,7 +13,10 @@ router = APIRouter()
 
 @router.post("/syndicate/match", response_model=SyndicateMatchResponse, summary="Match transaction network pattern against syndicate fingerprint centroids")
 def match_syndicate_fingerprint(req: SyndicateMatchRequest):
-    return syndicate_service.match_syndicate_fingerprint(req.dict())
+    try:
+        return syndicate_service.match_syndicate_fingerprint(req.model_dump())
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
 
 @router.get("/syndicate/patterns", summary="List known syndicate fingerprint patterns")
 def list_syndicate_patterns():

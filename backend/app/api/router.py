@@ -7,7 +7,7 @@ from fastapi import APIRouter
 from app.api.routes import (
     health, auth, prediction, nodes, corridors,
     sop, dispatch, legal_dossier, audit, fairness,
-    syndicate, simulation, metrics, reports, vajra
+    syndicate, simulation, metrics, reports, vajra, mule_ring, field
 )
 
 api_router = APIRouter()
@@ -30,6 +30,8 @@ api_router.include_router(legal_dossier.router, tags=["Legal Dossier"])
 api_router.include_router(audit.router, tags=["Cryptographic Audit Chain"])
 api_router.include_router(fairness.router, tags=["Fairness & Governance Audit"])
 api_router.include_router(syndicate.router, tags=["Syndicate Fingerprint Matcher"])
+api_router.include_router(mule_ring.router, tags=["Mule Ring Investigation"])
+api_router.include_router(field.router, tags=["Beat Officer Field Operations"])
 
 # Simulation + metrics + reports
 api_router.include_router(simulation.router, tags=["Attack Simulation"])

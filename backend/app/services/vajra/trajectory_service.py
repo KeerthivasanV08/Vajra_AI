@@ -7,9 +7,8 @@ from typing import Dict, Any, Optional
 import numpy as np
 import pandas as pd
 from app.ml.model_loader import model_loader
-from app.utils.geo import haversine_distance_km, calculate_bearing, calculate_speed_kmph
-from app.utils.h3_utils import latlon_to_cell, cell_to_latlon
-from app.core.config import settings
+from app.utils.geo import haversine_distance_km, calculate_bearing
+from app.utils.h3_utils import cell_to_latlon
 
 class TrajectoryService:
     def __init__(self):
@@ -27,12 +26,14 @@ class TrajectoryService:
         proxy_flag: int = 0,
         tor_flag: int = 0,
         session_sequence_number: int = 1,
-        time_since_previous_sec: float = 3600.0,
-        geo_accuracy_km: float = 1.0
+        time_since_previous_sec: Optional[float] = None,
+        geo_accuracy_km: Optional[float] = None
     ) -> Dict[str, Any]:
         """Generate spatial trajectory cell prediction using Model 1."""
-        prev_l1 = prev_lat if prev_lat is not None else geo_lat
-        prev_l2 = prev_lon if prev_lon is not None else geo_lon
+        if prev_lat is None or prev_lon is None or time_since_previous_sec is None or geo_accuracy_km is None:
+            raise ValueError("Observed prior-session coordinates and accuracy are required for trajectory prediction")
+        prev_l1 = prev_lat
+        prev_l2 = prev_lon
 
         dist_km = haversine_distance_km(prev_l1, prev_l2, geo_lat, geo_lon)
         bearing = calculate_bearing(prev_l1, prev_l2, geo_lat, geo_lon)
@@ -63,20 +64,11 @@ class TrajectoryService:
             predicted_cell = str(le.classes_[top_idx])
             confidence = round(float(probs[top_idx]), 4)
 
-            # Map cell token to lat/lon coordinates
+            if not predicted_cell.startswith("8"):
+                raise RuntimeError("Model 1 returned a cell identifier that cannot be resolved to coordinates")
             pred_lat, pred_lon = cell_to_latlon(predicted_cell)
-            if pred_lat == 28.6139 and pred_lon == 77.2090 and dist_km > 0:
-                # Offset prediction along bearing direction if fallback
-                rad = np.radians(bearing)
-                pred_lat = geo_lat + (dist_km * 0.01 * np.cos(rad))
-                pred_lon = geo_lon + (dist_km * 0.01 * np.sin(rad))
-
-        except Exception:
-            # Fallback trajectory extrapolation
-            confidence = 0.85
-            predicted_cell = latlon_to_cell(geo_lat, geo_lon)
-            pred_lat = geo_lat + 0.015
-            pred_lon = geo_lon + 0.012
+        except Exception as exc:
+            raise RuntimeError(f"Model 1 trajectory prediction is unavailable: {exc}") from exc
 
         # Estimated time window: 15 to 45 mins from current timestamp
         return {

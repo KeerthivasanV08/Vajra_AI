@@ -39,10 +39,8 @@ class SyndicateService:
                 {"pattern_type": pattern_types[i], "similarity_score": round(float(sims[i]), 4)}
                 for i in np.argsort(sims)[-3:][::-1]
             ]
-        except Exception:
-            matched_pattern = "RAPID_MULE_FANOUT"
-            match_confidence = 0.82
-            top_matches = [{"pattern_type": matched_pattern, "similarity_score": match_confidence}]
+        except Exception as exc:
+            raise RuntimeError(f"Model 8 syndicate matcher unavailable: {exc}") from exc
 
         pattern_summaries = {
             "RAPID_MULE_FANOUT": "High fan-out multi-branch splitting across secondary mule accounts within minutes of deposit.",

@@ -118,6 +118,38 @@ class GraphFeatureService:
         rows = self.neo4j.run_query(query, {"limit": int(limit)})
         return self._build_graph(rows)
 
+    def get_transfer_chain(self, account_id: str, max_hops: int = 20) -> Dict[str, Any] | None:
+        if not self.neo4j.is_available():
+            return None
+
+        depth = max(1, min(int(max_hops), 20))
+        query = f"""
+        MATCH path = (origin:Account {{user_id: $account_id}})-[:TRANSFER*1..{depth}]->(terminal:Account)
+        WITH path
+        ORDER BY length(path) DESC
+        LIMIT 1
+        RETURN
+            [account IN nodes(path) | account.user_id] AS accounts,
+            [transfer IN relationships(path) | properties(transfer)] AS transfers
+        """
+        rows = self.neo4j.run_query(query, {"account_id": _safe_str(account_id)})
+        if not rows:
+            return None
+        accounts = rows[0].get("accounts") or []
+        transfers = rows[0].get("transfers") or []
+        if len(accounts) < 2 or len(transfers) != len(accounts) - 1:
+            return None
+
+        normalized = []
+        for index, transfer in enumerate(transfers):
+            normalized.append({
+                **transfer,
+                "trans_id": transfer.get("transaction_id") or transfer.get("trans_id"),
+                "sender_id": accounts[index],
+                "receiver_id": accounts[index + 1],
+            })
+        return {"source": "NEO4J", "transactions": normalized}
+
     def get_account_graph(self, account_id: str, depth: int = 2) -> Dict[str, Any]:
         if not self.neo4j.is_available():
             return self._empty_graph("NEO4J_UNAVAILABLE", selected_account=account_id)

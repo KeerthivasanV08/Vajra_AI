@@ -4,7 +4,9 @@ Compiles official Legal Dossier PDF files using ReportLab with safe byte fallbac
 """
 
 from io import BytesIO
+import json
 from typing import Dict, Any
+from xml.sax.saxutils import escape
 
 try:
     from reportlab.lib.pagesizes import letter
@@ -44,6 +46,14 @@ class PDFService:
                 )
 
                 normal_style = styles['Normal']
+                evidence_style = ParagraphStyle(
+                    'EvidenceStyle',
+                    parent=normal_style,
+                    fontName='Courier',
+                    fontSize=6,
+                    leading=8,
+                    wordWrap='CJK',
+                )
 
                 elements = []
 
@@ -71,13 +81,28 @@ class PDFService:
                 elements.append(t)
                 elements.append(Spacer(1, 10))
 
-                # Section B: Physical Prediction & SOP Action
-                elements.append(Paragraph("<b>Section B: Physical Prediction & SOP Action Recommendation</b>", h2_style))
+                def append_data_section(title: str, value: Dict[str, Any]) -> None:
+                    elements.append(Paragraph(f"<b>{escape(title)}</b>", h2_style))
+                    serialized = json.dumps(value, ensure_ascii=False, indent=2, default=str)
+                    for line in serialized.splitlines():
+                        elements.append(Paragraph(escape(line) or " ", evidence_style))
+                    elements.append(Spacer(1, 8))
+
+                append_data_section("Section B: Case Summary", dossier_data.get("case_summary", {}))
+                append_data_section("Section C: Observed Complaint / Case Evidence", dossier_data.get("complaint", {}))
+                append_data_section("Section D: Model Prediction Context", dossier_data.get("prediction", {}))
+                append_data_section("Section E: SOP Decision Context", dossier_data.get("sop_decision", {}))
+                append_data_section("Section F: Data Provenance", dossier_data.get("data_provenance", {}))
+
+                # Summary table for linked prediction/SOP fields.
+                elements.append(Paragraph("<b>Prediction & SOP Summary</b>", h2_style))
                 pred = dossier_data.get("prediction", {})
                 sop = dossier_data.get("sop_decision", {})
 
                 sop_tier = sop.get("sop_tier", "N/A")
                 top_node = pred.get("top_prediction", {})
+                if not isinstance(top_node, dict):
+                    top_node = {}
 
                 sop_table_data = [
                     ["SOP Action Tier:", sop_tier],
@@ -104,26 +129,6 @@ class PDFService:
             except Exception:
                 pass
 
-        # Fallback raw byte string representation
-        text_content = f"""
-============================================================
-VAJRA PREDICTIVE CYBERCRIME LEGAL DOSSIER
-CONFIDENTIAL — FOR LAWFUL LEA / BANK USE ONLY
-============================================================
-
-Dossier ID: {dossier_data.get('dossier_id')}
-Case ID: {dossier_data.get('case_id')}
-Generated At: {dossier_data.get('generated_at')}
-Officer ID: {dossier_data.get('officer_id')}
-Evidence SHA-256: {dossier_data.get('evidence_hash')}
-
-SOP Action Tier: {dossier_data.get('sop_decision', {}).get('sop_tier')}
-Predicted Region: {dossier_data.get('prediction', {}).get('predicted_region')}
-Physical Prediction Score: {dossier_data.get('prediction', {}).get('physical_prediction_score')}
-
-DISCLAIMER: All predictions are operational recommendations.
-============================================================
-"""
-        return text_content.encode("utf-8")
+        raise RuntimeError("ReportLab is unavailable; PDF generation cannot proceed safely")
 
 pdf_service = PDFService()

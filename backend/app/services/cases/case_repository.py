@@ -85,6 +85,7 @@ class CaseRepository:
         if frame.empty:
             return []
         frame = frame.drop_duplicates(subset=["case_id"], keep="last")
+        frame = frame.astype(object).where(pd.notna(frame), None)
         return frame.to_dict(orient="records")
 
     def get_case(self, case_id: str) -> Dict[str, Any] | None:
@@ -94,7 +95,8 @@ class CaseRepository:
         rows = frame[frame["case_id"].astype(str) == str(case_id)]
         if rows.empty:
             return None
-        return rows.tail(1).iloc[0].to_dict()
+        row = rows.tail(1).astype(object).where(pd.notna(rows.tail(1)), None)
+        return row.iloc[0].to_dict()
 
     def upsert_case(self, record: Dict[str, Any]) -> Dict[str, Any]:
         with _LOCK:

@@ -79,6 +79,7 @@ class Settings:
     ENABLE_BANK_ACTIONS: bool = os.getenv("ENABLE_BANK_ACTIONS", "False").lower() in ("true", "1", "t")
     ENABLE_LEGAL_DOSSIER: bool = os.getenv("ENABLE_LEGAL_DOSSIER", "True").lower() in ("true", "1", "t")
     ENABLE_SIMULATION: bool = os.getenv("ENABLE_SIMULATION", "True").lower() in ("true", "1", "t")
+    DISPATCH_SLA_MINUTES: int = int(os.getenv("DISPATCH_SLA_MINUTES", "25"))
 
     # Mode
     SYNTHETIC_DATA_MODE: bool = os.getenv("SYNTHETIC_DATA_MODE", "True").lower() in ("true", "1", "t")

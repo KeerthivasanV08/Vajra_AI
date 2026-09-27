@@ -12,31 +12,32 @@ from fastapi import APIRouter, HTTPException, Depends
 from app.schemas.audit import ReverifyAuditResponse
 from app.services.audit.audit_chain_service import audit_chain_service
 from app.core.security import get_current_user
+from app.core.sanitizer import sanitize_for_json
 
 router = APIRouter()
 
 @router.get("/audit/chain", summary="Get complete cryptographic audit ledger chain")
 def get_audit_chain():
     chain = audit_chain_service.get_chain()
-    return {
+    return sanitize_for_json({
         "events_count": len(chain),
         "chain": chain
-    }
+    })
 
 @router.get("/audit/events", summary="List audit events")
 def list_audit_events():
     events = audit_chain_service.get_chain()
-    return {
+    return sanitize_for_json({
         "total": len(events),
         "events": events
-    }
+    })
 
 @router.get("/audit/events/{event_id}", summary="Get audit event by event_id")
 def get_audit_event(event_id: str):
     ev = audit_chain_service.get_event(event_id)
     if not ev:
         raise HTTPException(status_code=404, detail=f"Audit event '{event_id}' not found.")
-    return ev
+    return sanitize_for_json(ev)
 
 @router.post("/audit/reverify", response_model=ReverifyAuditResponse, summary="Re-verify mathematical integrity of cryptographic audit chain")
 def reverify_audit_chain(user: dict = Depends(get_current_user)):

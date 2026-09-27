@@ -22,3 +22,26 @@ class SOPEvaluationResponse(BaseModel):
     explanations: List[str]
     legal_authority_disclaimer: str
     model_version: str
+    calibration_trained: bool = False
+    calibration_message: str = ""
+
+
+class SOPSimulationRequest(BaseModel):
+    digital: float = Field(..., ge=0.0, le=1.0)
+    physical: float = Field(..., ge=0.0, le=1.0)
+    context: float = Field(..., ge=0.0, le=1.0)
+    cross_border_override: bool = False
+
+
+class SOPFusionResponse(BaseModel):
+    raw_score: float
+    calibrated_score: float
+    tier: str
+    contributions: Dict[str, float]
+    cross_border_override: bool = False
+    action_description: str = ""
+    legal_authority_disclaimer: str = ""
+    case_id: Optional[str] = None
+    calculated_at: Optional[str] = None
+    calibration_trained: bool = False
+    calibration_message: str = ""

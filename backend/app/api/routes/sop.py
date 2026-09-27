@@ -7,9 +7,12 @@ Endpoints:
 """
 
 from typing import Optional
-from fastapi import APIRouter, HTTPException
-from app.schemas.sop import SOPEvaluationRequest, SOPEvaluationResponse
+from fastapi import APIRouter, Depends, HTTPException
+from app.schemas.sop import SOPEvaluationRequest, SOPEvaluationResponse, SOPSimulationRequest, SOPFusionResponse
 from app.services.vajra.sop_fusion_service import sop_fusion_service
+from app.repositories.sop_fusion_repository import sop_fusion_repository
+from app.services.audit.audit_chain_service import audit_chain_service
+from app.core.security import get_current_user
 
 router = APIRouter()
 
@@ -41,3 +44,45 @@ def get_sop_timeline(case_id: str):
             {"timestamp": "2026-09-27T08:02:00Z", "event": "Cross-Border Override Triggered", "tier": "INTERNATIONAL_ALERT_OVERRIDE"}
         ]
     }
+
+
+@router.post("/sop/simulate", response_model=SOPFusionResponse, summary="Calculate an unsaved SOP what-if scenario")
+def simulate_sop(req: SOPSimulationRequest):
+    return sop_fusion_service.simulate(req.digital, req.physical, req.context, req.cross_border_override)
+
+
+@router.get("/sop/case/{case_id}/fusion", response_model=SOPFusionResponse, summary="Read stored SOP signals for a case")
+def get_case_fusion(case_id: str):
+    result = sop_fusion_service.case_fusion(case_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Stored SOP signal values are unavailable for this case")
+    return result
+
+
+@router.post("/sop/case/{case_id}/apply-simulation", response_model=SOPFusionResponse, summary="Apply a simulation to a case")
+def apply_simulation(case_id: str, req: SOPSimulationRequest, user: dict = Depends(get_current_user)):
+    if not sop_fusion_service.case_fusion(case_id):
+        raise HTTPException(status_code=404, detail="Case or stored SOP signal values not found")
+    result = sop_fusion_service.simulate(req.digital, req.physical, req.context, req.cross_border_override)
+    from datetime import datetime, timezone
+    now = result["calculated_at"] = datetime.now(timezone.utc).isoformat()
+    record = sop_fusion_repository.append({
+        "case_id": case_id,
+        "digital_score": req.digital,
+        "physical_score": req.physical,
+        "context_score": req.context,
+        "cross_border_override": req.cross_border_override,
+        "raw_fusion_score": result["raw_score"],
+        "calibrated_score": result["calibrated_score"],
+        "tier_assigned": result["tier"],
+        "calculated_at": now,
+        "calculation_source": "applied",
+    })
+    audit_chain_service.append_event(
+        action_type="SOP_SIMULATION_APPLIED",
+        target_entity=case_id,
+        payload=record,
+        officer_id=user.get("user_id", "OFFICER_001_DEFAULT"),
+    )
+    result["case_id"] = case_id
+    return result

@@ -70,21 +70,39 @@ def _format_corridor(row: dict) -> dict:
     lat = float(row.get("lat") or 28.6139)
     lon = float(row.get("lon") or 77.2090)
 
+    hub_frame = corridor_hubs_repo.get_all()
+    hub_rows = hub_frame[hub_frame["corridor_id"].astype(str) == cid].copy() if not hub_frame.empty and "corridor_id" in hub_frame.columns else hub_frame
+    if not hub_rows.empty and "timestamp" in hub_rows.columns:
+        hub_rows["timestamp"] = __import__("pandas").to_datetime(hub_rows["timestamp"], errors="coerce")
+        hub_rows = hub_rows.sort_values("timestamp")
+
+    latest = hub_rows.iloc[-1].to_dict() if not hub_rows.empty else {}
+    latest_intensity = float(latest.get("intensity_score_reference")) if latest.get("intensity_score_reference") not in (None, "") else None
+    if latest_intensity is None:
+        latest_intensity = float(meta.get("risk_score", 0.0))
+
+    vulnerability = "CRITICAL" if latest_intensity >= 0.9 else "HIGH" if latest_intensity >= 0.75 else "MEDIUM"
+    primary_count = int(latest.get("active_mule_count_reference", 0) or meta.get("primary_nodes_count", 0))
+    if primary_count <= 0:
+        primary_count = int(meta.get("primary_nodes_count", 120))
+
     return {
         "corridor_id": cid,
         "corridor_name": row.get("name") or row.get("corridor_name") or f"Corridor {cid}",
         "hub_name": row.get("hub_name", ""),
         "state": row.get("state", "Delhi NCR"),
         "district": row.get("city") or row.get("district") or "Central",
-        "primary_nodes_count": int(meta.get("primary_nodes_count", 120)),
-        "vulnerability_level": meta.get("vulnerability_level", "HIGH"),
-        "risk_score": float(meta.get("risk_score", 0.85)),
+        "primary_nodes_count": primary_count,
+        "vulnerability_level": vulnerability,
+        "risk_score": latest_intensity,
         "start_lat": float(meta.get("start_lat", lat - 0.05)),
         "start_lon": float(meta.get("start_lon", lon - 0.05)),
         "end_lat": float(meta.get("end_lat", lat + 0.05)),
         "end_lon": float(meta.get("end_lon", lon + 0.05)),
         "radius_km": float(row.get("radius_km") or 50.0),
         "description": row.get("description", ""),
+        "intensity_score": latest_intensity,
+        "last_updated": latest.get("timestamp"),
     }
 
 @router.get("/corridors", summary="Get cash-out corridor hubs & hotspots")

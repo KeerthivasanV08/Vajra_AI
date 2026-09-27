@@ -35,6 +35,8 @@ class NodeRepository:
         state: Optional[str] = None,
         risk_min: Optional[float] = None,
         risk_max: Optional[float] = None,
+        risk_band: Optional[str] = None,
+        search: Optional[str] = None,
         page: int = 1,
         page_size: int = 50
     ) -> Tuple[List[Dict[str, Any]], int]:
@@ -59,12 +61,44 @@ class NodeRepository:
                 results.append({**m, **feat})
             return results, total
         else:
+            if risk_band:
+                filters["risk_band"] = risk_band.upper()
+            if search:
+                filters["node_id"] = search
             master_items, total = self.master_repo.query(filters=filters, page=page, page_size=page_size)
             results = []
             for m in master_items:
                 f = self.feat_repo.find_by_id(m.get("node_id")) or {}
                 results.append({**m, **f})
             return results, total
+
+    def bulk_import(self, frame: pd.DataFrame) -> Dict[str, Any]:
+        required = {"node_id", "node_type", "latitude", "longitude", "district", "state"}
+        missing = sorted(required - set(frame.columns))
+        if missing:
+            raise ValueError(f"Missing required columns: {', '.join(missing)}")
+        if frame["node_id"].duplicated().any():
+            raise ValueError("Duplicate node_id values are not allowed")
+        frame = frame.copy()
+        frame["latitude"] = pd.to_numeric(frame["latitude"], errors="coerce")
+        frame["longitude"] = pd.to_numeric(frame["longitude"], errors="coerce")
+        if frame[["latitude", "longitude"]].isna().any().any() or (~frame["latitude"].between(-90, 90)).any() or (~frame["longitude"].between(-180, 180)).any():
+            raise ValueError("Invalid latitude or longitude values")
+        frame.to_csv(self.master_repo.file_path, index=False)
+        self.master_repo.reload()
+        return {"rows_processed": len(frame), "rows_accepted": len(frame), "rows_rejected": 0, "errors": []}
+
+    def update_vulnerability(self, node_id: str, score: float) -> Dict[str, Any] | None:
+        frame = self.feat_repo.get_all()
+        if frame.empty or "node_id" not in frame.columns:
+            return None
+        if not (frame["node_id"].astype(str) == str(node_id)).any():
+            return None
+        frame.loc[frame["node_id"].astype(str) == str(node_id), "node_vulnerability_score"] = score
+        frame.loc[frame["node_id"].astype(str) == str(node_id), "vulnerability_score_reference"] = score
+        frame.to_csv(self.feat_repo.file_path, index=False)
+        self.feat_repo.reload()
+        return self.get_node(node_id)
 
     def get_all_nodes_df(self) -> pd.DataFrame:
         m_df = self.master_repo.get_all()

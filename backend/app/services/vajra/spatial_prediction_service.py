@@ -23,7 +23,10 @@ class SpatialPredictionService:
             "drain_ratio_reference", "fragmentation_score_reference"
         ]
 
-        feature_vals = [float(feature_data.get(c, 0.0)) for c in feature_cols]
+        missing = [column for column in feature_cols if feature_data.get(column) is None]
+        if missing:
+            raise ValueError(f"Missing observed Model 3 features: {', '.join(missing)}")
+        feature_vals = [float(feature_data[c]) for c in feature_cols]
 
         try:
             model, prep = model_loader.get_model_and_preprocessor(self.model_filename, self.prep_filename)
@@ -41,14 +44,8 @@ class SpatialPredictionService:
             confidence = round(float(probs[top1_idx]), 4)
             top3 = [{"region": str(le.classes_[idx]), "probability": round(float(probs[idx]), 4)} for idx in top3_indices]
 
-        except Exception:
-            predicted_region = feature_data.get("state", "Delhi")
-            confidence = 0.65
-            top3 = [
-                {"region": predicted_region, "probability": 0.65},
-                {"region": "Haryana", "probability": 0.20},
-                {"region": "Uttar Pradesh", "probability": 0.15}
-            ]
+        except Exception as exc:
+            raise RuntimeError(f"Model 3 spatial prediction is unavailable: {exc}") from exc
 
         return {
             "predicted_region": predicted_region,

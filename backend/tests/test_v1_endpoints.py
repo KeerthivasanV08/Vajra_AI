@@ -84,8 +84,12 @@ class TestV1Endpoints(unittest.TestCase):
         self.assertIn("dispatch_id", resp.json())
 
     def test_07_legal_dossier(self):
+        from app.services.cases.case_repository import case_repository
+        cases = case_repository.list_cases()
+        self.assertTrue(cases, "Expected a real case fixture in the case registry")
+        case_id = cases[0]["case_id"]
         resp = self.client.post("/api/v1/legal-dossier/generate", json={
-            "case_id": "CASE_UNIT_001",
+            "case_id": case_id,
             "prediction_data": {
                 "predicted_lat": 28.6139,
                 "predicted_lon": 77.2090,

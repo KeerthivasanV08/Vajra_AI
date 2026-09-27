@@ -68,6 +68,13 @@ def _safe_str(s: Any) -> Optional[str]:
     return s2 if s2 != "" else None
 
 
+def _canonical_user_id(value: Any) -> str:
+    text = str(value or "").strip().upper()
+    if text.startswith("U") and text[1:].isdigit():
+        return f"U{int(text[1:]):06d}"
+    return text
+
+
 @dataclass
 class AccountService:
     users_csv: Path = DATA_DIR / "raw" / "users.csv"
@@ -285,10 +292,15 @@ class AccountService:
 
         return sorted(list(keys), key=key_fn, reverse=True)
 
-    def search_accounts(self, search: Optional[str] = None, risk: Optional[str] = None, limit: int = 50, offset: int = 0) -> List[Dict[str, Any]]:
+    def search_accounts(self, search: Optional[str] = None, risk: Optional[str] = None, limit: int = 50, offset: int = 0) -> Dict[str, Any]:
         users = self._load_users()
         feats = self._load_features()
         onboards = self._load_onboarding()
+        cleaned_profiles = {
+            _canonical_user_id(row.get("user_id")): row
+            for row in self._read_csv(PROCESSED_DIR / "onboarding" / "users_clean.csv")
+            if _canonical_user_id(row.get("user_id"))
+        }
 
         ids = self._all_user_ids()
         results: List[Dict[str, Any]] = []
@@ -300,23 +312,32 @@ class AccountService:
                 u = users.get(uid, {})
                 f = feats.get(uid, {})
                 o = onboards.get(uid, {})
-                hay = " ".join([
-                    String(u.get("user_id") or ""),
-                    String(u.get("device_id") or ""),
-                    String(u.get("kyc_city") or ""),
-                    String(u.get("device_model_name") or ""),
-                    String(u.get("ip_address") or ""),
-                    String(u.get("isp_name") or ""),
-                    String(o.get("risk_level") or ""),
-                    String(o.get("decision") or ""),
-                    String(o.get("reasons") or ""),
-                ]).lower()
+                clean = cleaned_profiles.get(_canonical_user_id(uid), {})
+                hay = " ".join(str(value or "") for value in (
+                    u.get("user_id"),
+                    clean.get("full_name"),
+                    u.get("device_id"),
+                    u.get("kyc_city"),
+                    u.get("device_model_name"),
+                    u.get("ip_address"),
+                    u.get("isp_name"),
+                    o.get("risk_level"),
+                    o.get("decision"),
+                    o.get("reasons"),
+                )).lower()
                 if q in hay:
-                    results.append(self._merge_account(uid, users, feats, onboards))
+                    account = self._merge_account(uid, users, feats, onboards)
+                    if clean.get("full_name"):
+                        account["name"] = str(clean["full_name"])
+                    results.append(account)
         else:
             # default latest sorted by created_at desc
             for uid in ids:
-                results.append(self._merge_account(uid, users, feats, onboards))
+                account = self._merge_account(uid, users, feats, onboards)
+                clean = cleaned_profiles.get(_canonical_user_id(uid), {})
+                if clean.get("full_name"):
+                    account["name"] = str(clean["full_name"])
+                results.append(account)
 
         # risk filtering
         if risk:
