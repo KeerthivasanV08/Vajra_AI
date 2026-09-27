@@ -31,11 +31,11 @@ export function RiskBadge({ score, level, className = '' }: RiskBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-mono font-medium border ${colorClasses} ${className}`}
+      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded vajra-status font-mono border ${colorClasses} ${className}`}
     >
       <span>{normalized}</span>
       {score !== undefined && (
-        <span className="text-[10px] opacity-80">({(score * 100).toFixed(0)}%)</span>
+        <span className="text-xs opacity-90">({(score * 100).toFixed(0)}%)</span>
       )}
     </span>
   );

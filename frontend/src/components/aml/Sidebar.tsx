@@ -83,7 +83,7 @@ export function Sidebar() {
   return (
     <aside
       aria-label="Sidebar Navigation"
-      className="w-72 shrink-0 border-r border-slate-800 bg-slate-950 text-slate-200 flex flex-col h-screen select-none shadow-xl"
+      className="w-16 md:w-72 shrink-0 border-r border-slate-800 bg-slate-950 text-slate-200 flex flex-col h-screen select-none shadow-xl"
     >
       {/* Branding */}
       <div className="h-14 px-4 flex items-center gap-3 border-b border-slate-800 bg-slate-900/60 shrink-0">
@@ -91,14 +91,14 @@ export function Sidebar() {
           <ShieldAlert className="h-6 w-6 text-rose-500" />
           <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
         </div>
-        <div className="leading-tight">
+        <div className="leading-tight max-md:hidden">
           <div className="text-sm font-bold tracking-wider font-mono text-white flex items-center gap-1.5">
             <span>VAJRA</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-800 font-sans font-bold">
+            <span className="vajra-status rounded bg-rose-950 px-1.5 py-0.5 text-rose-300 border border-rose-800 font-sans">
               AI
             </span>
           </div>
-          <div className="text-[10px] uppercase tracking-[0.16em] text-slate-400 font-mono font-medium">
+          <div className="vajra-micro uppercase tracking-[0.12em] text-slate-300 font-mono">
             Predictive Interception
           </div>
         </div>
@@ -111,7 +111,7 @@ export function Sidebar() {
       >
         {NAV_SECTIONS.map((section, idx) => (
           <div key={idx} className="space-y-1">
-            <div className="px-3 pt-2 pb-1 text-[11px] uppercase tracking-[0.14em] font-mono text-slate-400 font-bold">
+            <div className="px-3 pt-2 pb-1 vajra-label uppercase tracking-[0.1em] font-mono text-slate-300 max-md:hidden">
               {section.title}
             </div>
             {section.items.map((item) => {
@@ -128,7 +128,7 @@ export function Sidebar() {
                   className={`group relative flex items-center gap-3 px-3 py-2 rounded-lg text-[13.5px] min-h-[38px] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose-500 ${
                     active
                       ? "bg-slate-800/90 text-white font-semibold shadow-sm border border-slate-700/80"
-                      : "text-slate-300 font-medium hover:bg-slate-900/80 hover:text-white"
+                      : "text-slate-200 font-medium hover:bg-slate-900/80 hover:text-white max-md:justify-center"
                   }`}
                 >
                   {active && (
@@ -139,9 +139,9 @@ export function Sidebar() {
                       active ? "text-rose-400" : "text-slate-400 group-hover:text-slate-200"
                     }`}
                   />
-                  <span className="flex-1 truncate tracking-normal">{item.label}</span>
+                  <span className="flex-1 truncate tracking-normal max-md:hidden">{item.label}</span>
                   {item.badge === "p1" && p1 > 0 && (
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800 font-bold shadow-sm">
+                    <span className="vajra-status font-mono px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800 shadow-sm">
                       {p1}
                     </span>
                   )}
@@ -153,8 +153,8 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-slate-800 px-4 py-3 text-[11px] font-mono text-slate-400 bg-slate-900/40 flex items-center justify-between shrink-0">
-        <span className="font-medium text-slate-400">VAJRA v2.4-PROD</span>
+      <div className="border-t border-slate-800 px-2 md:px-4 py-3 vajra-body-small font-mono text-slate-300 bg-slate-900/40 flex items-center justify-between shrink-0">
+        <span className="font-medium text-slate-300 max-md:hidden">VAJRA v2.4-PROD</span>
         <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           ACTIVE

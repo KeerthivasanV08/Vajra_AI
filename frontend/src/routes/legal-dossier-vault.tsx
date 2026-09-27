@@ -1,182 +1,278 @@
-import { createFileRoute } from '@tanstack/react-router';
-import React, { useState } from 'react';
-import { generateLegalDossier } from '@/services/api';
-import { API_BASE } from '@/services/api/client';
-import type { LegalDossierResponse } from '@/types/vajra';
-import { Gavel, Download, CheckCircle2, ShieldCheck, FileText } from 'lucide-react';
-import { EvidenceHashBox } from '@/components/vajra/EvidenceHashBox';
-import { toast } from 'sonner';
+import { createFileRoute } from "@tanstack/react-router";
+import React, { useEffect, useState } from "react";
+import { Download, FileText, Gavel, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
+import {
+  fetchLegalDossier,
+  fetchLegalDossiers,
+  fetchOfficerCases,
+  generateLegalDossier,
+  verifyLegalDossier,
+} from "@/services/api";
+import { API_BASE } from "@/services/api/client";
+import type { AmlCase } from "@/types/api";
+import type { DossierVerificationResult, LegalDossierResponse } from "@/types/vajra";
+import { EvidenceHashBox } from "@/components/vajra/EvidenceHashBox";
 
-export const Route = createFileRoute('/legal-dossier-vault')({
-  validateSearch: (search: Record<string, unknown>) => {
-    return {
-      caseId: typeof search.caseId === 'string' ? search.caseId : undefined,
-    };
-  },
+export const Route = createFileRoute("/legal-dossier-vault")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    caseId:
+      typeof search.caseId === "string"
+        ? search.caseId
+        : typeof search.case_id === "string"
+          ? search.case_id
+          : undefined,
+    dossierId:
+      typeof search.dossierId === "string"
+        ? search.dossierId
+        : typeof search.dossier_id === "string"
+          ? search.dossier_id
+          : undefined,
+  }),
   component: LegalDossierVaultPage,
 });
 
+function JsonSection({ title, value }: { title: string; value?: Record<string, unknown> }) {
+  return (
+    <section className="space-y-2 rounded-xl border border-slate-800 bg-slate-900 p-4">
+      <h2 className="vajra-section-title uppercase tracking-wider">{title}</h2>
+      {value && Object.keys(value).length ? (
+        <pre className="max-h-80 overflow-auto rounded-lg border border-slate-800 bg-slate-950 p-3 text-sm leading-relaxed text-slate-300">
+          {JSON.stringify(value, null, 2)}
+        </pre>
+      ) : (
+        <p className="vajra-body-small text-slate-400">Not available in source data.</p>
+      )}
+    </section>
+  );
+}
+
 function LegalDossierVaultPage() {
   const search = Route.useSearch();
-  const [caseId, setCaseId] = useState(search.caseId || 'CASE_VAJRA_1001');
+  const [caseId, setCaseId] = useState(search.caseId || "");
   const [dossier, setDossier] = useState<LegalDossierResponse | null>(null);
-  const [recentDossiers, setRecentDossiers] = useState<Array<{ id: string; date: string; data?: LegalDossierResponse }>>([
-    { id: 'DOSSIER_CASE_VAJRA_1001', date: 'Sept 27, 2026' }
-  ]);
+  const [dossiers, setDossiers] = useState<LegalDossierResponse[]>([]);
+  const [cases, setCases] = useState<AmlCase[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingList, setLoadingList] = useState(true);
+  const [verification, setVerification] = useState<DossierVerificationResult | null>(null);
+  const normalizedCaseId = typeof caseId === "string" ? caseId.trim() : "";
 
-  const handleGenerate = async (targetCaseId?: string) => {
-    const idToUse = targetCaseId || caseId;
-    setLoading(true);
+  const loadDossiers = async () => {
+    setLoadingList(true);
     try {
-      const res = await generateLegalDossier({
-        case_id: idToUse,
-        prediction_data: { prediction_id: 'PRED_1001', score: 0.88 },
-        sop_data: { sop_tier: 'ESCALATE_FREEZE' },
-      });
-      setDossier(res);
-      setRecentDossiers(prev => {
-        const filtered = prev.filter(d => d.id !== res.dossier_id);
-        return [{ id: res.dossier_id, date: new Date(res.created_at).toLocaleDateString(), data: res }, ...filtered];
-      });
-      toast.success('Court-Ready Legal Dossier PDF Generated!');
-    } catch (err: any) {
-      toast.error(`Generation failed: ${err.message}`);
+      setDossiers((await fetchLegalDossiers(caseId || undefined)).items);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to load dossier vault.");
+    } finally {
+      setLoadingList(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadDossiers();
+    if (!caseId)
+      void fetchOfficerCases()
+        .then(setCases)
+        .catch(() => setCases([]));
+    if (search.dossierId)
+      void fetchLegalDossier(search.dossierId)
+        .then(setDossier)
+        .catch(() => toast.error("Dossier not found."));
+  }, []);
+
+  const generate = async () => {
+    if (!normalizedCaseId) {
+      toast.error("Select a real case before generating.");
+      return;
+    }
+    setLoading(true);
+    setVerification(null);
+    try {
+      const result = await generateLegalDossier({ case_id: normalizedCaseId });
+      setDossier(result);
+      await loadDossiers();
+      toast.success("Investigative dossier generated.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Dossier generation failed.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDownloadPdf = () => {
-    if (!dossier) return;
-    const base = API_BASE.replace(/\/$/, '');
-    const url = `${base}/api/v1/legal-dossier/${encodeURIComponent(dossier.dossier_id)}/pdf`;
-    window.open(url, '_blank');
-    toast.info(`Downloading PDF for Dossier ${dossier.dossier_id}`);
+  const selectDossier = async (dossierId: string) => {
+    try {
+      setDossier(await fetchLegalDossier(dossierId));
+      setVerification(null);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Unable to load dossier.");
+    }
   };
 
+  const verify = async () => {
+    if (!dossier) return;
+    try {
+      const result = await verifyLegalDossier(dossier.dossier_id);
+      setVerification(result);
+      toast[result.verified ? "success" : "error"](
+        result.verified ? "Integrity verified." : "Integrity check failed.",
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Integrity verification failed.");
+    }
+  };
+
+  const downloadUrl = dossier
+    ? `${API_BASE.replace(/\/$/, "")}/api/v1/legal-dossier/${encodeURIComponent(dossier.dossier_id)}/pdf`
+    : "";
+
   return (
-    <div className="flex h-full w-full bg-slate-950 text-slate-200 overflow-hidden select-none">
-      {/* Left List Pane */}
-      <div className="w-80 shrink-0 border-r border-slate-800 p-4 space-y-4 bg-slate-900/40 flex flex-col">
+    <div className="flex h-full min-h-0 w-full overflow-hidden bg-slate-950 text-slate-200">
+      <aside className="flex w-80 shrink-0 flex-col gap-4 overflow-y-auto border-r border-slate-800 bg-slate-900/40 p-4">
         <div className="flex items-center gap-2">
-          <Gavel className="w-5 h-5 text-rose-500" />
-          <h1 className="text-sm font-bold text-white font-mono tracking-wider">
-            LEGAL DOSSIER VAULT
+          <Gavel className="h-6 w-6 text-rose-500" />
+          <h1 className="vajra-page-title font-mono uppercase tracking-wider">
+            Legal Dossier Vault
           </h1>
         </div>
-
         <div className="space-y-2">
-          <label className="text-xs text-slate-400 font-mono">Case Reference</label>
+          <label className="vajra-label uppercase">Select Case</label>
           <input
-            type="text"
-            value={caseId}
-            onChange={(e) => setCaseId(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 font-mono"
+            value={caseId || ""}
+            onChange={(event) => setCaseId(event.target.value)}
+            placeholder="Search Case ID / Account / Alert"
+            className="w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 font-mono text-sm text-slate-100 placeholder:text-slate-400"
           />
+          {!caseId &&
+            cases.slice(0, 8).map((item, index) => {
+              const rawCase = item as AmlCase & { case_id?: string };
+              const id = item.caseId || rawCase.case_id || item.id || "";
+              return (
+                <button
+                  key={id || `case-${index}`}
+                  onClick={() => setCaseId(id)}
+                  className="block w-full rounded border border-slate-800 bg-slate-950 px-3 py-2 text-left text-sm hover:bg-slate-800"
+                >
+                  <span className="font-mono text-slate-100">{id || "Case ID unavailable"}</span>
+                  <span className="ml-2 text-slate-400">{item.status}</span>
+                </button>
+              );
+            })}
         </div>
-
         <button
-          onClick={() => handleGenerate()}
-          disabled={loading}
-          className="w-full py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-rose-950/50 disabled:opacity-50"
+          onClick={() => void generate()}
+          disabled={loading || !normalizedCaseId}
+          className="flex min-h-12 items-center justify-center gap-2 rounded-lg bg-rose-600 px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <FileText className="w-4 h-4" />
-          {loading ? 'Generating PDF...' : 'Generate New Dossier'}
+          <FileText className="h-4 w-4" />
+          {loading ? "Generating dossier..." : "Generate New Dossier"}
         </button>
-
-        <div className="border-t border-slate-800 pt-3 text-[11px] text-slate-500 space-y-2 font-mono flex-1 overflow-y-auto">
-          <div className="text-slate-400 font-sans font-medium">Recent Dossiers</div>
-          {recentDossiers.map((d) => (
-            <div
-              key={d.id}
-              onClick={() => {
-                if (d.data) {
-                  setDossier(d.data);
-                } else {
-                  handleGenerate(d.id.replace('DOSSIER_', ''));
-                }
-              }}
-              className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-slate-700 cursor-pointer transition-colors"
-            >
-              <div className="font-bold text-slate-200 truncate">{d.id}</div>
-              <div className="text-[10px] text-slate-500 mt-0.5">Created: {d.date}</div>
+        <div className="flex-1 border-t border-slate-800 pt-4">
+          <h2 className="vajra-card-title mb-3">Recent Dossiers</h2>
+          {loadingList ? (
+            <p className="vajra-body-small text-slate-400">Loading dossier vault...</p>
+          ) : dossiers.length ? (
+            <div className="space-y-2">
+              {dossiers.map((item, index) => (
+                <button
+                  key={item.dossier_id || item.case_id || `dossier-${index}`}
+                  onClick={() => void selectDossier(item.dossier_id)}
+                  className="w-full rounded-lg border border-slate-800 bg-slate-950 p-3 text-left hover:border-slate-600"
+                >
+                  <div className="break-all font-mono text-sm font-semibold text-slate-100">
+                    {item.dossier_id}
+                  </div>
+                  <div className="mt-1 vajra-body-small">
+                    Case {item.case_id} · v{item.version} · {item.status}
+                  </div>
+                  <div className="vajra-micro mt-1">
+                    {new Date(item.generated_at).toLocaleString()}
+                  </div>
+                </button>
+              ))}
             </div>
-          ))}
+          ) : (
+            <p className="vajra-body-small text-slate-400">No generated dossiers found.</p>
+          )}
         </div>
-      </div>
-
-      {/* Right Complete Detail Workspace */}
-      <div className="flex-1 p-6 overflow-y-auto space-y-6">
-        {dossier ? (
-          <>
-            {/* Action Banner */}
-            <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-emerald-400">{dossier.dossier_id}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-mono">
-                    COURT-READY VERIFIED
-                  </span>
+      </aside>
+      <main className="min-w-0 flex-1 overflow-y-auto p-6">
+        <div className="mx-auto max-w-5xl space-y-5">
+          {dossier ? (
+            <>
+              <header className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900 p-4">
+                <div>
+                  <div className="font-mono text-sm font-bold text-emerald-300">
+                    {dossier.dossier_id}
+                  </div>
+                  <h2 className="mt-1 vajra-section-title">
+                    Case {dossier.case_id} · Version {dossier.version}
+                  </h2>
+                  <p className="mt-1 vajra-body-small">
+                    Generated by {dossier.officer_id} ·{" "}
+                    {new Date(dossier.generated_at).toLocaleString()}
+                  </p>
                 </div>
-                <div className="text-xs text-slate-400 mt-1">
-                  Issuing Officer: {dossier.issuing_officer} • Created: {new Date(dossier.created_at).toLocaleString()}
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href={downloadUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white"
+                  >
+                    <Download className="h-4 w-4" /> Download PDF
+                  </a>
+                  <button
+                    onClick={() => void verify()}
+                    className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-cyan-700 bg-cyan-950/60 px-4 text-sm font-semibold text-cyan-200"
+                  >
+                    <ShieldCheck className="h-4 w-4" /> Verify Integrity
+                  </button>
                 </div>
+              </header>
+              <div className="rounded-xl border border-amber-800/70 bg-amber-950/30 p-4 text-sm text-amber-200">
+                System-generated investigative dossier. This document is not a court filing, legal
+                notice, warrant, or certification.
               </div>
-
-              <button
-                onClick={handleDownloadPdf}
-                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors flex items-center gap-2 shadow-lg shadow-emerald-950/50"
-              >
-                <Download className="w-4 h-4" />
-                Download PDF Package
-              </button>
+              <EvidenceHashBox
+                hash={dossier.document_hash}
+                verified={verification?.verified ?? dossier.integrity_status === "VERIFIED"}
+                label="Generated PDF SHA-256"
+              />
+              {verification && (
+                <div
+                  className={`rounded-lg border p-3 text-sm ${verification.verified ? "border-emerald-800 bg-emerald-950/40 text-emerald-200" : "border-rose-800 bg-rose-950/40 text-rose-200"}`}
+                >
+                  {verification.verified ? "INTEGRITY VERIFIED" : "INTEGRITY CHECK FAILED"} · Stored
+                  hash: {verification.stored_hash || "Unavailable"} · Current hash:{" "}
+                  {verification.actual_hash || "Unavailable"}
+                </div>
+              )}
+              <JsonSection title="Case Summary" value={dossier.case_summary} />
+              <JsonSection title="Observed Complaint / Case Evidence" value={dossier.complaint} />
+              <JsonSection title="Model Prediction Context" value={dossier.prediction} />
+              <JsonSection title="SOP Decision Context" value={dossier.sop_decision} />
+              <JsonSection title="Data Provenance" value={dossier.data_provenance} />
+              <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+                <h2 className="vajra-section-title">Audit Reference</h2>
+                <p className="mt-2 vajra-body-small">
+                  Audit event:{" "}
+                  <span className="font-mono text-cyan-300">{dossier.audit_event_id}</span>
+                </p>
+              </section>
+            </>
+          ) : (
+            <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
+              <Gavel className="mb-4 h-12 w-12 text-slate-700" />
+              <h2 className="vajra-page-title">Legal Dossier Vault</h2>
+              <p className="mt-2 vajra-body max-w-md">
+                Select a real case or an existing dossier to compile and inspect an
+                integrity-verifiable investigative report.
+              </p>
             </div>
-
-            {/* Evidence Hash Container */}
-            <EvidenceHashBox
-              hash={dossier.evidence_sha256}
-              verified={dossier.integrity_verified}
-            />
-
-            {/* Section Breakdown */}
-            <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
-                <h3 className="text-xs font-mono font-semibold text-slate-300 uppercase">
-                  SECTION A — COMPLAINT & INITIAL DETECTION
-                </h3>
-                <pre className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-[11px] text-slate-300 font-mono overflow-x-auto">
-                  {JSON.stringify(dossier.sections?.complaint, null, 2)}
-                </pre>
-              </div>
-
-              <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
-                <h3 className="text-xs font-mono font-semibold text-slate-300 uppercase">
-                  SECTION B — PHYSICAL PREDICTION & CANDIDATE RANKINGS
-                </h3>
-                <pre className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-[11px] text-slate-300 font-mono overflow-x-auto">
-                  {JSON.stringify(dossier.sections?.prediction, null, 2)}
-                </pre>
-              </div>
-
-              <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
-                <h3 className="text-xs font-mono font-semibold text-slate-300 uppercase">
-                  SECTION C — PRESERVATION DIRECTIVES & LEGAL NOTICES
-                </h3>
-                <pre className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-[11px] text-slate-300 font-mono overflow-x-auto">
-                  {JSON.stringify(dossier.sections?.preservation_directives, null, 2)}
-                </pre>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-slate-500 text-xs">
-            <Gavel className="w-12 h-12 text-slate-700 mb-3 stroke-[1.5]" />
-            <p className="font-semibold text-slate-300 text-sm">Legal Dossier Vault Ready</p>
-            <p className="text-slate-500 mt-1">Select or generate a dossier to view compiled court evidence and download PDF.</p>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

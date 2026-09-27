@@ -17,7 +17,7 @@ export function PredictionCandidateList({ candidates = [], onSelectNode, classNa
   return (
     <div className={`space-y-2 ${className}`}>
       {candidates.slice(0, 3).map((node, index) => {
-        const prob = node.ranker_score ?? node.vulnerability_score_reference ?? 0.50;
+        const prob = node.ranker_score ?? node.vulnerability_score_reference;
         const rank = node.final_rank ?? (index + 1);
 
         return (
@@ -40,9 +40,9 @@ export function PredictionCandidateList({ candidates = [], onSelectNode, classNa
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5 truncate font-sans">
-                  <span>{node.bank_name || 'Bank Aggregator'}</span>
+                  <span>{node.bank_name || 'Bank unavailable'}</span>
                   <span>•</span>
-                  <span>{node.district || node.city || 'Delhi NCR'}</span>
+                  <span>{node.district || node.city || 'Location unavailable'}</span>
                   {node.candidate_distance_km !== undefined && (
                     <>
                       <span>•</span>
@@ -57,7 +57,7 @@ export function PredictionCandidateList({ candidates = [], onSelectNode, classNa
 
             <div className="flex items-center gap-3 shrink-0">
               <div className="w-28 text-right">
-                <ConfidenceGauge value={prob} label="Prob" />
+                {prob === undefined ? <span className="text-xs text-slate-500">Probability unavailable</span> : <ConfidenceGauge value={prob} label="Prob" />}
               </div>
               <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 transition-colors" />
             </div>

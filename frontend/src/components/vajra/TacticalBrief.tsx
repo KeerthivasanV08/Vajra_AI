@@ -28,7 +28,7 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
       <div className={`p-6 text-center text-slate-500 text-xs flex flex-col items-center justify-center h-full border-l border-slate-800 ${className}`}>
         <Building2 className="w-8 h-8 text-slate-700 mb-2 stroke-[1.5]" />
         <p className="font-medium text-slate-400">No Withdrawal Node Selected</p>
-        <p className="text-[11px] text-slate-600 mt-1 max-w-[200px]">
+        <p className="text-xs text-slate-500 mt-1 max-w-[220px]">
           Select an ATM, Micro-ATM, or AePS CSP node from the list or map to view tactical intelligence.
         </p>
       </div>
@@ -79,7 +79,7 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
         prediction_data: { prediction_id: 'PRED_1001', top_prediction: node },
         sop_data: { sop_tier: sopTier },
       });
-      toast.success(`Legal Dossier Generated! SHA-256: ${res.evidence_sha256.slice(0, 16)}...`);
+      toast.success(`Legal Dossier Generated! SHA-256: ${res.document_hash.slice(0, 16)}...`);
     } catch (err: any) {
       toast.error(`Legal Dossier failed: ${err.message}`);
     }
@@ -93,12 +93,12 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono text-emerald-400 font-bold tracking-wider">{node.node_id}</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 font-mono uppercase">
+              <span className="text-xs px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono uppercase">
                 {node.node_type}
               </span>
             </div>
             <h2 className="text-sm font-semibold text-white mt-1">{node.bank_name || 'Fino Payments Bank'}</h2>
-            <p className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+            <p className="text-sm text-slate-400 flex items-center gap-1 mt-0.5">
               <MapPin className="w-3 h-3 text-rose-400 shrink-0" />
               <span>{node.district || 'New Delhi'}, {node.state || 'Delhi'} ({node.pincode || 110001})</span>
             </p>
@@ -111,8 +111,8 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
       <div className="p-4 space-y-4 flex-1">
         {/* Prediction Metrics */}
         <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-2.5">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400 font-medium">SOP Recommended Tier</span>
+          <div className="flex items-center justify-between gap-3 text-sm">
+            <span className="text-slate-300 font-semibold">SOP Recommended Tier</span>
             <SOPTierBadge tier={sopTier} />
           </div>
 
@@ -122,34 +122,34 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
 
         {/* Operational Intelligence Specifications */}
         <div className="space-y-2">
-          <h3 className="text-[11px] font-mono uppercase text-slate-400 tracking-wider">Node Intelligence Profile</h3>
+          <h3 className="text-sm font-mono uppercase text-slate-300 tracking-wider">Node Intelligence Profile</h3>
           
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="p-2.5 rounded bg-slate-900/70 border border-slate-800">
-              <div className="text-[10px] text-slate-400 font-mono">Daily Cash Limit</div>
-              <div className="font-semibold text-slate-200 mt-0.5">
-                ₹{(node.cash_limit_daily || 100000).toLocaleString('en-IN')}
+              <div className="text-xs text-slate-400 font-mono">Daily Cash Limit</div>
+              <div className="text-lg font-semibold text-slate-100 mt-0.5">
+                {node.cash_limit_daily !== undefined ? `₹${node.cash_limit_daily.toLocaleString('en-IN')}` : '—'}
               </div>
             </div>
 
             <div className="p-2.5 rounded bg-slate-900/70 border border-slate-800">
-              <div className="text-[10px] text-slate-400 font-mono">Historical Volume</div>
-              <div className="font-semibold text-slate-200 mt-0.5">
-                {(node.historical_txn_volume || 15420).toLocaleString()} txns
+              <div className="text-xs text-slate-400 font-mono">Historical Volume</div>
+              <div className="text-lg font-semibold text-slate-100 mt-0.5">
+                {node.historical_txn_volume !== undefined ? `${node.historical_txn_volume.toLocaleString()} txns` : '—'}
               </div>
             </div>
 
             <div className="p-2.5 rounded bg-slate-900/70 border border-slate-800">
-              <div className="text-[10px] text-slate-400 font-mono">Off-Hour Ratio</div>
-              <div className="font-semibold text-amber-400 mt-0.5">
-                {((node.off_hour_withdrawal_ratio || 0.14) * 100).toFixed(1)}%
+              <div className="text-xs text-slate-400 font-mono">Off-Hour Ratio</div>
+              <div className="text-lg font-semibold text-amber-400 mt-0.5">
+                {node.off_hour_withdrawal_ratio !== undefined ? `${(node.off_hour_withdrawal_ratio * 100).toFixed(1)}%` : '—'}
               </div>
             </div>
 
             <div className="p-2.5 rounded bg-slate-900/70 border border-slate-800">
-              <div className="text-[10px] text-slate-400 font-mono">Corridor Distance</div>
-              <div className="font-semibold text-emerald-400 mt-0.5">
-                {(node.distance_to_known_corridor_km || 1.8).toFixed(1)} km
+              <div className="text-xs text-slate-400 font-mono">Corridor Distance</div>
+              <div className="text-lg font-semibold text-emerald-400 mt-0.5">
+                {node.distance_to_known_corridor_km !== undefined ? `${node.distance_to_known_corridor_km.toFixed(1)} km` : '—'}
               </div>
             </div>
           </div>
@@ -157,14 +157,14 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
 
         {/* Geographic Coordinates */}
         <div className="p-2.5 rounded bg-slate-900/70 border border-slate-800 text-xs font-mono space-y-1">
-          <div className="text-[10px] text-slate-400 font-sans">Geographic Coordinates</div>
-          <div className="text-slate-300 flex items-center justify-between">
+          <div className="text-xs text-slate-400 font-sans">Geographic Coordinates</div>
+          <div className="text-sm text-slate-300 flex items-center justify-between gap-3">
             <span>Lat: {node.latitude?.toFixed(6)} | Lon: {node.longitude?.toFixed(6)}</span>
             <a
               href={`https://www.google.com/maps/search/?api=1&query=${node.latitude},${node.longitude}`}
               target="_blank"
               rel="noreferrer"
-              className="text-blue-400 hover:underline text-[10px] font-sans"
+              className="text-blue-400 hover:underline text-xs font-sans whitespace-nowrap"
             >
               Google Maps ↗
             </a>
@@ -175,7 +175,7 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
         <div className="space-y-2 pt-2 border-t border-slate-800">
           <button
             onClick={() => setConfirmDialog({ isOpen: true, action: 'pcr' })}
-            className="w-full py-2 px-3 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-rose-950/50"
+            className="w-full min-h-10 py-2 px-3 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-rose-950/50"
           >
             <Radio className="w-3.5 h-3.5" />
             Dispatch Nearest PCR Patrol
@@ -183,7 +183,7 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
 
           <button
             onClick={() => setConfirmDialog({ isOpen: true, action: 'bank' })}
-            className="w-full py-2 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-950/50"
+            className="w-full min-h-10 py-2 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-950/50"
           >
             <AlertOctagon className="w-3.5 h-3.5" />
             Trigger Bank Step-Up Auth
@@ -191,7 +191,7 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
 
           <button
             onClick={handleGenerateDossier}
-            className="w-full py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs transition-colors flex items-center justify-center gap-2 border border-slate-700"
+            className="w-full min-h-10 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm transition-colors flex items-center justify-center gap-2 border border-slate-700"
           >
             <CheckCircle2 className="w-3.5 h-3.5 text-blue-400" />
             Generate Legal Dossier PDF

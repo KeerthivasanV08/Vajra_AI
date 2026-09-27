@@ -23,8 +23,8 @@ export function ConfidenceGauge({ value, label = 'Confidence', className = '' }:
           style={{ width: `${pct}%` }}
         />
       </div>
-      <div className="flex items-center gap-1 font-mono text-[11px] whitespace-nowrap">
-        <span className="text-slate-400">{label}:</span>
+      <div className="flex items-center gap-1 font-mono text-sm whitespace-nowrap">
+        <span className="text-slate-300">{label}:</span>
         <span className={`font-semibold ${colorClass.split(' ')[0]}`}>{pct}%</span>
       </div>
     </div>

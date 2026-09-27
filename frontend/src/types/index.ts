@@ -70,6 +70,7 @@ export interface Alert {
 export interface Case {
   id: string;
   caseId?: string;
+  userId?: string;
   priority: Priority;
   title: string;
   linkedAlerts: number;

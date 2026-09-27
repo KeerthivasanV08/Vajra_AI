@@ -4,15 +4,19 @@ import type { SOPTier } from '@/types/vajra';
 interface SOPTierBadgeProps {
   tier?: SOPTier | string;
   className?: string;
+  override?: boolean;
 }
 
-export function SOPTierBadge({ tier = 'MONITOR', className = '' }: SOPTierBadgeProps) {
+export function SOPTierBadge({ tier = 'MONITOR', className = '', override = false }: SOPTierBadgeProps) {
   const normalized = String(tier).toUpperCase();
 
   let colorClasses = 'bg-slate-800 text-slate-300 border-slate-700';
   let label = normalized;
 
-  if (normalized === 'MONITOR') {
+  if (override) {
+    colorClasses = 'bg-rose-950/70 text-rose-300 border-rose-700/80 font-bold animate-pulse';
+    label = 'ESCALATE-FREEZE (OVERRIDE)';
+  } else if (normalized === 'MONITOR') {
     colorClasses = 'bg-emerald-950/60 text-emerald-400 border-emerald-800/60';
     label = 'MONITOR';
   } else if (normalized === 'SOFT-ALERT' || normalized === 'SOFT_ALERT') {
@@ -31,7 +35,7 @@ export function SOPTierBadge({ tier = 'MONITOR', className = '' }: SOPTierBadgeP
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded text-[11px] font-mono font-medium border ${colorClasses} ${className}`}
+      className={`inline-flex items-center px-2.5 py-1 rounded vajra-status font-mono border ${colorClasses} ${className}`}
     >
       {label}
     </span>

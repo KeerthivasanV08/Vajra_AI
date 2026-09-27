@@ -6,6 +6,7 @@ import type {
   ReportsData,
   Transaction,
 } from '@/types/api';
+import { normalizeCase } from '@/lib/normalizers/caseNormalizer';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000';
 
@@ -30,11 +31,12 @@ function toArray<T>(value: unknown): T[] {
 }
 
 async function requestJson<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const isFormData = typeof FormData !== 'undefined' && init.body instanceof FormData;
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...(init.headers ?? {}),
     },
   });
@@ -134,8 +136,11 @@ export async function analyzeTransaction(payload: unknown): Promise<unknown> {
 }
 
 export async function fetchOfficerCases(): Promise<AmlCase[]> {
-  const payload = await requestJson<AmlCase[] | { items?: AmlCase[] }>('/api/officer/case/all');
-  return Array.isArray(payload) ? payload : toArray<AmlCase>(payload.items);
+  const payload = await requestJson<unknown>('/api/officer/case/all');
+  const records = Array.isArray(payload)
+    ? payload
+    : toArray<unknown>((payload as { items?: unknown[] } | null)?.items);
+  return records.map(normalizeCase);
 }
 
 export async function fetchOfficerReviewQueue(): Promise<AmlCase[]> {
@@ -177,12 +182,24 @@ import type {
   HighRiskCorridor,
   DispatchResponse,
   LegalDossierResponse,
+  DossierVerificationResult,
   CryptographicAuditEvent,
   AuditReverifyResponse,
   FairnessSummary,
   SyndicateMatchResponse,
+  MuleRingInvestigationResponse,
+  SOPFusionResult,
   SimulationResult,
   ModelMetricsResponse,
+  FairnessRegion,
+  FairnessRegionDetail,
+  FieldDispatch,
+  FieldDispatchEvent,
+  FieldStatus,
+  MuleAccountSearchResult,
+  MuleFingerprintResponse,
+  MulePredictedTerminalsResponse,
+  MuleTraceResponse,
 } from '@/types/vajra';
 
 export async function analyzeVajraCase(payload: {
@@ -229,6 +246,18 @@ export async function evaluateSOP(payload: {
   });
 }
 
+export async function simulateSOP(payload: { digital: number; physical: number; context: number; cross_border_override: boolean }): Promise<SOPFusionResult> {
+  return requestJson<SOPFusionResult>('/api/v1/sop/simulate', { method: 'POST', body: JSON.stringify(payload) });
+}
+
+export async function fetchCaseSOPFusion(caseId: string): Promise<SOPFusionResult> {
+  return requestJson<SOPFusionResult>(`/api/v1/sop/case/${encodeURIComponent(caseId)}/fusion`);
+}
+
+export async function applyCaseSOPSimulation(caseId: string, payload: { digital: number; physical: number; context: number; cross_border_override: boolean }): Promise<SOPFusionResult> {
+  return requestJson<SOPFusionResult>(`/api/v1/sop/case/${encodeURIComponent(caseId)}/apply-simulation`, { method: 'POST', body: JSON.stringify(payload) });
+}
+
 export async function fetchWithdrawalNodes(params?: {
   node_type?: string;
   bank?: string;
@@ -236,6 +265,8 @@ export async function fetchWithdrawalNodes(params?: {
   state?: string;
   risk_min?: number;
   risk_max?: number;
+  risk_band?: string;
+  search?: string;
   page?: number;
   page_size?: number;
 }): Promise<{ items: WithdrawalNode[]; total: number; page: number; page_size: number }> {
@@ -246,11 +277,17 @@ export async function fetchWithdrawalNodes(params?: {
   if (params?.state) query.set('state', params.state);
   if (params?.risk_min !== undefined) query.set('risk_min', String(params.risk_min));
   if (params?.risk_max !== undefined) query.set('risk_max', String(params.risk_max));
+  if (params?.risk_band) query.set('risk_band', params.risk_band);
+  if (params?.search) query.set('search', params.search);
   if (params?.page) query.set('page', String(params.page));
   if (params?.page_size) query.set('page_size', String(params.page_size));
 
   const url = `/api/v1/nodes${query.toString() ? `?${query.toString()}` : ''}`;
   return requestJson<{ items: WithdrawalNode[]; total: number; page: number; page_size: number }>(url);
+}
+
+export async function fetchWithdrawalNode(nodeId: string): Promise<WithdrawalNode> {
+  return requestJson<WithdrawalNode>(`/api/v1/nodes/${encodeURIComponent(nodeId)}`);
 }
 
 export async function fetchCorridors(): Promise<HighRiskCorridor[]> {
@@ -259,6 +296,10 @@ export async function fetchCorridors(): Promise<HighRiskCorridor[]> {
   // Backend returns { items, total, page, page_size }
   if (Array.isArray((res as any).items)) return (res as any).items as HighRiskCorridor[];
   return (res as any).corridors ?? [];
+}
+
+export async function fetchCorridorNodes(corridorId: string): Promise<{ corridor_id: string; nodes_count: number; nodes: WithdrawalNode[] }> {
+  return requestJson(`/api/v1/corridors/${encodeURIComponent(corridorId)}/nodes`);
 }
 
 export async function dispatchPCRPatrol(payload: {
@@ -284,16 +325,24 @@ export async function dispatchBankStepUp(payload: {
   });
 }
 
-export async function generateLegalDossier(payload: {
-  case_id: string;
-  prediction_data: Record<string, any>;
-  sop_data: Record<string, any>;
-  complaint_data?: Record<string, any>;
-}): Promise<LegalDossierResponse> {
+export async function generateLegalDossier(payload: { case_id: string; prediction_data?: Record<string, unknown>; sop_data?: Record<string, unknown>; complaint_data?: Record<string, unknown> }): Promise<LegalDossierResponse> {
   return requestJson<LegalDossierResponse>('/api/v1/legal-dossier/generate', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
+}
+
+export async function fetchLegalDossiers(caseId?: string): Promise<{ items: LegalDossierResponse[] }> {
+  const query = caseId ? `?case_id=${encodeURIComponent(caseId)}` : '';
+  return requestJson<{ items: LegalDossierResponse[] }>(`/api/v1/legal-dossiers${query}`);
+}
+
+export async function fetchLegalDossier(dossierId: string): Promise<LegalDossierResponse> {
+  return requestJson<LegalDossierResponse>(`/api/v1/legal-dossiers/${encodeURIComponent(dossierId)}`);
+}
+
+export async function verifyLegalDossier(dossierId: string): Promise<DossierVerificationResult> {
+  return requestJson<DossierVerificationResult>(`/api/v1/legal-dossiers/${encodeURIComponent(dossierId)}/verify`);
 }
 
 export async function fetchAuditChain(): Promise<{ events_count: number; chain: CryptographicAuditEvent[] }> {
@@ -310,11 +359,57 @@ export async function fetchFairnessAudit(): Promise<FairnessSummary> {
   return requestJson<FairnessSummary>('/api/v1/fairness-audit');
 }
 
-export async function matchSyndicate(payload: { account_id: string }): Promise<SyndicateMatchResponse> {
+export async function fetchFairnessRegions(): Promise<{ results: FairnessRegion[] }> {
+  return requestJson<{ results: FairnessRegion[] }>('/api/v1/fairness/regions');
+}
+
+export async function fetchFairnessRegionDetail(regionId: string): Promise<FairnessRegionDetail> {
+  return requestJson<FairnessRegionDetail>(`/api/v1/fairness/regions/${encodeURIComponent(regionId)}/detail`);
+}
+
+export async function recalculateFairnessRegions(): Promise<{ results: FairnessRegion[] }> {
+  return requestJson<{ results: FairnessRegion[] }>('/api/v1/fairness/regions/recalculate', { method: 'POST' });
+}
+
+export async function matchSyndicate(payload: {
+  account_id: string;
+  hop_count?: number;
+  fan_out_factor?: number;
+  layering_time_mins?: number;
+  average_interhop_velocity_mins?: number;
+  terminal_node_risk_reference?: number;
+}): Promise<SyndicateMatchResponse> {
   return requestJson<SyndicateMatchResponse>('/api/v1/syndicate/match', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
+}
+
+export async function investigateMuleRing(accountId: string, context?: { case_id?: string; alert_id?: string }): Promise<MuleRingInvestigationResponse> {
+  const query = new URLSearchParams({ account_id: accountId });
+  if (context?.case_id) query.set('case_id', context.case_id);
+  if (context?.alert_id) query.set('alert_id', context.alert_id);
+  return requestJson<MuleRingInvestigationResponse>(
+    `/api/v1/mule-ring/investigate?${query.toString()}`,
+  );
+}
+
+export async function searchMuleAccounts(query: string, limit = 10): Promise<MuleAccountSearchResult[]> {
+  const params = new URLSearchParams({ q: query, limit: String(limit) });
+  const response = await requestJson<{ results: MuleAccountSearchResult[] }>(`/api/accounts/search?${params}`);
+  return response.results;
+}
+
+export async function fetchMuleTrace(identifier: string): Promise<MuleTraceResponse> {
+  return requestJson<MuleTraceResponse>(`/api/v1/mule-trace/${encodeURIComponent(identifier)}`);
+}
+
+export async function fetchMuleFingerprint(identifier: string): Promise<MuleFingerprintResponse> {
+  return requestJson<MuleFingerprintResponse>(`/api/v1/mule-trace/${encodeURIComponent(identifier)}/syndicate-fingerprint`);
+}
+
+export async function fetchMulePredictedTerminals(identifier: string): Promise<MulePredictedTerminalsResponse> {
+  return requestJson<MulePredictedTerminalsResponse>(`/api/v1/mule-trace/${encodeURIComponent(identifier)}/predicted-terminals`);
 }
 
 export async function runLiveAttackSimulation(payload: {
@@ -332,5 +427,31 @@ export async function runLiveAttackSimulation(payload: {
 
 export async function fetchModelRegistryMetrics(): Promise<ModelMetricsResponse> {
   return requestJson<ModelMetricsResponse>('/api/v1/metrics/models');
+}
+
+export async function fetchActiveFieldDispatch(): Promise<{ active: boolean; dispatch: FieldDispatch | null; latest_event?: FieldDispatchEvent; events?: FieldDispatchEvent[] }> {
+  return requestJson('/api/v1/field/active-dispatch');
+}
+
+export async function updateFieldDispatchStatus(dispatchId: string, payload: { status: Exclude<FieldStatus, 'DISPATCHED'>; gps_lat?: number; gps_lon?: number; notes?: string; idempotency_key?: string }) {
+  return requestJson(`/api/v1/field/dispatch/${encodeURIComponent(dispatchId)}/status`, { method: 'PATCH', body: JSON.stringify(payload) });
+}
+
+export async function submitFieldDispatchOutcome(dispatchId: string, payload: { outcome: 'intercepted' | 'missed' | 'false_alarm'; actual_cashout_confirmed: boolean; notes?: string; actual_action_taken?: string }) {
+  return requestJson(`/api/v1/field/dispatch/${encodeURIComponent(dispatchId)}/outcome`, { method: 'POST', body: JSON.stringify(payload) });
+}
+
+export async function recalculateNodeVulnerability(nodeId: string) {
+  return requestJson(`/api/v1/nodes/${encodeURIComponent(nodeId)}/recalculate-vulnerability`, { method: 'POST' });
+}
+
+export async function bulkImportNodes(file: File) {
+  const form = new FormData();
+  form.append('file', file);
+  return requestJson('/api/v1/nodes/bulk-import', {
+    method: 'POST',
+    body: form,
+    headers: { Accept: 'application/json' },
+  });
 }
 

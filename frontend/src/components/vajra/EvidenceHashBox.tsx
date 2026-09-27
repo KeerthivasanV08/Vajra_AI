@@ -21,7 +21,7 @@ export function EvidenceHashBox({ hash, verified = true, label = 'SHA-256 Eviden
 
   return (
     <div className={`p-3 rounded-lg bg-slate-950 border border-slate-800 font-mono ${className}`}>
-      <div className="flex items-center justify-between gap-2 mb-1.5 text-xs text-slate-400">
+      <div className="flex items-center justify-between gap-2 mb-1.5 vajra-body-small text-slate-300">
         <span className="flex items-center gap-1.5 font-sans font-medium text-slate-300">
           {verified ? (
             <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -31,7 +31,7 @@ export function EvidenceHashBox({ hash, verified = true, label = 'SHA-256 Eviden
           {label}
         </span>
         <span
-          className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
+          className={`vajra-status px-1.5 py-1 rounded font-mono ${
             verified ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-rose-950 text-rose-400 border border-rose-800'
           }`}
         >
@@ -40,7 +40,7 @@ export function EvidenceHashBox({ hash, verified = true, label = 'SHA-256 Eviden
       </div>
 
       <div className="flex items-center justify-between gap-2 bg-slate-900 px-2.5 py-1.5 rounded border border-slate-800">
-        <span className="text-[11px] text-emerald-400 tracking-wider break-all select-all font-mono">
+        <span className="text-sm text-emerald-300 tracking-normal break-all select-all font-mono">
           {hash}
         </span>
         <button

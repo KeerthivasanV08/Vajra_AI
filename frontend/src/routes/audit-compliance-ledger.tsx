@@ -97,7 +97,7 @@ function AuditComplianceLedgerPage() {
               <div
                 key={event.event_id || idx}
                 onClick={() => setSelectedEvent(event)}
-                className={`p-3 rounded-xl border transition-colors cursor-pointer flex items-center justify-between gap-4 ${
+                className={`min-h-12 p-3 rounded-xl border transition-colors cursor-pointer flex items-center justify-between gap-4 ${
                   isSelected
                     ? 'bg-slate-900 border-slate-700 shadow-md'
                     : 'bg-slate-950/70 border-slate-800/80 hover:border-slate-700'
@@ -110,19 +110,19 @@ function AuditComplianceLedgerPage() {
 
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-bold text-white truncate">{event.action_type}</span>
+                      <span className="text-sm font-mono font-bold text-white truncate">{event.action_type}</span>
                       <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-emerald-400 font-mono">
                         {event.event_id}
                       </span>
                     </div>
-                    <div className="text-[11px] text-slate-400 font-mono truncate mt-0.5">
+                    <div className="text-sm text-slate-300 font-mono truncate mt-0.5">
                       Target: {event.target_entity} • Officer: {event.officer_id}
                     </div>
                   </div>
                 </div>
 
                 <div className="text-right shrink-0">
-                  <div className="text-[10px] font-mono text-slate-500">
+                  <div className="text-xs font-mono text-slate-300">
                     {new Date(event.timestamp).toLocaleTimeString()}
                   </div>
                   <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-mono">

@@ -1,156 +1,53 @@
 import { createFileRoute } from '@tanstack/react-router';
-import React, { useState, useEffect } from 'react';
-import { evaluateSOP } from '@/services/api';
-import type { SOPEvaluationResponse } from '@/types/vajra';
-import { Cpu, ShieldAlert, CheckCircle2, Clock } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CircleHelp, Cpu, RotateCcw, Save, Search, ShieldAlert } from 'lucide-react';
+import { toast } from 'sonner';
+import { applyCaseSOPSimulation, fetchCaseSOPFusion, simulateSOP } from '@/services/api';
+import { fetchCases } from '@/services/api/cases';
+import type { Case as CaseType } from '@/types';
+import type { SOPFusionResult } from '@/types/vajra';
 import { SOPFusionStepper } from '@/components/vajra/SOPFusionStepper';
 import { SOPTierBadge } from '@/components/vajra/SOPTierBadge';
-import { toast } from 'sonner';
 
-export const Route = createFileRoute('/sop-triage')({
-  component: SOPTriagePage,
-});
+export const Route = createFileRoute('/sop-triage')({ component: SOPTriagePage });
+const initialScores = { digital: 0.75, physical: 0.68, context: 0.5 };
+type Scores = typeof initialScores;
+type Mode = 'simulation' | 'case' | 'case-simulation';
+
+function localResult(scores: Scores, override: boolean): SOPFusionResult {
+  const raw = 0.45 * scores.digital + 0.35 * scores.physical + 0.2 * scores.context;
+  const tier = override ? 'ESCALATE-FREEZE' : raw < 0.5 ? 'MONITOR' : raw < 0.7 ? 'SOFT-ALERT' : raw < 0.85 ? 'RECOMMEND-HOLD' : 'ESCALATE-FREEZE';
+  return { raw_score: raw, calibrated_score: raw, tier, contributions: { digital: 0.45 * scores.digital, physical: 0.35 * scores.physical, context: 0.2 * scores.context }, cross_border_override: override, calibration_trained: false, calibration_message: 'Model not yet trained — showing raw score', action_description: override ? 'Cross-border shift detected. Escalate for cross-border flight alert and swift-freeze coordination.' : 'Simulation result — no case changes saved' };
+}
 
 function SOPTriagePage() {
-  const [digitalScore, setDigitalScore] = useState(0.75);
-  const [physicalScore, setPhysicalScore] = useState(0.68);
-  const [contextScore, setContextScore] = useState(0.50);
-  const [imminentOverseas, setImminentOverseas] = useState(false);
-  const [sopResult, setSopResult] = useState<SOPEvaluationResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const runEvaluation = async () => {
-    setLoading(true);
-    try {
-      const res = await evaluateSOP({
-        digital_risk_score: digitalScore,
-        physical_prediction_score: physicalScore,
-        context_score: contextScore,
-        imminent_overseas_shift: imminentOverseas,
-      });
-      setSopResult(res);
-    } catch (err: any) {
-      toast.error(`SOP Evaluation failed: ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    runEvaluation();
-  }, [digitalScore, physicalScore, contextScore, imminentOverseas]);
-
-  return (
-    <div className="flex flex-col h-full bg-slate-950 text-slate-200 p-4 space-y-4 overflow-y-auto select-none">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 rounded-xl bg-slate-900 border border-slate-800 shrink-0">
-        <div className="flex items-center gap-2.5">
-          <Cpu className="w-6 h-6 text-rose-500" />
-          <div>
-            <h1 className="text-sm font-bold text-white font-mono tracking-wider">
-              MODEL 6 SOP TRIAGE & ISOTONIC CALIBRATION CONSOLE
-            </h1>
-            <p className="text-xs text-slate-400">Operational Action Tier Calibration & Disparate Impact Evaluation</p>
-          </div>
-        </div>
-
-        {sopResult && <SOPTierBadge tier={sopResult.sop_tier} className="text-xs py-1 px-3" />}
-      </div>
-
-      {/* Interactive Controls & Calibration Inputs */}
-      <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-4">
-        <h2 className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">
-          Risk Signal Sliders & Controls
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-          {/* Digital Risk */}
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
-            <div className="flex justify-between font-mono">
-              <span className="text-slate-400">Digital Risk (45%)</span>
-              <span className="text-blue-400 font-bold">{(digitalScore * 100).toFixed(0)}%</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={digitalScore}
-              onChange={(e) => setDigitalScore(parseFloat(e.target.value))}
-              className="w-full accent-blue-500 cursor-pointer"
-            />
-          </div>
-
-          {/* Physical Risk */}
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
-            <div className="flex justify-between font-mono">
-              <span className="text-slate-400">Physical Prediction (35%)</span>
-              <span className="text-amber-400 font-bold">{(physicalScore * 100).toFixed(0)}%</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={physicalScore}
-              onChange={(e) => setPhysicalScore(parseFloat(e.target.value))}
-              className="w-full accent-amber-500 cursor-pointer"
-            />
-          </div>
-
-          {/* Context Risk */}
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
-            <div className="flex justify-between font-mono">
-              <span className="text-slate-400">Context Risk (20%)</span>
-              <span className="text-slate-300 font-bold">{(contextScore * 100).toFixed(0)}%</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={contextScore}
-              onChange={(e) => setContextScore(parseFloat(e.target.value))}
-              className="w-full accent-slate-500 cursor-pointer"
-            />
-          </div>
-
-          {/* Cross Border Override Checkbox */}
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
-            <div>
-              <span className="text-xs text-purple-300 font-mono font-medium block">Cross-Border Shift</span>
-              <span className="text-[10px] text-slate-500">Imminent Overseas Override</span>
-            </div>
-            <input
-              type="checkbox"
-              checked={imminentOverseas}
-              onChange={(e) => setImminentOverseas(e.target.checked)}
-              className="w-4 h-4 accent-purple-500 rounded cursor-pointer"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* SOP Fusion Stepper */}
-      <SOPFusionStepper
-        sop={sopResult}
-        digitalScore={digitalScore}
-        physicalScore={physicalScore}
-        contextScore={contextScore}
-      />
-
-      {/* Explanations & Action Description */}
-      {sopResult && (
-        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
-          <div className="font-mono text-slate-400 font-semibold uppercase tracking-wider">Action Description</div>
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 font-mono">
-            {sopResult.action_description}
-          </div>
-          <p className="text-[10px] text-slate-500 leading-relaxed pt-1">
-            {sopResult.legal_authority_disclaimer}
-          </p>
-        </div>
-      )}
-    </div>
-  );
+  const [scores, setScores] = useState<Scores>(initialScores);
+  const [override, setOverride] = useState(false);
+  const [result, setResult] = useState<SOPFusionResult>(() => localResult(initialScores, false));
+  const [mode, setMode] = useState<Mode>('simulation');
+  const [caseQuery, setCaseQuery] = useState('');
+  const [cases, setCases] = useState<CaseType[]>([]);
+  const [selectedCase, setSelectedCase] = useState<CaseType | null>(null);
+  const [saving, setSaving] = useState(false);
+  useEffect(() => { fetchCases().then(setCases).catch(() => undefined); }, []);
+  const filteredCases = useMemo(() => { const query = caseQuery.trim().toLowerCase(); return cases.filter((item) => !query || JSON.stringify(item).toLowerCase().includes(query)).slice(0, 6); }, [caseQuery, cases]);
+  const payload = () => ({ digital: scores.digital, physical: scores.physical, context: scores.context, cross_border_override: override });
+  const loadCase = async (item: CaseType) => { try { const fusion = await fetchCaseSOPFusion(item.id); setSelectedCase(item); setMode('case'); setCaseQuery(item.caseId || item.id); setOverride(fusion.cross_border_override); setResult(fusion); setScores({ digital: fusion.contributions.digital / 0.45, physical: fusion.contributions.physical / 0.35, context: fusion.contributions.context / 0.2 }); } catch (error) { toast.error(error instanceof Error ? error.message : 'Stored SOP values are unavailable for this case.'); } };
+  const simulate = (next: Scores, nextOverride: boolean) => { setResult(localResult(next, nextOverride)); void simulateSOP({ ...next, cross_border_override: nextOverride }).then(setResult).catch(() => undefined); };
+  const changeScore = (key: keyof Scores, value: number) => { if (mode === 'case') return; const next = { ...scores, [key]: value }; setScores(next); simulate(next, override); };
+  const toggleOverride = (checked: boolean) => { if (mode === 'case') return; setOverride(checked); simulate(scores, checked); };
+  const resetSimulation = () => { setMode('simulation'); setSelectedCase(null); setCaseQuery(''); setOverride(false); setScores(initialScores); setResult(localResult(initialScores, false)); };
+  const resetToLiveValues = async () => { if (!selectedCase) return resetSimulation(); await loadCase(selectedCase); toast.success('Live case values restored. Case Review is read-only.'); };
+  const applySimulation = async () => { if (!selectedCase) return; setSaving(true); try { setResult(await applyCaseSOPSimulation(selectedCase.id, payload())); setMode('case'); toast.success('Simulation applied and audit event recorded. Case Review is now read-only.'); } catch (error) { toast.error(error instanceof Error ? error.message : 'Unable to apply simulation.'); } finally { setSaving(false); } };
+  const slider = (key: keyof Scores, label: string, weight: number, tone: string) => <div className={`space-y-2 rounded-lg border border-slate-800 bg-slate-950 p-3 ${mode === 'case' || override ? 'opacity-45' : ''}`}><div className="flex justify-between font-mono text-sm"><span className="text-slate-300">{label} ({weight * 100}%)</span><span className={`${tone} font-bold`}>{Math.round(scores[key] * 100)}%</span></div><input aria-label={label} disabled={mode === 'case'} type="range" min="0" max="1" step="0.01" value={scores[key]} onChange={(event) => changeScore(key, Number(event.target.value))} className="w-full accent-blue-500 disabled:cursor-not-allowed" /><div className="flex items-center gap-1 text-xs text-slate-500">Contribution: {result.contributions[key].toFixed(3)}<span title={`Contribution = weight × signal value (${weight.toFixed(2)} × ${Math.round(scores[key] * 100)}% = ${result.contributions[key].toFixed(3)})`} className="cursor-help text-slate-300" aria-label="Contribution calculation help"><CircleHelp className="h-3 w-3" /></span></div></div>;
+  const sop = { raw_fusion_score: result.raw_score, calibrated_score: result.calibrated_score, sop_tier: result.tier, action_description: result.action_description || '', cross_border_override: result.cross_border_override, fusion_weights: { digital: 0.45, physical: 0.35, context: 0.2 }, explanations: [], legal_authority_disclaimer: result.legal_authority_disclaimer || '', model_version: 'Model 6', calibration_trained: result.calibration_trained, calibration_message: result.calibration_message };
+  const reasonCodes = [{ label: 'Digital risk', value: scores.digital, contribution: result.contributions.digital }, { label: 'Physical prediction confidence', value: scores.physical, contribution: result.contributions.physical }, { label: 'Context risk', value: scores.context, contribution: result.contributions.context }].sort((a, b) => b.contribution - a.contribution).slice(0, 3);
+  const tierMeaning: Record<string, string> = { MONITOR: 'Monitor account activity under normal operating procedures. No account restriction is applied at this tier.', 'SOFT-ALERT': 'Notify the assigned officer and monitor account activity. No account restriction is applied at this tier.', 'RECOMMEND-HOLD': 'Recommend a temporary hold for authorized review before further cash-out activity.', 'ESCALATE-FREEZE': 'Escalate immediately for authorized freeze review and operational response.' };
+  const banner = mode === 'simulation' ? 'SIMULATION MODE — results are not saved' : mode === 'case-simulation' ? `CASE SIMULATION MODE — ${selectedCase?.caseId || selectedCase?.id} is not yet changed` : `CASE REVIEW MODE — viewing ${selectedCase?.caseId || selectedCase?.id} (read-only)`;
+  return <div className="flex min-h-full flex-col gap-4 overflow-y-auto bg-slate-950 p-4 text-slate-200 select-none">
+    <header className="rounded-xl border border-slate-800 bg-slate-900 p-4"><div className="flex flex-wrap items-start justify-between gap-4"><div className="flex items-start gap-3"><Cpu className="mt-1 h-6 w-6 text-rose-500" /><div><h1 className="font-mono text-base font-bold tracking-wider text-white">MODEL 6 SOP TRIAGE &amp; ISOTONIC CALIBRATION CONSOLE</h1><p className="mt-1 text-sm text-slate-400">Operational Action Tier Calibration &amp; Disparate Impact Evaluation</p></div></div><SOPTierBadge tier={result.tier} override={result.cross_border_override} className="px-3 py-1 text-xs" /></div></header>
+    <section className="space-y-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div className={`inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-mono ${mode === 'simulation' ? 'border-cyan-800 bg-cyan-950/40 text-cyan-200' : 'border-amber-800 bg-amber-950/40 text-amber-200'}`}><ShieldAlert className="h-3.5 w-3.5" />{banner}</div><div className="relative flex items-center gap-2"><Search className="h-4 w-4 text-slate-500" /><input value={caseQuery} onChange={(event) => { setCaseQuery(event.target.value); if (!event.target.value) resetSimulation(); }} placeholder="Search case ID or account ID" className="w-64 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 pl-8 text-sm text-slate-200 placeholder:text-slate-500" />{caseQuery && mode === 'simulation' && <div className="absolute right-0 top-10 z-10 w-64 rounded-md border border-slate-700 bg-slate-900 p-1 shadow-xl">{filteredCases.map((item) => <button key={item.id} onClick={() => void loadCase(item)} className="block w-full rounded px-3 py-2 text-left text-xs text-slate-300 hover:bg-slate-800">{item.caseId || item.id}<span className="block text-slate-500">{item.title}</span></button>)}{!filteredCases.length && <div className="px-3 py-2 text-xs text-slate-500">No matching cases</div>}</div>}</div></div><h2 className="font-mono text-sm font-semibold uppercase tracking-wider text-slate-300">Risk Signal Controls</h2><div className="grid grid-cols-1 gap-4 md:grid-cols-4">{slider('digital', 'Digital Risk', 0.45, 'text-blue-400')}{slider('physical', 'Physical Prediction', 0.35, 'text-amber-400')}{slider('context', 'Context Risk', 0.2, 'text-slate-300')}<label className={`flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950 p-3 ${mode === 'case' ? 'opacity-45' : ''}`}><span><span className="block font-mono text-sm font-medium text-purple-300">Cross-Border Shift</span><span className="text-xs text-slate-500">Force escalation override</span></span><input type="checkbox" checked={override} disabled={mode === 'case'} onChange={(event) => toggleOverride(event.target.checked)} className="h-5 w-5 accent-purple-500" /></label></div></section>
+    <SOPFusionStepper sop={sop} digitalScore={scores.digital} physicalScore={scores.physical} contextScore={scores.context} />
+    <section className="space-y-3 rounded-xl border border-slate-800 bg-slate-900 p-4"><div className="font-mono text-sm font-semibold uppercase tracking-wider text-slate-300">Action Description</div>{result.cross_border_override ? <div className="rounded-lg border border-rose-800 bg-rose-950/40 p-3 text-sm text-rose-100">Cross-border shift override is active. Normal tier guidance is bypassed: escalate for cross-border flight alert and authorized swift-freeze coordination.</div> : <div className="rounded-lg border border-slate-800 bg-slate-950 p-3 text-sm text-slate-200"><p><strong>{result.tier}:</strong> {tierMeaning[result.tier] || result.action_description}</p><ul className="mt-3 list-disc space-y-1 pl-5 text-xs text-slate-400">{reasonCodes.map((reason) => <li key={reason.label}>{reason.label} elevated ({Math.round(reason.value * 100)}%; contribution {reason.contribution.toFixed(3)})</li>)}</ul></div>}<div className="flex flex-wrap gap-2 pt-2">{mode === 'case' && <><button onClick={() => setMode('case-simulation')} className="inline-flex items-center gap-2 rounded-md bg-cyan-700 px-3 py-2 text-sm text-white hover:bg-cyan-600">Simulate Against This Case</button><button onClick={resetSimulation} className="inline-flex items-center gap-2 rounded-md border border-slate-700 px-3 py-2 text-sm text-slate-200 hover:bg-slate-800"><RotateCcw className="h-4 w-4" /> Return to Simulation</button></>}{mode === 'case-simulation' && <><button onClick={() => void applySimulation()} disabled={saving} className="inline-flex items-center gap-2 rounded-md bg-rose-700 px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"><Save className="h-4 w-4" /> Apply to Case</button><button onClick={() => void resetToLiveValues()} className="inline-flex items-center gap-2 rounded-md border border-slate-700 px-3 py-2 text-sm text-slate-200 hover:bg-slate-800"><RotateCcw className="h-4 w-4" /> Reset to Live Values</button></>}</div></section>
+  </div>;
 }

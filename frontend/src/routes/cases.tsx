@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Panel } from "@/components/aml/Panel";
@@ -27,6 +27,12 @@ function CasesPage() {
   const sarCase = useSarCase();
 
   const filtered = list.filter((c) => status === "ALL" || c.status === status);
+  const formatCaseDate = (timestamp?: number, includeTime = false) => {
+    if (timestamp == null || !Number.isFinite(timestamp)) return "Date unavailable";
+    const date = new Date(timestamp);
+    if (Number.isNaN(date.getTime())) return "Date unavailable";
+    return includeTime ? date.toLocaleString() : date.toLocaleDateString();
+  };
 
   const handleAssign = async () => {
     if (!selected) return;
@@ -130,9 +136,9 @@ function CasesPage() {
                   <td className="text-[11px] text-muted-foreground">{c.linkedAlerts} alerts</td>
                   <td className="text-[11px]">{c.officer}</td>
                   <td><StatusBadge status={c.status} /></td>
-                  <td className="mono text-[10px] text-muted-foreground">{new Date(c.createdAt).toLocaleDateString()}</td>
-                  <td><SLATimer dueAt={c.slaDueAt} /></td>
-                  <td className="mono text-[10px] text-warning">{c.escalation}</td>
+                  <td className="mono text-[10px] text-muted-foreground">{formatCaseDate(c.createdAt)}</td>
+                  <td>{c.slaDueAt == null ? <span className="text-muted-foreground">—</span> : <SLATimer dueAt={c.slaDueAt} />}</td>
+                  <td className="mono text-[10px] text-warning">{c.escalation || "—"}</td>
                 </tr>
               ))}
             </tbody>
@@ -151,13 +157,20 @@ function CasesPage() {
             </header>
             <div className="p-4 space-y-4">
               <div className="text-sm font-medium">{selected.title}</div>
+              <Link
+                to="/mule-ring-investigator"
+                search={{ accountId: selected.userId, caseId: selected.caseId ?? selected.id, alertId: selected.sourceAlert }}
+                className="inline-flex min-h-10 items-center rounded-md border border-rose-800/70 bg-rose-950/30 px-3 text-xs font-semibold text-rose-200 hover:bg-rose-950/60"
+              >
+                Open Mule Ring Investigation
+              </Link>
               <div className="grid grid-cols-3 gap-2 text-xs">
                 <Field label="Officer" value={selected.officer} />
                 <Field label="Status" value={<StatusBadge status={selected.status} />} />
-                <Field label="Escalation" value={selected.escalation} />
+                <Field label="Escalation" value={selected.escalation || "—"} />
                 <Field label="Linked alerts" value={`${selected.linkedAlerts}`} />
-                <Field label="Created" value={new Date(selected.createdAt).toLocaleString()} />
-                <Field label="SLA" value={<SLATimer dueAt={selected.slaDueAt} />} />
+                <Field label="Created" value={formatCaseDate(selected.createdAt, true)} />
+                <Field label="SLA" value={selected.slaDueAt == null ? "—" : <SLATimer dueAt={selected.slaDueAt} />} />
                 <Field label="SAR status" value={selected.sarStatus ?? "—"} />
                 <Field label="Source alert" value={selected.sourceAlert ?? selected.sourceAlerts?.[0] ?? "—"} />
                 <Field label="Case id" value={selected.caseId ?? selected.id} />

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Panel } from "@/components/aml/Panel";
 import { RiskScoreBadge } from "@/components/aml/Badges";
@@ -96,6 +96,7 @@ function AccountsPage() {
                       <div className="flex flex-wrap items-center gap-2">
                         <RiskScoreBadge score={selectedAccount.riskScore ?? 0} />
                         <span className="text-[10px] mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border">{safeValue(selectedAccount.risk_level ?? selectedAccount.riskTier)}</span>
+                        <Link to="/mule-ring-investigator" search={{ accountId: selectedAccount.id, caseId: undefined, alertId: undefined }} className="rounded-md border border-rose-800/70 bg-rose-950/30 px-3 py-2 text-xs font-semibold text-rose-200 hover:bg-rose-950/60">Investigate Mule Ring</Link>
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

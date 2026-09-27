@@ -300,14 +300,14 @@ function AlertDrawer({ a, onClose }: { a: Alert; onClose: () => void }) {
             <div className="grid grid-cols-2 gap-2 font-mono">
               <Link
                 to="/mule-ring-investigator"
-                search={{ accountId: a.userId, caseId: `CASE-${a.id}` }}
+                search={{ accountId: a.userId, caseId: a.caseId || undefined, alertId: a.id }}
                 className="p-2 rounded bg-slate-800 hover:bg-slate-700 text-rose-300 text-center transition"
               >
                 Mule Ring Analysis →
               </Link>
               <Link
                 to="/legal-dossier-vault"
-                search={{ caseId: `CASE-${a.id}` }}
+                search={{ caseId: a.caseId || undefined }}
                 className="p-2 rounded bg-slate-800 hover:bg-slate-700 text-emerald-300 text-center transition"
               >
                 Legal Dossier PDF →

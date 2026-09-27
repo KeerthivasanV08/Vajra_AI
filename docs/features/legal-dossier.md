@@ -6,7 +6,7 @@
 
 ## 1. Overview & Purpose
 
-The Legal Dossier Generator compiles court-admissible evidence packages summarizing complaint details, ML physical predictions, candidate node rankings, SOP triage decisions, and cryptographic hash verification into a formatted PDF document.
+The Legal Dossier Generator compiles system-generated investigative evidence packages summarizing available case context, ML physical predictions, candidate node rankings, SOP triage decisions, and cryptographic hash verification into a formatted PDF document. It is not a court filing, legal notice, warrant, certification, or automatic claim of admissibility.
 
 ---
 

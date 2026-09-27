@@ -1,6 +1,4 @@
-"""
-VAJRA Platform Core TypeScript Interfaces & Schemas
-"""
+// VAJRA Platform Core TypeScript Interfaces & Schemas
 
 export type SOPTier = 
   | 'MONITOR'
@@ -99,6 +97,26 @@ export interface SOPEvaluationResponse {
   explanations: string[];
   legal_authority_disclaimer: string;
   model_version: string;
+  calibration_trained?: boolean;
+  calibration_message?: string;
+}
+
+export interface SOPFusionResult {
+  raw_score: number;
+  calibrated_score: number;
+  tier: string;
+  contributions: {
+    digital: number;
+    physical: number;
+    context: number;
+  };
+  cross_border_override: boolean;
+  action_description?: string;
+  legal_authority_disclaimer?: string;
+  case_id?: string;
+  calculated_at?: string;
+  calibration_trained?: boolean;
+  calibration_message?: string;
 }
 
 export interface LEAUnt {
@@ -185,16 +203,28 @@ export interface DispatchResponse {
 export interface LegalDossierResponse {
   dossier_id: string;
   case_id: string;
-  created_at: string;
-  issuing_officer: string;
-  evidence_sha256: string;
-  integrity_verified: boolean;
-  sections: {
-    complaint: Record<string, any>;
-    transaction_trail: Record<string, any>;
-    prediction: Record<string, any>;
-    preservation_directives: Record<string, any>;
-  };
+  generated_at: string;
+  officer_id: string;
+  evidence_hash: string;
+  document_hash: string;
+  audit_event_id: string;
+  download_url: string;
+  version: number;
+  status: 'READY' | 'FAILED' | 'GENERATING' | string;
+  integrity_status: 'VERIFIED' | 'FAILED' | string;
+  case_summary?: Record<string, unknown>;
+  complaint?: Record<string, unknown>;
+  prediction?: Record<string, unknown>;
+  sop_decision?: Record<string, unknown>;
+  data_provenance?: Record<string, unknown>;
+}
+
+export interface DossierVerificationResult {
+  dossier_id: string;
+  verified: boolean;
+  stored_hash: string | null;
+  actual_hash: string | null;
+  integrity_status: string;
 }
 
 export interface AuditReverifyResponse {
@@ -213,19 +243,111 @@ export interface FairnessSummary {
     predicted_high_risk_pct: number;
     confirmed_fraud_pct: number;
     disparate_impact_ratio: number;
-    status: 'REVIEW' | 'WITHIN THRESHOLD' | 'REQUIRES INVESTIGATION';
+    status: 'OK' | 'REVIEW' | 'FLAGGED' | 'N/A';
   }>;
+}
+
+export interface FairnessRegion {
+  region_id: string;
+  region_name: string;
+  state: string;
+  number_of_predictions: number;
+  number_of_true_cases: number;
+  number_of_false_positives: number;
+  number_of_false_negatives: number;
+  predicted_high_risk_pct: number | null;
+  confirmed_fraud_pct: number | null;
+  disparate_impact_ratio: number | null;
+  governance_flag: 'OK' | 'REVIEW' | 'FLAGGED' | 'N/A';
+  calculated_at: string;
+}
+
+export interface FairnessRegionDetail extends FairnessRegion {
+  dir_trend_30d: Array<{ date: string; dir: number | null }>;
+}
+
+export type FieldStatus = 'DISPATCHED' | 'EN_ROUTE' | 'ON_SITE' | 'ACTION_TAKEN';
+export interface FieldDispatch {
+  dispatch_id: string;
+  alert_id?: string | null;
+  case_id?: string;
+  prediction_id?: string;
+  target_node_id?: string;
+  target_coordinates?: { latitude?: number | null; longitude?: number | null };
+  node?: WithdrawalNode | null;
+  requested_by: string;
+  timestamp: string;
+  deadline?: string;
+  field_status?: FieldStatus;
+  field_status_updated_at?: string;
+  bank_nodal_phone?: string | null;
+  mock_mode?: boolean;
+}
+
+export interface FieldDispatchEvent {
+  dispatch_id: string;
+  officer_id?: string | null;
+  node_id?: string | null;
+  status: FieldStatus;
+  gps_lat?: number | null;
+  gps_lon?: number | null;
+  status_timestamp?: string | null;
+  outcome?: 'intercepted' | 'missed' | 'false_alarm' | null;
+  notes?: string | null;
 }
 
 export interface SyndicateMatchResponse {
   account_id: string;
   pattern_name: string;
-  confidence: number;
+  confidence: number | null;
   matched_tags: Array<{
     tag: string;
     investigative_only: boolean;
   }>;
   summary: string;
+}
+
+export interface MuleRingTransaction {
+  transaction_id: string | null;
+  from_account: string | null;
+  to_account: string | null;
+  from_bank?: string | null;
+  to_bank?: string | null;
+  amount: number | null;
+  timestamp: string | null;
+  channel: string | null;
+  location: string | null;
+  elapsed_mins: number | null;
+  velocity_mins: number | null;
+  latitude: number | null;
+  longitude: number | null;
+}
+
+export interface MuleRingHop {
+  role: 'ORIGIN' | 'LAYER_MULE' | 'TERMINAL_MULE';
+  step: number;
+  account_id: string | null;
+  bank: string | null;
+  amount: number | null;
+  timestamp: string | null;
+  location: string | null;
+  transaction_id: string | null;
+}
+
+export interface MuleRingInvestigationResponse {
+  account_id: string;
+  status: 'SUCCESS' | 'EMPTY';
+  case_context: Record<string, string>;
+  account?: Record<string, unknown> | null;
+  hops: MuleRingHop[];
+  transactions: MuleRingTransaction[];
+  kpis: {
+    hops_traced: number;
+    fan_out_factor: number | null;
+    total_stolen: number | null;
+    layering_time_mins: number | null;
+    terminal_mules: number;
+  };
 }
 
 export interface SimulationResult {
@@ -251,5 +373,72 @@ export interface ModelMetricsResponse {
     version: string;
     metrics: Record<string, number | string>;
     warning_notes?: string[];
+  }>;
+}
+
+export interface MuleAccountSearchResult {
+  account_id: string;
+  account_id_masked: string;
+  holder_name_masked: string;
+  bank: string;
+  risk_tier: string | null;
+  linked_case_id: string | null;
+}
+
+export interface MuleTraceHop {
+  role: "layer_mule" | "terminal_mule";
+  from_role: "victim" | "layer_mule";
+  step: number;
+  from_account: string | null;
+  from_bank: string | null;
+  to_account: string | null;
+  to_bank: string | null;
+  amount: number | null;
+  velocity_min: number | null;
+  elapsed_min: number | null;
+  layer_number: number;
+  transaction_id: string | null;
+  location: string | null;
+}
+
+export interface MuleTraceResponse {
+  case_id: string | null;
+  alert_id: string | null;
+  account_id: string;
+  trace_source?: string;
+  graph_status?: string;
+  status_reason?: string | null;
+  origin: { account_id: string; role: "victim" } | null;
+  status: "SUCCESS" | "EMPTY";
+  kpis: {
+    hops_traced: number;
+    fan_out_factor: number | null;
+    total_flow_value: number | null;
+    layering_time_min: number | null;
+    terminal_mule_count: number;
+  };
+  hops: MuleTraceHop[];
+  transactions: MuleRingTransaction[];
+  predicted_terminal: { node_id: string; lat: number; lon: number; confidence_pct: number } | null;
+}
+
+export interface MuleFingerprintResponse {
+  status?: "SUCCESS" | "UNAVAILABLE";
+  reason?: string;
+  patterns: Array<{
+    pattern_name: string;
+    match_confidence: number | null;
+    matching_features: string[];
+  }>;
+}
+
+export interface MulePredictedTerminalsResponse {
+  status?: "SUCCESS" | "EMPTY" | "UNAVAILABLE";
+  reason?: string;
+  candidates: Array<{
+    rank: number;
+    node_id: string;
+    distance_from_corridor_km: number | null;
+    confidence_pct: number | null;
   }>;
 }

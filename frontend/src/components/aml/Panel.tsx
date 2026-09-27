@@ -11,8 +11,8 @@ export function Panel({
       {(title || action) && (
         <header className="flex items-center justify-between px-3 py-2 border-b border-border">
           <div className="min-w-0">
-            {title && <div className="text-[11px] uppercase tracking-[0.18em] font-medium truncate">{title}</div>}
-            {subtitle && <div className="text-[10px] text-muted-foreground mt-0.5">{subtitle}</div>}
+            {title && <div className="vajra-card-title uppercase tracking-[0.1em] truncate">{title}</div>}
+            {subtitle && <div className="vajra-body-small text-slate-300 mt-0.5">{subtitle}</div>}
           </div>
           {action}
         </header>
@@ -48,11 +48,11 @@ export function StatCard({
       <div className="absolute inset-0 grid-bg opacity-[0.05]" />
       <div className="relative">
         <div className="flex items-center justify-between text-muted-foreground">
-          <span className="text-[10px] uppercase tracking-[0.18em]">{label}</span>
+          <span className="vajra-label uppercase tracking-[0.1em]">{label}</span>
           {icon}
         </div>
-        <div className={`mt-1 text-2xl font-semibold mono ${valTone}`}>{value}</div>
-        <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+        <div className={`mt-1 vajra-kpi mono ${valTone}`}>{value}</div>
+        <div className="mt-1 flex items-center gap-2 vajra-body-small text-slate-300">
           {sub}
           {trend && (
             <span className={`mono ${trend.dir === "up" ? "text-success" : "text-critical"}`}>
