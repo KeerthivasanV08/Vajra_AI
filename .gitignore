@@ -1,71 +1,103 @@
-# Environment and secrets
+# ==========================================
+# Operating System Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+ehthumbs_vista.db
+Thumbs.db
+Thumbs.db:encryptable
+desktop.ini
+$RECYCLE.BIN/
+
+# ==========================================
+# IDE & Editor Files
+# ==========================================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.user
+*.userosscache
+*.sln.docstates
+
+# ==========================================
+# Environment & Secret Files
+# ==========================================
 .env
-.env.*
-.venv
-venv
-env
-**/.venv/
-**/venv/
-**/env/
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
 
-# Python artifacts
-__pycache__/
-**/__pycache__/
-*.py[cod]
-*.pyo
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.coverage
-htmlcov/
-.tox/
-.nox/
-*.egg-info/
-.Python
-pip-wheel-metadata/
+# Safe environment templates (never ignore)
+!.env.example
+!.env.example.*
+!*.example
 
-# Node artifacts
-node_modules/
-dist/
-dist-ssr/
-coverage/
-
-# Logs
-logs/
+# ==========================================
+# Logs & Temporary Files
+# ==========================================
 *.log
+logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+*.tmp
+*.temp
+temp/
+tmp/
+*.swp
+*.swo
+*~
 
-# Serialized and model artifacts
-*.pkl
-*.pickle
-*.joblib
-*.h5
-*.pt
-*.pth
+# ==========================================
+# Python Development Artifacts
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+.ipynb_checkpoints/
+*.egg-info/
+.Python
+pip-wheel-metadata/
 
-# OS and editor files
-.DS_Store
-*.sw?
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-.vscode/*
-!.vscode/extensions.json
-.idea/
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
 
-# Local overrides
-
-*.local
-new_version/
-
-# Large generated files
-data/processed/alerts.csv
-data/processed/explainability_log.csv
-data/processed/reports.csv
-
-data/processed/runtime/
+# ==========================================
+# Node & Build Artifacts
+# ==========================================
+node_modules/
+.npm/
+.eslintcache
+.parcel-cache/
+.turbo/
+.cache/
+dist/
+dist-ssr/
+coverage/
