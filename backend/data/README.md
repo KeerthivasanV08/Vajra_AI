@@ -93,3 +93,9 @@ Validate all data constraints & referential integrity:
 ```bash
 python -m data.validation.validate_all
 ```
+
+## Deployment Notes
+
+The backend resolves datasets from `backend/data`, so include the required bundled raw, processed, and reference inputs in the deployed backend release. Model artifacts are stored separately under `backend/models` and `backend/app/models`; both the data and required artifacts must be present for startup and runtime workflows. Do not mount an empty persistent disk over `backend/data`, as it would mask the bundled inputs.
+
+All data in this repository is synthetic. The backend also writes mutable CSV audit and runtime state beneath this directory; on Render's default ephemeral filesystem those records do not survive restarts or redeploys. See the [backend deployment guide](../../docs/deployment/backend-render.md) before choosing a persistence strategy.

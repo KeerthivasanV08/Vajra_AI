@@ -2,9 +2,8 @@ import os
 import pandas as pd
 from itertools import combinations
 
-from pathlib import Path
 from neo4j import GraphDatabase
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 
 from app.core import storage_paths
 
@@ -34,27 +33,28 @@ def to_iso_datetime(value):
 # LOAD ENV
 # =====================================================
 
-SCRIPT_DIR = Path(__file__).resolve().parent
+BACKEND_DIR = storage_paths.BACKEND_DIR
+for env_path in (BACKEND_DIR / ".env", BACKEND_DIR.parent / ".env"):
+    if env_path.is_file():
+        load_dotenv(env_path, override=False)
 
-PROJECT_ROOT = BASE_DIR
+NEO4J_URI = os.getenv("NEO4J_URI")
+NEO4J_USER = os.getenv("NEO4J_USER") or os.getenv("NEO4J_USERNAME")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 
-for candidate in (
-    find_dotenv(usecwd=True),
-    str(SCRIPT_DIR / ".env"),
-    str(PROJECT_ROOT / ".env"),
-    str(PROJECT_ROOT.parent / ".env")
-):
-    if candidate:
-        load_dotenv(candidate, override=False)
-
-NEO4J_URI = os.getenv("NEO4J_URI") or "bolt://localhost:7687"
-NEO4J_USER = os.getenv("NEO4J_USER") or "neo4j"
-NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD") or "neo4j"
-
-if not os.getenv("NEO4J_URI"):
-    print(
-        "⚠️ NEO4J_URI was not set. Falling back to bolt://localhost:7687 "
-        "for local Neo4j connectivity."
+missing_neo4j_settings = [
+    name
+    for name, value in (
+        ("NEO4J_URI", NEO4J_URI),
+        ("NEO4J_USER", NEO4J_USER),
+        ("NEO4J_PASSWORD", NEO4J_PASSWORD),
+    )
+    if not value
+]
+if missing_neo4j_settings:
+    raise RuntimeError(
+        "Configure Neo4j before running this loader; missing: "
+        + ", ".join(missing_neo4j_settings)
     )
 
 

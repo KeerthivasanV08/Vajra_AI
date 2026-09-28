@@ -12,6 +12,7 @@ from app.services.vajra.node_vulnerability_service import node_vulnerability_ser
 from app.services.vajra.node_ranking_service import node_ranking_service
 from app.repositories.prediction_repository import prediction_repository
 from app.core.constants import DATA_PROVENANCE_SYNTHETIC
+from app.core.exceptions import InvalidPredictionInputError
 
 class PhysicalPredictionService:
     def execute_physical_prediction(
@@ -28,12 +29,30 @@ class PhysicalPredictionService:
 
         # 1. Model 1 Trajectory prediction
         session_dict = session_data or {}
+        previous_lat = session_dict.get("previous_geo_lat", session_dict.get("prev_lat"))
+        previous_lon = session_dict.get("previous_geo_lon", session_dict.get("prev_lon"))
+        previous_time = session_dict.get(
+            "time_since_previous_session_sec",
+            session_dict.get("time_since_previous_sec"),
+        )
+        geo_accuracy = session_dict.get("geo_accuracy_km")
+        if any(value is None for value in (previous_lat, previous_lon, previous_time, geo_accuracy)):
+            raise InvalidPredictionInputError(
+                "Observed prior-session coordinates, elapsed time, and geo accuracy are required."
+            )
+
         trajectory_res = trajectory_service.predict_trajectory(
             account_id=account_id,
             geo_lat=geo_lat,
             geo_lon=geo_lon,
+            prev_lat=previous_lat,
+            prev_lon=previous_lon,
             vpn_flag=session_dict.get("vpn_flag", 0),
-            session_sequence_number=session_dict.get("session_sequence_number", 1)
+            proxy_flag=session_dict.get("proxy_flag", 0),
+            tor_flag=session_dict.get("tor_flag", 0),
+            session_sequence_number=session_dict.get("session_sequence_number", 1),
+            time_since_previous_sec=previous_time,
+            geo_accuracy_km=geo_accuracy,
         )
 
         pred_lat = trajectory_res["predicted_lat"]
@@ -41,14 +60,29 @@ class PhysicalPredictionService:
         traj_conf = trajectory_res["trajectory_confidence"]
 
         # 2. Model 3 Spatial Region prediction
-        region_res = spatial_prediction_service.predict_spatial_region({
-            "account_age_days": session_dict.get("account_age_days", 180),
-            "device_age_days": session_dict.get("device_age_days", 90),
-            "domestic_session_ratio": session_dict.get("domestic_session_ratio", 0.95),
-            "transaction_count": session_dict.get("transaction_count", 15),
-            "average_transaction_amount": session_dict.get("average_transaction_amount", 45000.0),
-            "total_transaction_amount": session_dict.get("total_transaction_amount", 675000.0)
-        })
+        spatial_context = session_dict.get("spatial_features", {})
+        if not isinstance(spatial_context, dict):
+            spatial_context = {}
+        spatial_features = {
+            feature: spatial_context.get(feature, session_dict.get(feature))
+            for feature in (
+                "account_age_days",
+                "device_age_days",
+                "domestic_session_ratio",
+                "transaction_count",
+                "average_transaction_amount",
+                "total_transaction_amount",
+                "device_shared_count",
+                "rolling_1h_sum",
+                "rolling_24h_sum",
+                "txn_count_1h",
+                "txn_count_24h",
+                "unique_counterparties_24h",
+                "drain_ratio_reference",
+                "fragmentation_score_reference",
+            )
+        }
+        region_res = spatial_prediction_service.predict_spatial_region(spatial_features)
 
         # 3. Non-ML Top-20 Candidate Generation
         candidates = candidate_generation_service.generate_top20_candidates(

@@ -11,6 +11,7 @@ class LiveAttackSimulationRequest(BaseModel):
     initial_amount_inr: Optional[float] = Field(250000.0, ge=0.0)
     origin_lat: Optional[float] = Field(28.6139, ge=-90.0, le=90.0)
     origin_lon: Optional[float] = Field(77.2090, ge=-180.0, le=180.0)
+    session_data: Optional[Dict[str, Any]] = None
 
 class LiveAttackSimulationResponse(BaseModel):
     simulation_id: str

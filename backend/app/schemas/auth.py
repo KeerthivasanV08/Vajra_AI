@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 class TokenRequest(BaseModel):
     username: str = Field(..., example="officer_delhi")
-    password: str = Field(..., example="admin123")
+    password: str
 
 class TokenResponse(BaseModel):
     access_token: str

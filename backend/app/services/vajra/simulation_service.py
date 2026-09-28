@@ -20,7 +20,8 @@ class SimulationService:
         mule_chain: Optional[list] = None,
         initial_amount_inr: float = 250000.0,
         origin_lat: float = 28.6139,
-        origin_lon: float = 77.2090
+        origin_lon: float = 77.2090,
+        session_data: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Execute simulated multi-hop cybercrime attack pipeline."""
         start_time = time.time()
@@ -40,7 +41,8 @@ class SimulationService:
             geo_lat=origin_lat,
             geo_lon=origin_lon,
             digital_risk_score=digital_res["digital_risk_score"],
-            mule_probability=digital_res["mule_probability"]
+            mule_probability=digital_res["mule_probability"],
+            session_data=session_data,
         )
         prediction_latency_ms = round((time.time() - t1) * 1000, 2)
 

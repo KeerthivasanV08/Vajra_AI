@@ -105,15 +105,18 @@ def get_syndicate_fingerprint(case_id: str, user: dict = Depends(get_current_use
     velocities = [item["velocity_mins"] for item in transactions if item.get("velocity_mins") is not None]
     kpis = trace["kpis"]
     average_velocity = sum(velocities) / len(velocities) if velocities else 0.0
-    # The terminal reference is sourced from observed graph risk when present;
-    # absent evidence means this Model 8 request cannot be truthfully scored.
+    # The terminal reference is sourced from observed graph risk when present.
+    # When no graph-risk evidence exists for the terminal account, we fall back
+    # to a neutral 0.5 reference score and append an investigative disclaimer
+    # so the officer is aware that confidence values are estimates only.
     terminal_account = transactions[-1].get("to_account") if transactions else None
     terminal_features = get_account_graph_features(terminal_account or "") or {}
     terminal_risk = terminal_features.get("graph_score")
     if terminal_risk in (None, ""):
         terminal_risk = transactions[-1].get("graph_score") if transactions else None
+    estimated_terminal_risk = terminal_risk is None
     if terminal_risk is None:
-        return {"patterns": [], "status": "UNAVAILABLE", "reason": "Terminal account has no observed graph-risk feature"}
+        terminal_risk = 0.5  # neutral fallback — no observed graph risk for terminal
     try:
         result = syndicate_service.match_syndicate_fingerprint({
             "account_id": trace["account_id"],
@@ -132,6 +135,11 @@ def get_syndicate_fingerprint(case_id: str, user: dict = Depends(get_current_use
         f"{kpis['layering_time_min'] or 0.0:g} minutes layering time",
         f"{average_velocity:g} minutes average transfer velocity",
     ]
+    if estimated_terminal_risk:
+        features.append(
+            "Terminal node risk reference is estimated (0.5 neutral) — "
+            "no observed graph-risk evidence for this terminal account"
+        )
     matches = result.get("top_matches") or [{
         "pattern_type": result.get("pattern_name", "Unknown pattern"),
         "similarity_score": result.get("match_confidence"),
@@ -155,7 +163,19 @@ def get_predicted_terminals(case_id: str, user: dict = Depends(get_current_user)
         return {"candidates": [], "status": "UNAVAILABLE", "reason": trace.get("status_reason")}
     context = get_account_prediction_context(trace["account_id"])
     if not context:
-        return {"candidates": [], "status": "UNAVAILABLE", "reason": "No complete account, velocity, and geographic feature context is linked to this account"}
+        # Distinguish: account exists but geo session is missing vs. full profile missing
+        geo_session = get_latest_geo_session(trace["account_id"])
+        if not geo_session:
+            reason = (
+                "No geographic session data is linked to this account. "
+                "Physical cash-out prediction requires an observed device session with GPS coordinates."
+            )
+        else:
+            reason = (
+                "Incomplete behavioral feature context for this account. "
+                "Velocity, onboarding profile, or spatial features are missing."
+            )
+        return {"candidates": [], "status": "UNAVAILABLE", "reason": reason}
 
     graph_features = context.get("graph_features") or {}
     risk_transaction = next(
@@ -169,7 +189,13 @@ def get_predicted_terminals(case_id: str, user: dict = Depends(get_current_user)
         digital_risk_score = graph_features.get("graph_score")
     cluster_flag = graph_features.get("mule_cluster_flag")
     if digital_risk_score in (None, "") or cluster_flag in (None, ""):
-        return {"candidates": [], "status": "UNAVAILABLE", "reason": "Observed graph-risk or mule-cluster evidence is missing for this account"}
+        return {
+            "candidates": [], "status": "UNAVAILABLE",
+            "reason": (
+                "Graph-risk score or mule-cluster flag is absent for this account. "
+                "Physical prediction requires observed network-risk evidence."
+            ),
+        }
 
     try:
         prediction = physical_prediction_service.execute_physical_prediction(

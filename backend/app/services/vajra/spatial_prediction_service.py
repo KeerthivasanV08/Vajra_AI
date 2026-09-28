@@ -23,15 +23,16 @@ class SpatialPredictionService:
             "drain_ratio_reference", "fragmentation_score_reference"
         ]
 
-        missing = [column for column in feature_cols if feature_data.get(column) is None]
-        if missing:
-            raise ValueError(f"Missing observed Model 3 features: {', '.join(missing)}")
-        feature_vals = [float(feature_data[c]) for c in feature_cols]
-
         try:
             model, prep = model_loader.get_model_and_preprocessor(self.model_filename, self.prep_filename)
             scaler = prep["scaler"]
             le = prep["label_encoder"]
+            feature_cols = list(getattr(scaler, "feature_names_in_", feature_cols))
+
+            missing = [column for column in feature_cols if feature_data.get(column) is None]
+            if missing:
+                raise ValueError(f"Missing observed Model 3 features: {', '.join(missing)}")
+            feature_vals = [float(feature_data[column]) for column in feature_cols]
 
             X_df = pd.DataFrame([feature_vals], columns=feature_cols)
             X_scaled = scaler.transform(X_df)

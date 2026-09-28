@@ -4,6 +4,7 @@ Endpoints: GET /api/v1/health, GET /api/v1/health/ready, GET /api/v1/health/mode
 """
 
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.ml.model_loader import model_loader
 
@@ -21,12 +22,17 @@ def get_health():
 @router.get("/health/ready", summary="Service readiness check")
 def get_readiness():
     m_health = model_loader.check_health()
-    return {
-        "ready": m_health["all_healthy"],
+    ready = m_health["all_healthy"]
+    return JSONResponse(
+        status_code=200 if ready else 503,
+        content={
+        "status": "ready" if ready else "not_ready",
+        "ready": ready,
         "database_mode": settings.DATABASE_MODE,
-        "models_ready": m_health["all_healthy"],
+        "models_ready": ready,
         "synthetic_data_mode": settings.SYNTHETIC_DATA_MODE
-    }
+        }
+    )
 
 @router.get("/health/models", summary="Individual model artifact health status")
 def get_model_health():

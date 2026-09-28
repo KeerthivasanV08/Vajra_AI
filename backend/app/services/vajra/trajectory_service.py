@@ -64,8 +64,6 @@ class TrajectoryService:
             predicted_cell = str(le.classes_[top_idx])
             confidence = round(float(probs[top_idx]), 4)
 
-            if not predicted_cell.startswith("8"):
-                raise RuntimeError("Model 1 returned a cell identifier that cannot be resolved to coordinates")
             pred_lat, pred_lon = cell_to_latlon(predicted_cell)
         except Exception as exc:
             raise RuntimeError(f"Model 1 trajectory prediction is unavailable: {exc}") from exc

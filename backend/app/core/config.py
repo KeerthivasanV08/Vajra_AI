@@ -4,6 +4,7 @@ Pydantic-based settings supporting environment variables with fallback defaults.
 """
 
 import os
+import secrets
 from pathlib import Path
 from typing import List, Optional
 
@@ -14,7 +15,7 @@ class Settings:
     APPLICATION_NAME: str = "VAJRA — Predictive Cybercrime Cash-Out Interception Platform"
     APPLICATION_VERSION: str = "2026.1"
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
-    DEBUG: bool = os.getenv("DEBUG", "True").lower() in ("true", "1", "t")
+    DEBUG: bool = os.getenv("DEBUG", "False").lower() in ("true", "1", "t")
     API_PREFIX: str = "/api/v1"
 
     HOST: str = os.getenv("HOST", "0.0.0.0")
@@ -55,15 +56,16 @@ class Settings:
     POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
     POSTGRES_PORT: int = int(os.getenv("POSTGRES_PORT", "5432"))
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "vajra_db")
-    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
+    POSTGRES_USER: Optional[str] = os.getenv("POSTGRES_USER")
+    POSTGRES_PASSWORD: Optional[str] = os.getenv("POSTGRES_PASSWORD")
 
     NEO4J_URI: str = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-    NEO4J_USER: str = os.getenv("NEO4J_USER", "neo4j")
-    NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD", "neo4j_password")
+    NEO4J_USER: Optional[str] = os.getenv("NEO4J_USER")
+    NEO4J_PASSWORD: Optional[str] = os.getenv("NEO4J_PASSWORD")
 
     # Security & JWT
-    JWT_SECRET: str = os.getenv("JWT_SECRET", "vajra_aml_super_secret_jwt_key_2026")
+    JWT_SECRET: str
+    JWT_SECRET_CONFIGURED: bool
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24
 
@@ -86,7 +88,13 @@ class Settings:
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
 
     def __init__(self) -> None:
-        raw_origins = os.getenv("FRONTEND_ORIGINS")
+        configured_secret = os.getenv("JWT_SECRET")
+        self.JWT_SECRET_CONFIGURED = bool(configured_secret)
+        self.JWT_SECRET = configured_secret or secrets.token_urlsafe(32)
+        if self.ENVIRONMENT.lower() in {"production", "prod"} and not configured_secret:
+            raise ValueError("JWT_SECRET must be configured when ENVIRONMENT is production.")
+
+        raw_origins = os.getenv("FRONTEND_ORIGINS") or os.getenv("CORS_ORIGINS")
         if raw_origins:
             self.CORS_ORIGINS = [s.strip() for s in raw_origins.split(",") if s.strip()]
         self.FRONTEND_ORIGINS = self.CORS_ORIGINS

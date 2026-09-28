@@ -227,12 +227,35 @@ app.add_middleware(
 
 @app.exception_handler(VajraBaseException)
 async def vajra_exception_handler(request: Request, exc: VajraBaseException):
+    logger.error(
+        "Request failed code=%s method=%s path=%s",
+        exc.code,
+        request.method,
+        request.url.path,
+        exc_info=(type(exc), exc, exc.__traceback__),
+    )
     return JSONResponse(
         status_code=400,
         content={
             "error": exc.code,
-            "message": exc.message,
-            "path": str(request.url)
+            "message": "The request could not be completed."
+        }
+    )
+
+
+@app.exception_handler(Exception)
+async def unexpected_exception_handler(request: Request, exc: Exception):
+    logger.error(
+        "Unhandled request failure method=%s path=%s",
+        request.method,
+        request.url.path,
+        exc_info=(type(exc), exc, exc.__traceback__),
+    )
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "INTERNAL_ERROR",
+            "message": "An unexpected server error occurred."
         }
     )
 

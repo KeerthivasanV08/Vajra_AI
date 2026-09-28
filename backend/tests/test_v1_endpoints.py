@@ -1,6 +1,14 @@
 import unittest
 from fastapi.testclient import TestClient
 from main import app
+from app.services.vajra.investigation_context_service import get_account_prediction_context
+
+
+def sample_session_data():
+    session = get_account_prediction_context("U000000")
+    if session is None:
+        raise AssertionError("Expected a real geo-session fixture in backend/data")
+    return session
 
 class TestV1Endpoints(unittest.TestCase):
     @classmethod
@@ -24,7 +32,8 @@ class TestV1Endpoints(unittest.TestCase):
             "geo_lat": 28.6139,
             "geo_lon": 77.2090,
             "digital_risk_score": 0.75,
-            "mule_probability": 0.80
+            "mule_probability": 0.80,
+            "session_data": sample_session_data(),
         })
         self.assertEqual(resp.status_code, 200)
         data = resp.json()
@@ -47,7 +56,8 @@ class TestV1Endpoints(unittest.TestCase):
         resp = self.client.post("/api/v1/vajra/analyze", json={
             "account_id": "ACC_TEST_001",
             "geo_lat": 28.6139,
-            "geo_lon": 77.2090
+            "geo_lon": 77.2090,
+            "session_data": sample_session_data(),
         })
         self.assertEqual(resp.status_code, 200)
         data = resp.json()
@@ -133,7 +143,8 @@ class TestV1Endpoints(unittest.TestCase):
         resp = self.client.post("/api/v1/simulation/live-attack", json={
             "victim_account_id": "ACC_VICTIM_001",
             "initial_theft_amount": 500000.0,
-            "mule_hops": 3
+            "mule_hops": 3,
+            "session_data": sample_session_data(),
         })
         self.assertEqual(resp.status_code, 200)
 

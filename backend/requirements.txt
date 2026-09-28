@@ -1,7 +1,7 @@
 # ==============================================================================
 # VAJRA AI — Backend Requirements
 # Generated from codebase import scan + installed environment verification.
-# Python >= 3.10 required.
+# Verified deployment runtime: Python 3.11.8 (see .python-version).
 # ==============================================================================
 
 # ── Web Framework ──────────────────────────────────────────────────────────────
@@ -21,9 +21,9 @@ python-jose>=3.5.0               # JOSE token utilities
 httpx>=0.28.0                    # Async HTTP client (health checks, outbound calls)
 
 # ── Data & ML — Core ──────────────────────────────────────────────────────────
-numpy>=1.24.0
+numpy>=1.24.0,<2.0.0                 # C-API compatibility with TensorFlow 2.13-2.15
 pandas>=2.0.0
-scikit-learn>=1.2.0
+scikit-learn>=1.6.1,<1.7.0          # Match the serialized model artifact version
 scipy>=1.10.0                    # Statistical utilities (calibration, metrics)
 joblib>=1.2.0                    # Model artifact serialization
 

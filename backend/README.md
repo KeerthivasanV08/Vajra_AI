@@ -108,3 +108,9 @@ python -m unittest tests/test_readiness_and_streams.py
 # 8. Run Application Server
 python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
+
+## Deployment
+
+The documented deployment is a Render Web Service with `backend/` as the service root, Python 3.11.8, build command `pip install -r requirements.txt`, and start command `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`. Configure `ENVIRONMENT=production`, a high-entropy `JWT_SECRET`, and `FRONTEND_ORIGINS` as a comma-separated list of exact deployed frontend origins. Render supplies `PORT`; use `/api/v1/health/ready` as the health check.
+
+Ship the required model artifacts and bundled datasets with the service. The app stores mutable CSV state under `backend/data`; Render's default filesystem is ephemeral, so that state is not durable unless persistent storage is configured. Do not mount an empty disk over `backend/data`, which would hide the bundled data. The prototype authentication is not suitable for public or sensitive-data use. See the [full Render deployment guide](../docs/deployment/backend-render.md) for environment variables, storage limitations, and security notes.
