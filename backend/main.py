@@ -46,8 +46,10 @@ _realtime_router = None
 _alerts_realtime_router = None
 _start_realtime_engine_once = None
 
+# Keep the realtime loop completely deferred until an explicit request or operation
+# requires it. Loading the realtime ML stack during app startup is exactly what
+# triggers the Render Free startup OOM.
 try:
-    from app.realtime.realtime_engine import start_realtime_engine_once as _start_realtime_engine_once
     from app.realtime.transaction_streamer import router as realtime_router
     from app.realtime.alerts_streamer import router as alerts_realtime_router
     _realtime_router = realtime_router
@@ -141,15 +143,10 @@ async def lifespan(app: FastAPI):
     except Exception as exc:
         logger.warning(f"⚠️  VAJRA model health check unavailable during lazy startup: {exc}")
 
-    # ── 3. Realtime engine ─────────────────────────────────────────────────
-    if _start_realtime_engine_once is not None:
-        try:
-            _start_realtime_engine_once()
-            logger.info("✅  Realtime transaction engine started")
-        except Exception as exc:
-            logger.warning(f"⚠️  Realtime engine not started: {exc}")
-    else:
-        logger.warning("⚠️  Realtime engine skipped (TF/NumPy incompatible)")
+    # ── 3. Realtime engine is intentionally deferred to keep startup under the
+    # Render Free memory ceiling. The engine may still be started explicitly by a
+    # route or operational workflow when the model stack is needed.
+    logger.info("ℹ️  Realtime engine startup deferred until runtime demand")
 
     # ── 4. SLA monitoring ──────────────────────────────────────────────────
     if _sla_monitor is not None:

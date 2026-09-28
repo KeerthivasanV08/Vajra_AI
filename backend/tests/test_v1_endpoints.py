@@ -158,5 +158,26 @@ class TestV1Endpoints(unittest.TestCase):
         self.assertEqual(snapshot.get("runtime_mode"), "LAZY")
         self.assertIn("startup", snapshot)
 
+    def test_14_lazy_startup_does_not_auto_start_realtime_engine(self):
+        import asyncio
+
+        import main
+
+        original = main._start_realtime_engine_once
+
+        def fail_if_called():
+            raise AssertionError("Realtime engine must not be launched during startup in lazy mode")
+
+        try:
+            main._start_realtime_engine_once = fail_if_called
+
+            async def run_lifespan():
+                async with main.lifespan(main.app):
+                    pass
+
+            asyncio.run(run_lifespan())
+        finally:
+            main._start_realtime_engine_once = original
+
 if __name__ == "__main__":
     unittest.main()

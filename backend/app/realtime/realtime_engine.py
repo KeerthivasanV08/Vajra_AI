@@ -4,6 +4,32 @@ from typing import Any, Dict
 
 import pandas as pd
 
+
+def _safe_runtime_services():
+    """Create the realtime services only on first real use.
+
+    This avoids importing TensorFlow/Keras and the transaction ML stack during app
+    startup. The service objects can still be created on a request path when the
+    runtime explicitly needs to process live transaction simulations.
+    """
+    if not hasattr(_safe_runtime_services, "_state"):
+        from app.services.transaction.ml_behavior_service import MLBehaviorService
+        from app.services.transaction.sequence_model_service import SequenceModelService
+        from app.services.transaction.graph_feature_service import GraphFeatureService
+        from app.services.transaction.graph_service import GraphIntelligenceEngine
+        from app.services.transaction.decision_engine import DecisionEngine
+        from app.services.transaction.velocity_service import VelocityService
+
+        _safe_runtime_services._state = {
+            "behavior": MLBehaviorService(),
+            "sequence": SequenceModelService(),
+            "graph": GraphIntelligenceEngine(),
+            "graph_store": GraphFeatureService(),
+            "decision": DecisionEngine(),
+            "velocity": VelocityService(),
+        }
+    return _safe_runtime_services._state
+
 """
 Realtime transaction simulation for the demo AML console.
 
@@ -26,13 +52,6 @@ from app.realtime.transaction_memory_store import (
     USER_TRANSACTION_HISTORY,
 )
 
-from app.services.transaction.ml_behavior_service import MLBehaviorService
-from app.services.transaction.sequence_model_service import SequenceModelService
-from app.services.transaction.graph_feature_service import GraphFeatureService
-from app.services.transaction.graph_service import GraphIntelligenceEngine
-from app.services.transaction.decision_engine import DecisionEngine
-from app.services.transaction.velocity_service import VelocityService
-
 from app.services.alerts.alert_priority_service import evaluate_priority
 from app.services.alerts.transaction_alert_service import create_transaction_alert
 
@@ -41,16 +60,7 @@ logger = logging.getLogger(__name__)
 
 def _runtime_services():
     """Lazily create the non-trivial ML and graph services only when needed."""
-    if not hasattr(_runtime_services, "_state"):
-        _runtime_services._state = {
-            "behavior": MLBehaviorService(),
-            "sequence": SequenceModelService(),
-            "graph": GraphIntelligenceEngine(),
-            "graph_store": GraphFeatureService(),
-            "decision": DecisionEngine(),
-            "velocity": VelocityService(),
-        }
-    return _runtime_services._state
+    return _safe_runtime_services()
 
 
 def _score(value: Any, default: float = 0.0) -> float:
