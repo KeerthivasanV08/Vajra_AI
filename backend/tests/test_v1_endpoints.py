@@ -1,6 +1,7 @@
 import unittest
 from fastapi.testclient import TestClient
 from main import app
+from app.core.model_loader import initialize_model_runtime
 from app.services.vajra.investigation_context_service import get_account_prediction_context
 
 
@@ -151,6 +152,11 @@ class TestV1Endpoints(unittest.TestCase):
     def test_12_metrics_models(self):
         resp = self.client.get("/api/v1/metrics/models")
         self.assertEqual(resp.status_code, 200)
+
+    def test_13_lazy_startup_runtime(self):
+        snapshot = initialize_model_runtime(strict=False)
+        self.assertEqual(snapshot.get("runtime_mode"), "LAZY")
+        self.assertIn("startup", snapshot)
 
 if __name__ == "__main__":
     unittest.main()

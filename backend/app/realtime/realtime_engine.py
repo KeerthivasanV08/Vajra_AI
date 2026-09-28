@@ -38,12 +38,19 @@ from app.services.alerts.transaction_alert_service import create_transaction_ale
 
 logger = logging.getLogger(__name__)
 
-_behavior_service = MLBehaviorService()
-_sequence_service = SequenceModelService()
-_graph_service = GraphIntelligenceEngine()
-_graph_store = GraphFeatureService()
-_decision_engine = DecisionEngine()
-_velocity_service = VelocityService()
+
+def _runtime_services():
+    """Lazily create the non-trivial ML and graph services only when needed."""
+    if not hasattr(_runtime_services, "_state"):
+        _runtime_services._state = {
+            "behavior": MLBehaviorService(),
+            "sequence": SequenceModelService(),
+            "graph": GraphIntelligenceEngine(),
+            "graph_store": GraphFeatureService(),
+            "decision": DecisionEngine(),
+            "velocity": VelocityService(),
+        }
+    return _runtime_services._state
 
 
 def _score(value: Any, default: float = 0.0) -> float:
@@ -324,32 +331,33 @@ def _collect_signals(
 
 async def process_transaction(txn: Dict[str, Any]):
     try:
+        services = _runtime_services()
         sender = str(txn.get("sender_id"))
 
         _seed_sequence_history(sender, txn)
 
-        velocity_row = _velocity_service.update_after_transaction(txn)
+        velocity_row = services["velocity"].update_after_transaction(txn)
         velocity_context = _build_velocity_context(txn, velocity_row)
         onboarding_context = _build_onboarding_context(txn)
         graph_context = _build_graph_context(txn)
 
-        beh_features = _behavior_service.build_features_from_context(
+        beh_features = services["behavior"].build_features_from_context(
             txn,
             velocity_context,
             onboarding_context,
             graph_context,
         )
 
-        behavior_result = _behavior_service.predict_behavior_risk(beh_features)
+        behavior_result = services["behavior"].predict_behavior_risk(beh_features)
 
         df_hist = pd.DataFrame(USER_TRANSACTION_HISTORY.get(sender, []))
 
-        sequence_result = _sequence_service.predict_sequence(
+        sequence_result = services["sequence"].predict_sequence(
             df_hist,
             behavioral_score=float(behavior_result.get("behavior_score", 0) or 0),
         )
 
-        graph_result = _graph_service.evaluate_graph_risk(sender, txn)
+        graph_result = services["graph"].evaluate_graph_risk(sender, txn)
 
         behavior_result, sequence_result, graph_result = _apply_realtime_component_fallbacks(
             txn,
@@ -360,7 +368,7 @@ async def process_transaction(txn: Dict[str, Any]):
 
         control_result = _control_result_for(txn, behavior_result, sequence_result)
 
-        decision = _decision_engine.calculate_final_decision(
+        decision = services["decision"].calculate_final_decision(
             behavior_result=behavior_result,
             sequence_result=sequence_result,
             graph_result=graph_result,
@@ -456,7 +464,7 @@ async def process_transaction(txn: Dict[str, Any]):
             DASHBOARD_METRICS["review_queue"] = DASHBOARD_METRICS.get("review_queue", 0) + 1
 
         try:
-            _graph_store.record_transaction(result, decision, graph_result)
+            services["graph_store"].record_transaction(result, decision, graph_result)
         except Exception:
             logger.exception("Failed to persist realtime transaction into Neo4j")
 

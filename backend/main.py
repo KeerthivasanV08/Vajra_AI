@@ -113,21 +113,21 @@ async def lifespan(app: FastAPI):
     logger.info(f"    Synthetic : {settings.SYNTHETIC_DATA_MODE}")
     logger.info("=" * 65)
 
-    # ── 1. Digital AML risk runtime ─────────────────────────────────────────
+    # ── 1. Digital AML risk runtime (lazy startup for Render free memory budget) ──
     try:
-        startup_health = initialize_model_runtime(strict=True)
+        startup_health = initialize_model_runtime(strict=False)
         app.state.digital_model_health = startup_health
-        app.state.runtime_mode = startup_health.get("runtime_mode", "FULL")
+        app.state.runtime_mode = startup_health.get("runtime_mode", "LAZY")
         app.state.runtime_session_id = runtime_session.runtime_session_id
         app.state.started_at = runtime_session.started_at
         app.state.policy_version = policy_engine.get_policy_version()
 
         _report_digital_health(startup_health)
     except Exception as exc:
-        logger.error(f"❌ Digital ML Risk Engine Initialization Failed: {exc}")
-        raise exc
+        logger.error(f"❌ Digital ML startup snapshot failed: {exc}")
+        app.state.runtime_mode = "LAZY"
 
-    # ── 2. VAJRA ML artifact health check ───────────────────────────────────
+    # ── 2. VAJRA ML artifact health check (non-blocking during lazy startup) ─────
     try:
         from app.ml.model_loader import model_loader as vajra_model_loader
         vajra_health = vajra_model_loader.check_health()
@@ -137,10 +137,9 @@ async def lifespan(app: FastAPI):
             icon = "✅" if is_ok else "❌"
             logger.info(f"    {icon} VAJRA Model [{model_name}]: {'present' if is_ok else 'MISSING'}")
         if not all_ok:
-            raise RuntimeError("Required VAJRA core ML model artifacts are missing. Run 'python -m training.train_all_models' to train them.")
+            logger.warning("⚠️  Some VAJRA core ML artifacts are missing; they will load on demand when a model-backed route is used.")
     except Exception as exc:
-        logger.error(f"❌ VAJRA model health check failed: {exc}")
-        raise exc
+        logger.warning(f"⚠️  VAJRA model health check unavailable during lazy startup: {exc}")
 
     # ── 3. Realtime engine ─────────────────────────────────────────────────
     if _start_realtime_engine_once is not None:

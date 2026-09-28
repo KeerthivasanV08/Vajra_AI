@@ -1,3 +1,4 @@
+from functools import lru_cache
 from fastapi import APIRouter, HTTPException
 from pathlib import Path
 import pandas as pd
@@ -11,8 +12,15 @@ from app.realtime.transaction_memory_store import LIVE_ALERTS
 
 router = APIRouter(tags=["Onboarding"])
 
-service = OnboardingService()
-explain_service = OnboardingExplainabilityService()
+
+@lru_cache(maxsize=1)
+def get_service() -> OnboardingService:
+    return OnboardingService()
+
+
+@lru_cache(maxsize=1)
+def get_explain_service() -> OnboardingExplainabilityService:
+    return OnboardingExplainabilityService()
 
 
 ONBOARDING_RESULTS_FILE = storage_paths.ONBOARDING_DECISIONS_AUDIT_PATH
@@ -20,12 +28,12 @@ ONBOARDING_RESULTS_FILE = storage_paths.ONBOARDING_DECISIONS_AUDIT_PATH
 
 @router.post("/onboarding")
 def onboard_user(request: OnboardingRequest):
-    return service.process(request.model_dump())
+    return get_service().process(request.model_dump())
 
 
 @router.post("/evaluate")
 def evaluate_onboarding(request: OnboardingRequest):
-    return service.process(request.model_dump())
+    return get_service().process(request.model_dump())
 
 
 @router.get("/explain/{user_id}")

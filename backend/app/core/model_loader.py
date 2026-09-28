@@ -524,6 +524,28 @@ class ModelLoader:
         return versions
 
     def validate_all(self, strict: bool = True) -> Dict[str, Any]:
+        if not strict:
+            self._health_snapshot = {
+                "behavioral_model": "unknown",
+                "onboarding_model": "unknown",
+                "sequence_model": "unknown",
+                "graph_model": "unknown",
+                "graph_engine": "unknown",
+                "scalers": "unknown",
+                "encoders": "unknown",
+                "runtime_mode": "LAZY",
+                "startup": "lazy_startup_enabled",
+                "sequence_self_test": {"state": "skipped", "reason": "lazy_startup_mode"},
+                "versions": self._runtime_versions(),
+                "artifacts": {
+                    "behavioral_model": self._status.get("behavioral_model", {}).get("state", "unknown"),
+                    "onboarding_model": self._status.get("onboarding_model", {}).get("state", "unknown"),
+                    "sequence_model": self._status.get("sequence_model", {}).get("state", "unknown"),
+                    "graph_engine": self._status.get("graph_engine", {}).get("state", "unknown"),
+                },
+            }
+            return self._health_snapshot
+
         behavioral_model, behavioral_scaler, behavioral_features = self.get_behavioral_model()
         onboarding_model, onboarding_scaler, onboarding_features = self.get_onboarding_model()
         sequence_model, sequence_scaler, sequence_metadata = self.get_sequence_model()
