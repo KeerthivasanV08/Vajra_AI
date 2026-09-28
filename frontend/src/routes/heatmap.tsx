@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import React, { useState, useEffect } from 'react';
 import { OperationsMapCanvas } from '@/components/vajra/OperationsMapCanvas';
 import { TacticalBrief } from '@/components/vajra/TacticalBrief';
-import { fetchWithdrawalNode, fetchWithdrawalNodes, fetchCorridors } from '@/services/api';
+import { fetchCorridorNodes, fetchWithdrawalNode, fetchWithdrawalNodes, fetchCorridors } from '@/services/api';
 import type { WithdrawalNode, HighRiskCorridor } from '@/types/vajra';
 import { Map, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
@@ -10,8 +10,9 @@ import { toast } from 'sonner';
 export const Route = createFileRoute('/heatmap')({
   validateSearch: (search: Record<string, unknown>) => {
     return {
-      caseId: typeof search.caseId === 'string' ? search.caseId : undefined,
-      nodeId: typeof search.nodeId === 'string' ? search.nodeId : undefined,
+      caseId: typeof search.caseId === 'string' ? search.caseId : typeof search.case_id === 'string' ? search.case_id : undefined,
+      nodeId: typeof search.nodeId === 'string' ? search.nodeId : typeof search.node_id === 'string' ? search.node_id : undefined,
+      corridorId: typeof search.corridorId === 'string' ? search.corridorId : typeof search.corridor_id === 'string' ? search.corridor_id : undefined,
     };
   },
   component: OperationsMapPage,
@@ -30,15 +31,18 @@ function OperationsMapPage() {
     setLoading(true);
     setLoadError(null);
     try {
-      const [nodeRes, corrRes, requestedNode] = await Promise.all([
+      const [nodeRes, corrRes, requestedNode, corridorNodeRes] = await Promise.all([
         fetchWithdrawalNodes({ page: 1, page_size: 50 }),
         fetchCorridors(),
-        search.nodeId ? fetchWithdrawalNode(search.nodeId) : Promise.resolve(null),
+        search.nodeId ? fetchWithdrawalNode(search.nodeId).catch(() => null) : Promise.resolve(null),
+        search.corridorId ? fetchCorridorNodes(search.corridorId).catch(() => null) : Promise.resolve(null),
       ]);
       const listedItems = nodeRes.items || [];
+      const corridorItems = corridorNodeRes?.nodes || [];
+      const combined = corridorItems.length > 0 ? corridorItems : listedItems;
       const items = requestedNode
-        ? [requestedNode, ...listedItems.filter((node) => node.node_id !== requestedNode.node_id)]
-        : listedItems;
+        ? [requestedNode, ...combined.filter((node) => node.node_id !== requestedNode.node_id)]
+        : combined;
       setNodes(items);
       setCorridors(corrRes || []);
       if (items.length > 0) {
@@ -142,7 +146,7 @@ function OperationsMapPage() {
         {(() => {
           const vuln = selectedNode ? (selectedNode.vulnerability_score_reference ?? selectedNode.node_vulnerability_score ?? 0.35) : 0;
           const dynamicSopTier = vuln >= 0.70 ? 'ESCALATE_FREEZE' : vuln >= 0.50 ? 'RECOMMEND-HOLD' : 'MONITOR';
-          const dynamicCaseId = search.caseId || (selectedNode ? `CASE_NODE_${selectedNode.node_id.replace(/^NODE0*/, '')}` : 'CASE_VAJRA_1001');
+          const dynamicCaseId = search.caseId || '';
 
           return (
             <TacticalBrief

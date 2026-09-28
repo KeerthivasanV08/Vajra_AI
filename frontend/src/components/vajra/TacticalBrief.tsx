@@ -11,17 +11,35 @@ import { toast } from 'sonner';
 interface TacticalBriefProps {
   node: WithdrawalNode | null;
   caseId?: string;
+  accountId?: string;
   sopTier?: SOPTier | string;
   onClose?: () => void;
   className?: string;
 }
 
-export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'RECOMMEND-HOLD', onClose, className = '' }: TacticalBriefProps) {
+export function TacticalBrief({
+  node,
+  caseId: initialCaseId = '',
+  accountId: initialAccountId = '',
+  sopTier = 'RECOMMEND-HOLD',
+  onClose,
+  className = '',
+}: TacticalBriefProps) {
+  const [caseId, setCaseId] = useState(initialCaseId);
+  const [accountId, setAccountId] = useState(initialAccountId);
   const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; action: 'pcr' | 'bank' | null }>({
     isOpen: false,
     action: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Sync state if props change
+  React.useEffect(() => {
+    if (initialCaseId) setCaseId(initialCaseId);
+  }, [initialCaseId]);
+  React.useEffect(() => {
+    if (initialAccountId) setAccountId(initialAccountId);
+  }, [initialAccountId]);
 
   if (!node) {
     return (
@@ -37,12 +55,18 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
 
   const vulnScore = node.vulnerability_score_reference ?? node.node_vulnerability_score ?? 0.35;
   const rankerScore = node.ranker_score ?? 0.65;
+  const effectiveCaseId = caseId.trim();
+  const effectiveAccountId = accountId.trim();
 
   const handleDispatchPCR = async () => {
+    if (!effectiveCaseId) {
+      toast.error('A Case reference is required for PCR Patrol dispatch.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       const res = await dispatchPCRPatrol({
-        case_id: caseId,
+        case_id: effectiveCaseId,
         target_node_id: node.node_id,
         target_lat: node.latitude,
         target_lon: node.longitude,
@@ -57,11 +81,19 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
   };
 
   const handleDispatchBank = async () => {
+    if (!effectiveCaseId) {
+      toast.error('A Case reference is required for Bank Step-Up Auth.');
+      return;
+    }
+    if (!effectiveAccountId) {
+      toast.error('Target Account ID is required for Bank Step-Up Auth.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       const res = await dispatchBankStepUp({
-        account_id: 'ACC_1001_MULE',
-        case_id: caseId,
+        account_id: effectiveAccountId,
+        case_id: effectiveCaseId,
       });
       toast.success(`Bank Step-Up Triggered! Dispatch ID: ${res.dispatch_id}`);
       setConfirmDialog({ isOpen: false, action: null });
@@ -73,10 +105,14 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
   };
 
   const handleGenerateDossier = async () => {
+    if (!effectiveCaseId) {
+      toast.error('A Case reference is required to generate a Legal Dossier.');
+      return;
+    }
     try {
       const res = await generateLegalDossier({
-        case_id: caseId,
-        prediction_data: { prediction_id: 'PRED_1001', top_prediction: node },
+        case_id: effectiveCaseId,
+        prediction_data: { prediction_id: `PRED_${node.node_id}`, top_prediction: node },
         sop_data: { sop_tier: sopTier },
       });
       toast.success(`Legal Dossier Generated! SHA-256: ${res.document_hash.slice(0, 16)}...`);
@@ -171,10 +207,45 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
           </div>
         </div>
 
+        {/* Case & Account Context */}
+        <div className="space-y-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3 text-xs">
+          <div className="font-mono uppercase text-slate-400 font-semibold tracking-wider">
+            Operational Context
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[10px] text-slate-400 block mb-0.5">Linked Case ID</label>
+              <input
+                type="text"
+                value={caseId}
+                onChange={(e) => setCaseId(e.target.value)}
+                placeholder="e.g. CASE_20474C9A"
+                className="w-full rounded border border-slate-700 bg-slate-950 px-2 py-1 font-mono text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-rose-500"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] text-slate-400 block mb-0.5">Target Account ID</label>
+              <input
+                type="text"
+                value={accountId}
+                onChange={(e) => setAccountId(e.target.value)}
+                placeholder="e.g. ACC_4821"
+                className="w-full rounded border border-slate-700 bg-slate-950 px-2 py-1 font-mono text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-amber-500"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Action Buttons */}
         <div className="space-y-2 pt-2 border-t border-slate-800">
           <button
-            onClick={() => setConfirmDialog({ isOpen: true, action: 'pcr' })}
+            onClick={() => {
+              if (!effectiveCaseId) {
+                toast.error('Please enter or select a Case ID before PCR Patrol dispatch.');
+                return;
+              }
+              setConfirmDialog({ isOpen: true, action: 'pcr' });
+            }}
             className="w-full min-h-10 py-2 px-3 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-rose-950/50"
           >
             <Radio className="w-3.5 h-3.5" />
@@ -182,7 +253,17 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
           </button>
 
           <button
-            onClick={() => setConfirmDialog({ isOpen: true, action: 'bank' })}
+            onClick={() => {
+              if (!effectiveCaseId) {
+                toast.error('Please enter or select a Case ID before Bank Step-Up.');
+                return;
+              }
+              if (!effectiveAccountId) {
+                toast.error('Please enter a Target Account ID for Bank Step-Up.');
+                return;
+              }
+              setConfirmDialog({ isOpen: true, action: 'bank' });
+            }}
             className="w-full min-h-10 py-2 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-950/50"
           >
             <AlertOctagon className="w-3.5 h-3.5" />
@@ -207,8 +288,8 @@ export function TacticalBrief({ node, caseId = 'CASE_VAJRA_1001', sopTier = 'REC
         title={confirmDialog.action === 'pcr' ? 'Dispatch PCR Patrol Unit?' : 'Trigger Bank Step-Up Authentication?'}
         description={
           confirmDialog.action === 'pcr'
-            ? `Issue immediate patrol dispatch to node ${node.node_id} (${node.district || 'New Delhi'}).`
-            : `Require biometric/OTP step-up verification for account ACC_1001_MULE at target ATM.`
+            ? `Issue immediate patrol dispatch to node ${node.node_id} (${node.district || 'New Delhi'}) for case ${effectiveCaseId}.`
+            : `Require biometric/OTP step-up verification for account ${effectiveAccountId || 'target mule'} at target node ${node.node_id}.`
         }
         confirmLabel={confirmDialog.action === 'pcr' ? 'Confirm PCR Dispatch' : 'Confirm Step-Up'}
         variant={confirmDialog.action === 'pcr' ? 'danger' : 'warning'}

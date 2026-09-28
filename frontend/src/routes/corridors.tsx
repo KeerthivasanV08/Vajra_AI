@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import React, { useState, useEffect } from 'react';
 import { fetchCorridorNodes, fetchCorridors } from '@/services/api';
 import type { HighRiskCorridor } from '@/types/vajra';
@@ -86,7 +86,7 @@ function CorridorsPage() {
           </button>
         ))}
       </div>
-      {selected && <section className="rounded-xl border border-slate-800 bg-slate-900 p-4 space-y-3"><div className="flex items-center justify-between"><div><h2 className="text-base font-semibold text-white">{selected.corridor_name}</h2><p className="text-xs text-slate-400">{selected.district}, {selected.state} · {selectedNodes.length} nodes in corridor</p></div><a href={`/heatmap?corridorId=${encodeURIComponent(selected.corridor_id)}`} className="rounded-md bg-slate-800 px-3 py-2 text-xs text-cyan-300">View on Operations Map</a></div><div className="grid grid-cols-1 gap-2 md:grid-cols-3">{selectedNodes.slice(0, 6).map((node) => <div key={node.node_id} className="rounded-md border border-slate-800 bg-slate-950 p-3 text-xs"><div className="font-mono text-slate-200">{node.node_id}</div><div className="mt-1 text-slate-500">{node.node_type} · {node.district || 'District unavailable'}</div></div>)}</div></section>}
+      {selected && <section className="rounded-xl border border-slate-800 bg-slate-900 p-4 space-y-3"><div className="flex items-center justify-between"><div><h2 className="text-base font-semibold text-white">{selected.corridor_name}</h2><p className="text-xs text-slate-400">{selected.district}, {selected.state} · {selectedNodes.length} nodes in corridor</p></div><Link to="/heatmap" search={{ corridorId: selected.corridor_id }} className="rounded-md bg-slate-800 px-3 py-2 text-xs text-cyan-300 hover:bg-slate-700">View on Operations Map</Link></div><div className="grid grid-cols-1 gap-2 md:grid-cols-3">{selectedNodes.slice(0, 6).map((node) => <div key={node.node_id} className="rounded-md border border-slate-800 bg-slate-950 p-3 text-xs"><div className="font-mono text-slate-200">{node.node_id}</div><div className="mt-1 text-slate-500">{node.node_type} · {node.district || 'District unavailable'}</div></div>)}</div></section>}
     </div>
   );
 }

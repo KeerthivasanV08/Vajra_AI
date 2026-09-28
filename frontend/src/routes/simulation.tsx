@@ -11,13 +11,17 @@ export const Route = createFileRoute('/simulation')({
 
 function SimulationPage() {
   const [victimId, setVictimId] = useState('ACC_VICTIM_999');
+  const [stolenAmount, setStolenAmount] = useState(250000);
   const [simResult, setSimResult] = useState<SimulationResult | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleRunSim = async () => {
     setLoading(true);
     try {
-      const res = await runLiveAttackSimulation({ victim_account_id: victimId });
+      const res = await runLiveAttackSimulation({
+        victim_account_id: victimId.trim() || undefined,
+        initial_amount_inr: Number(stolenAmount) || 250000,
+      });
       setSimResult(res);
       toast.success('Live Multi-Hop Fraud Simulation Complete!');
     } catch (err: any) {
@@ -66,10 +70,12 @@ function SimulationPage() {
           <div className="space-y-1">
             <span className="text-slate-400">Stolen Amount (INR)</span>
             <input
-              type="text"
-              readOnly
-              value="₹2,50,000"
-              className="bg-slate-950 border border-slate-800 rounded px-3 py-1 text-emerald-400 font-bold"
+              type="number"
+              min={1000}
+              step={10000}
+              value={stolenAmount}
+              onChange={(e) => setStolenAmount(Number(e.target.value) || 0)}
+              className="bg-slate-950 border border-slate-800 rounded px-3 py-1 text-emerald-400 font-bold w-36"
             />
           </div>
         </div>

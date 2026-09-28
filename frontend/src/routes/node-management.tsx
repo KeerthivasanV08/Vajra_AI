@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import React, { useState, useEffect } from 'react';
 import { bulkImportNodes, fetchWithdrawalNodes, recalculateNodeVulnerability } from '@/services/api';
 import type { WithdrawalNode } from '@/types/vajra';
-import { Building2, Search, Filter, RefreshCw, MapPin, List, Map } from 'lucide-react';
+import { Building2, Search, Filter, RefreshCw, MapPin, List, Map, ChevronLeft, ChevronRight } from 'lucide-react';
 import { OperationsMapCanvas } from '@/components/vajra/OperationsMapCanvas';
 import { TacticalBrief } from '@/components/vajra/TacticalBrief';
 import { RiskBadge } from '@/components/vajra/RiskBadge';
@@ -20,14 +20,26 @@ function NodeManagementPage() {
   const [nodeTypeFilter, setNodeTypeFilter] = useState<string>('ALL');
   const [riskBandFilter, setRiskBandFilter] = useState<string>('ALL');
   const [view, setView] = useState<'list' | 'map'>('list');
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(25);
+  const [totalNodes, setTotalNodes] = useState(0);
 
-  const loadNodes = async () => {
+  const loadNodes = async (targetPage = page) => {
     setLoading(true);
     try {
-      const res = await fetchWithdrawalNodes({ page: 1, page_size: 50, search: search || undefined, node_type: nodeTypeFilter === 'ALL' ? undefined : nodeTypeFilter, risk_band: riskBandFilter === 'ALL' ? undefined : riskBandFilter });
+      const res = await fetchWithdrawalNodes({
+        page: targetPage,
+        page_size: pageSize,
+        search: search || undefined,
+        node_type: nodeTypeFilter === 'ALL' ? undefined : nodeTypeFilter,
+        risk_band: riskBandFilter === 'ALL' ? undefined : riskBandFilter,
+      });
       setNodes(res.items || []);
+      setTotalNodes(res.total || 0);
       if (res.items?.length > 0) {
         setSelectedNode(res.items[0]);
+      } else {
+        setSelectedNode(null);
       }
     } catch (err: any) {
       toast.error(`Failed to load withdrawal nodes: ${err.message}`);
@@ -37,8 +49,14 @@ function NodeManagementPage() {
   };
 
   useEffect(() => {
-    loadNodes();
+    setPage(1);
+    loadNodes(1);
   }, [search, nodeTypeFilter, riskBandFilter]);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    loadNodes(newPage);
+  };
 
   const filteredNodes = nodes;
 
@@ -166,6 +184,34 @@ function NodeManagementPage() {
               </div>
             );
           }))}
+        </div>
+
+        {/* Pagination Bar */}
+        <div className="p-2.5 border-t border-slate-800 bg-slate-900/60 flex items-center justify-between text-xs text-slate-400 font-mono shrink-0">
+          <div>
+            Page {page} of {Math.max(1, Math.ceil(totalNodes / pageSize))} ({totalNodes.toLocaleString()} nodes total)
+          </div>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page <= 1 || loading}
+              className="p-1 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-slate-200"
+              title="Previous Page"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-200">
+              {page}
+            </span>
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page >= Math.ceil(totalNodes / pageSize) || loading}
+              className="p-1 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-slate-200"
+              title="Next Page"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 

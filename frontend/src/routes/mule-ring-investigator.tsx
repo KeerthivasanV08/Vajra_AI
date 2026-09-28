@@ -129,18 +129,74 @@ function RetryPanel({ message, onRetry }: { message: string; onRetry: () => void
   return <div className="rounded-lg border border-rose-900/70 bg-slate-950 p-4 text-center"><p className="text-sm text-rose-200">{message}</p><button onClick={onRetry} className="mt-3 rounded-md bg-slate-800 px-4 py-2 text-sm text-white">Retry</button></div>;
 }
 
-function Ledger({ transactions, onSelect }: { transactions: MuleRingTransaction[]; onSelect: (transaction: MuleRingTransaction) => void }) {
+function Ledger({
+  transactions,
+  hops,
+  onSelect,
+}: {
+  transactions: MuleRingTransaction[];
+  hops: MuleTraceHop[];
+  onSelect: (transaction: MuleRingTransaction) => void;
+}) {
+  // Build a hop-step lookup keyed by transaction_id or from+to account pair
+  const hopStep = (txn: MuleRingTransaction): number | null => {
+    if (txn.transaction_id) {
+      const byId = hops.find((h) => h.transaction_id === txn.transaction_id);
+      if (byId) return byId.step;
+    }
+    const byAccounts = hops.find(
+      (h) => h.from_account === txn.from_account && h.to_account === txn.to_account,
+    );
+    return byAccounts?.step ?? null;
+  };
   return (
     <div className="overflow-x-auto rounded-lg border border-slate-800">
-      <table className="vajra-readable-table w-full min-w-[54rem] text-left text-[15px]">
-        <thead className="bg-slate-950 font-mono text-xs uppercase text-slate-300"><tr>{["From → To", "Banks", "Amount", "Velocity", "Elapsed"].map((heading) => <th key={heading} className="px-3 py-3 font-semibold">{heading}</th>)}</tr></thead>
-        <tbody>{transactions.map((transaction) => <tr key={transaction.transaction_id || `${transaction.from_account}-${transaction.to_account}-${transaction.timestamp}`} onClick={() => onSelect(transaction)} className="cursor-pointer border-t border-slate-800 bg-slate-900/60 text-slate-200 hover:bg-slate-800">
-          <td className="px-3 py-3 font-mono">{transaction.from_account || "Unavailable"} → {transaction.to_account || "Unavailable"}</td>
-          <td className="px-3 py-3 text-slate-400">{transaction.from_bank || "Unavailable"} → {transaction.to_bank || "Unavailable"}</td>
-          <td className="px-3 py-3 font-mono text-emerald-300">{money(transaction.amount)}</td>
-          <td className="px-3 py-3">{minutes(transaction.velocity_mins)}</td>
-          <td className="px-3 py-3">{minutes(transaction.elapsed_mins)}</td>
-        </tr>)}</tbody>
+      <table className="vajra-readable-table w-full min-w-[60rem] text-left text-[15px]">
+        <thead className="bg-slate-950 font-mono text-xs uppercase text-slate-300">
+          <tr>
+            {["Hop", "From → To", "Banks", "Amount", "Type", "Velocity", "Elapsed"].map(
+              (heading) => (
+                <th key={heading} className="px-3 py-3 font-semibold">
+                  {heading}
+                </th>
+              ),
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.map((transaction) => {
+            const step = hopStep(transaction);
+            return (
+              <tr
+                key={
+                  transaction.transaction_id ||
+                  `${transaction.from_account}-${transaction.to_account}-${transaction.timestamp}`
+                }
+                onClick={() => onSelect(transaction)}
+                className="cursor-pointer border-t border-slate-800 bg-slate-900/60 text-slate-200 hover:bg-slate-800"
+              >
+                <td className="px-3 py-3 font-mono text-slate-500">
+                  {step != null ? `#${step}` : "—"}
+                </td>
+                <td className="px-3 py-3 font-mono">
+                  {transaction.from_account || "Unavailable"} →{" "}
+                  {transaction.to_account || "Unavailable"}
+                </td>
+                <td className="px-3 py-3 text-slate-400">
+                  {transaction.from_bank || "—"} → {transaction.to_bank || "—"}
+                </td>
+                <td className="px-3 py-3 font-mono text-emerald-300">
+                  {money(transaction.amount)}
+                </td>
+                <td className="px-3 py-3 text-slate-400 capitalize">
+                  {transaction.channel || "—"}
+                </td>
+                <td className="px-3 py-3">{minutes(transaction.velocity_mins)}</td>
+                <td className="px-3 py-3">{minutes(transaction.elapsed_mins)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
       </table>
     </div>
   );
@@ -215,10 +271,66 @@ function MuleRingInvestigatorPage() {
               <p className="mt-1 vajra-body">Multi-hop layering flow and syndicate pattern analytics</p>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-mono uppercase">
                 {backLink && <Link to={backLink.to} className="inline-flex items-center gap-1 text-rose-300 hover:text-rose-200"><ArrowLeft className="h-3.5 w-3.5" />{backLink.label}</Link>}
-                {[ ["CASE", trace?.case_id || search.caseId], ["ALERT", trace?.alert_id || search.alertId], ["ACCOUNT", activeAccountId] ].map(([label, value]) => <span key={label} className={`rounded-full border px-3 py-1.5 ${value ? "border-cyan-700/70 bg-cyan-950/50 text-cyan-200" : "border-dashed border-slate-700 bg-slate-950 text-slate-500"}`}>{label} · {value || "Not linked"}</span>)}
+                {[
+                  ["CASE", trace?.case_id || search.caseId, search.caseId ? `/cases` : null] as const,
+                  ["ALERT", trace?.alert_id || search.alertId, search.alertId ? `/alerts` : null] as const,
+                  ["ACCOUNT", activeAccountId, null] as const,
+                ].map(([label, value, navTo]) =>
+                  navTo && value ? (
+                    <Link
+                      key={label}
+                      to={navTo as "/cases" | "/alerts"}
+                      className="inline-flex items-center gap-1 rounded-full border border-cyan-700/70 bg-cyan-950/50 px-3 py-1.5 text-cyan-200 hover:bg-cyan-900/60"
+                    >
+                      {label} · {value}
+                    </Link>
+                  ) : (
+                    <span
+                      key={label}
+                      className={`rounded-full border px-3 py-1.5 ${
+                        value
+                          ? "border-cyan-700/70 bg-cyan-950/50 text-cyan-200"
+                          : "border-dashed border-slate-700 bg-slate-950 text-slate-500"
+                      }`}
+                    >
+                      {label} · {value || "Not linked"}
+                    </span>
+                  ),
+                )}
               </div>
             </div>
-            {activeAccountId && <div className="flex shrink-0 gap-2"><button onClick={() => setShowAccountSearch((visible) => !visible)} className="rounded-md border border-slate-700 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800">{showAccountSearch ? "Hide Search" : "Change Account"}</button><button onClick={() => { setShowAccountSearch(true); setQuery(""); setDebouncedQuery(""); void navigate({ to: "/mule-ring-investigator", search: { accountId: undefined, caseId: undefined, alertId: undefined } }); }} className="rounded-md border border-slate-700 px-3 py-2 text-xs text-slate-400 hover:bg-slate-800">Clear Selection</button></div>}
+            {activeAccountId && (
+              <div className="flex shrink-0 flex-wrap gap-2">
+                <Link
+                  to="/accounts"
+                  search={{ accountId: activeAccountId } as never}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-cyan-700/70 bg-cyan-950/40 px-3 py-2 text-xs text-cyan-200 hover:bg-cyan-900/50"
+                >
+                  <User className="h-3.5 w-3.5" />
+                  Open Account 360
+                </Link>
+                <button
+                  onClick={() => setShowAccountSearch((visible) => !visible)}
+                  className="rounded-md border border-slate-700 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800"
+                >
+                  {showAccountSearch ? "Hide Search" : "Change Account"}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowAccountSearch(true);
+                    setQuery("");
+                    setDebouncedQuery("");
+                    void navigate({
+                      to: "/mule-ring-investigator",
+                      search: { accountId: undefined, caseId: undefined, alertId: undefined },
+                    });
+                  }}
+                  className="rounded-md border border-slate-700 px-3 py-2 text-xs text-slate-400 hover:bg-slate-800"
+                >
+                  Clear Selection
+                </button>
+              </div>
+            )}
           </div>
         </div>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-5">
@@ -254,11 +366,12 @@ function MuleRingInvestigatorPage() {
         {traceState === "empty" && <div className="rounded-lg border border-slate-800 bg-slate-950 p-6 text-center text-sm text-slate-400">No multi-hop transaction flow identified for this account.</div>}
         {traceState === "success" && trace && <>
           <div className="overflow-x-auto pb-2"><div className="flex min-w-max items-center">
-            {trace.origin && <><RoleNode title={roles.victim} account={trace.origin.account_id} bank={null} role="victim" /><div className="flex w-12 shrink-0 items-center justify-center text-cyan-400"><ArrowRight className="h-5 w-5" /></div></>}
+            {trace.origin && <><RoleNode title={roles.victim} account={trace.origin.account_id} bank={trace.transactions[0]?.from_bank ?? null} role="victim" /><div className="flex w-12 shrink-0 items-center justify-center text-cyan-400"><ArrowRight className="h-5 w-5" /></div></> }
+
             {trace.hops.map((hop, index) => <div key={`${hop.transaction_id || hop.step}-${hop.step}`} className="flex items-center"><RoleNode title={roles[hop.role] || hop.role} account={hop.to_account} bank={hop.to_bank} role={hop.role} amount={hop.amount} transactionId={hop.transaction_id} onClick={() => setSelectedTransaction(trace.transactions[index] || null)} />{(index < trace.hops.length - 1 || Boolean(trace.predicted_terminal) || (terminalState === "success" && terminals.length > 0)) && <div className="flex w-12 shrink-0 items-center justify-center text-cyan-400"><ArrowRight className="h-5 w-5" /></div>}</div>)}
             {(trace.predicted_terminal || (terminalState === "success" ? terminals[0] : null)) && <RoleNode title="Predicted Cash-Out" account={trace.predicted_terminal?.node_id || terminals[0].node_id} bank="Physical cash-out node" role="predicted_terminal" />}
           </div></div>
-          <section className="space-y-2 border-t border-slate-800 pt-4"><h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-slate-300">Underlying Transaction Ledger</h3><Ledger transactions={trace.transactions} onSelect={setSelectedTransaction} /></section>
+          <section className="space-y-2 border-t border-slate-800 pt-4"><h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-slate-300">Underlying Transaction Ledger</h3><Ledger transactions={trace.transactions} hops={trace.hops} onSelect={setSelectedTransaction} /></section>
         </>}
       </section>
 

@@ -75,3 +75,9 @@ npm run dev
 # Execute production build
 npm run build
 ```
+
+## Deployment
+
+Build with `npm run build` and deploy using a host/runtime compatible with the Nitro integration configured in `vite.config.ts` (the config targets Vercel Functions). Set `VITE_API_URL` to the deployed backend origin in the frontend build environment; this value is compiled into API and SSE requests, so rebuild after changing it. Do not include a trailing API path such as `/api/v1` in the value.
+
+Add the frontend's exact public origin to the backend's `FRONTEND_ORIGINS` setting so browser requests pass CORS checks. Verify the deployed UI can reach `/api/v1/health/ready` on the backend. See the [backend Render deployment guide](../docs/deployment/backend-render.md) for API configuration and runtime limitations.
