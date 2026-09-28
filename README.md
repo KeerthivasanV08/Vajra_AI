@@ -1,8 +1,210 @@
-# VAJRA AI — Predictive Cybercrime Cash-Out Interception Platform
+# VAJRA AI
 
-Predictive Cybercrime Intelligence, Cash-Out Forecasting, Risk Fusion, Multi-Hop Investigation, Tactical Dispatch, Compliance Governance and Cryptographic Audit Ledger.
+> **Predictive Cybercrime Intelligence & Cash-Out Interception Platform**
+
+VAJRA AI is an AI-powered intelligence and decision-support platform for forecasting likely cash-withdrawal locations from cybercrime, financial, behavioral, geospatial, and relationship signals. It connects TrustVault digital risk intelligence with physical cash-out prediction, operational alerting, investigation workflows, and auditable SOP-based decision support.
+
+**Problem Statement 26184** · *Development of a Predictive Analytics Framework for Cybercrime Complaints to Forecast Likely Cash Withdrawal Locations in Advance, Enabling Generation of Actionable Intelligence for Timely and Proactive Cybercrime Intervention.*
+
+| Project field | Details |
+| --- | --- |
+| Organization | Ministry of Home Affairs |
+| Department | Indian Cyber Crime Coordination Centre (I4C), CIS Division |
+| Category | Software |
+| Theme | Blockchain & Cybersecurity |
+| Technology focus | FastAPI, React, predictive ML, geospatial intelligence, graph analysis, SSE, auditability |
+
+## 🚀 Try Our Live Demo
+
+Explore the deployed VAJRA AI predictive cybercrime intelligence platform:
+
+- **Frontend Application:** [Launch VAJRA AI Demo](https://vajra-76mc8kduk-keerthivasan08coral-1274s-projects.vercel.app/)
+- **Backend API:** [VAJRA AI API](https://vajra-ai-sh9c.onrender.com/)
+- **API Documentation:** [Swagger UI](https://vajra-ai-sh9c.onrender.com/docs)
+
+The frontend is deployed on Vercel and the FastAPI backend is deployed on Render. The frontend build uses `VITE_API_URL` to target the backend origin; these links are the verified deployment references for this repository.
 
 ---
+
+## Problem Statement 26184
+
+### Problem Background
+
+The National Cybercrime Reporting Portal is a centralized platform serving the country. Citizens can file cybercrime complaints, while Law Enforcement Agencies (LEAs), banking and financial institutions, and other stakeholders act on those complaints and use related reports and analytical information.
+
+The problem statement describes a rapidly increasing complaint volume of approximately **8,000 complaints per day**. This scale creates a need for proactive and predictive intelligence rather than relying only on reactive investigation after funds have moved or been withdrawn.
+
+The objective is to use historical cybercrime and financial data to forecast likely cash-withdrawal locations so that LEAs can take timely preventive action. This intelligence can support state-level and local-level LEAs, I4C coordination, banks, financial institutions, ATM and withdrawal infrastructure operators, and cybercrime investigation teams.
+
+VAJRA AI is intended to generate proactive intelligence and decision support. It does not autonomously perform real-world law-enforcement, banking, seizure, freezing, or arrest actions.
+
+## VAJRA AI Solution
+
+VAJRA AI addresses Problem Statement 26184 by combining:
+
+1. Digital financial and cyber-risk intelligence
+2. Behavioral risk analysis
+3. Sequence analysis
+4. Graph-based relationship analysis
+5. IP-to-geolocation trajectory analysis
+6. Cash-out node vulnerability analysis
+7. Spatial prediction
+8. Candidate withdrawal-node ranking
+9. Cross-border risk detection
+10. SOP-based risk fusion
+11. Geospatial visualization
+12. Real-time alerting
+13. Law-enforcement operational workflows
+14. Audit and compliance mechanisms
+
+The result is a connected intelligence workflow that helps analysts and authorized officers move from a digital risk signal to explainable candidate locations, prioritized alerts, and documented operational decisions.
+
+## TrustVault Digital Risk Foundation
+
+TrustVault is not a separate product. It is the digital risk foundation within the VAJRA AI architecture:
+
+```text
+VAJRA AI
+├── TrustVault Digital Risk Foundation
+├── Predictive Physical Intelligence
+├── Spatial Cash-Out Prediction
+├── Operational Intelligence
+├── Alerting / SOP Fusion
+└── Audit & Compliance
+```
+
+TrustVault provides the digital AML and risk intelligence foundation. VAJRA AI extends that intelligence into predictive physical cash-out location analysis, investigation, and operational decision support.
+
+## Predictive Analytics Engine
+
+### Digital Risk Intelligence
+
+The TrustVault digital risk layer combines a Rules Engine, Behavioral LightGBM, Sequence LSTM, and Graph ML. The current conceptual fusion is:
+
+| Signal | Weight |
+| --- | ---: |
+| Rules | 25% |
+| Behavioral | 30% |
+| Sequence | 25% |
+| Graph | 20% |
+
+These percentages describe the platform's prototype scoring design; they are not legal, regulatory, or evidentiary standards.
+
+### Physical Intelligence
+
+```text
+IP-to-Geo Trajectory
+     ↓
+Node Vulnerability
+     ↓
+Spatial Region Prediction
+     ↓
+Candidate Withdrawal Nodes
+     ↓
+Top-K Node Ranking
+     ↓
+Operational Intelligence
+```
+
+The repository implements these model families through the trajectory, node vulnerability, spatial prediction, node ranking, cross-border, SOP fusion, fairness, syndicate, and orchestration services documented below.
+
+## Predictive Cash-Out Intelligence
+
+VAJRA AI forecasts likely cash-withdrawal locations by combining cybercrime and financial intelligence, digital transaction risk, IP/location trajectory information, historical withdrawal behavior, withdrawal-node characteristics, geographic relationships, risk and temporal patterns, candidate-node proximity, and contextual information.
+
+```text
+Cybercrime / Financial Intelligence
+          ↓
+Digital Risk Analysis
+          ↓
+Trajectory Analysis
+          ↓
+Spatial Risk Prediction
+          ↓
+Candidate Node Generation
+          ↓
+Node-Level Ranking
+          ↓
+Top Predicted Cash-Out Locations
+          ↓
+Operational Alert / Intelligence
+```
+
+## Key Deliverables
+
+### A. Predictive Analytics Engine
+
+AI/ML analysis of historical cybercrime and financial signals for predictive scoring, pattern detection, geospatial risk modelling, real-time intelligence, and candidate withdrawal-location ranking.
+
+### B. Risk Heatmap Dashboard
+
+The GIS-enabled console provides risk visualization, predicted risk zones, geographic drill-down, operational map views, predicted withdrawal nodes, high-risk corridors, and supported time, location, and risk filters.
+
+### C. Law Enforcement Interface
+
+The investigator and officer surfaces provide alerts, cases, intelligence, graph investigation, predicted cash-out locations, officer workflows, evidence and documentation support, and audit information. These are decision-support workflows requiring authorized human action.
+
+### D. Alert & Notification System
+
+The platform provides dashboard alerts, risk escalation, bank and financial-institution intelligence workflows, law-enforcement alert views, SLA monitoring, and Server-Sent Event streams for transactions and alerts where the deployed infrastructure supports them.
+
+## System Architecture
+
+```mermaid
+flowchart TD
+    U[Users / Officers / Analysts] --> F[VAJRA AI Frontend]
+    F --> B[FastAPI Backend]
+    B --> T[TrustVault Digital Risk Foundation]
+    B --> P[Predictive Intelligence]
+    P --> TR[Trajectory Models]
+    P --> NV[Node Vulnerability]
+    P --> SP[Spatial Prediction]
+    TR --> CN[Candidate Withdrawal Nodes]
+    NV --> CN
+    SP --> CN
+    CN --> NR[Node Ranking]
+    T --> SF[SOP / Alert Fusion]
+    NR --> SF
+    SF --> O[Operations / Investigation]
+    O --> AC[Audit & Compliance]
+```
+
+## Frontend Modules
+
+The implemented React console includes routes for the Command Center dashboard, Operations Heatmap, Transaction Monitor, Alert Center, Mule Ring Investigator, Graph Explorer, Cases, Account 360, Node Management, High-Risk Corridors, SOP Triage, Legal Dossier Vault, Audit & Compliance Ledger, Fairness Audit, Beat Officer Field Mode, Model Performance, Live Simulation, Officer Review, Reports, Settings, and supporting investigation views.
+
+## Realtime Intelligence
+
+The frontend subscribes to Server-Sent Event streams for transactions and alerts and merges incoming events into the live feed, alert views, dashboard metrics, and graph snapshots. The backend also includes SLA monitoring and operational dispatch updates. Realtime behavior depends on the deployed API, CORS configuration, and service availability; the platform preserves loading, empty, error, and reconnecting states rather than fabricating successful data.
+
+## Audit, Explainability & Compliance
+
+Implemented governance and traceability mechanisms include:
+
+- SHA-256 block-linked audit events and chain reverification
+- Transaction, alert, case, SOP, dispatch, and dossier audit records
+- Explainability panels and evidence summaries for investigation workflows
+- Legal dossier generation with document hashing as a prototype evidence workflow
+- Model evaluation and prediction traceability surfaces
+- Fairness analysis as a non-scoring governance layer
+
+Prototype-generated documents and scores are not legal authority or a substitute for authorized human review.
+
+## Model Governance
+
+The repository includes model evaluation reports, calibration artifacts, temporal and split validation utilities, leakage audits, fairness reports, explainability support, and audit logging. The evaluation material is based on repository datasets and prototype workflows; results should not be interpreted as validation on national cybercrime data.
+
+## Data and Synthetic Data
+
+Prototype data used for demonstration and evaluation may be synthetic and should not be interpreted as real national cybercrime data. This repository does not claim access to National Cybercrime Reporting Portal data, government databases, banking systems, I4C systems, or law-enforcement systems. Any operational integration requires authorized data access, security controls, and institutional governance.
+
+## Limitations & Responsible Use
+
+VAJRA AI is a prototype intelligence and decision-support platform. Predictions indicate candidate risks and locations, not certainty. Human investigators, authorized officers, banks, and other responsible institutions must validate signals before taking action. Authentication, durable production storage, data provenance, model drift monitoring, and operational integrations require further hardening before public or sensitive deployment.
+
+## Future Scope
+
+Future work may include authorized institutional data integrations, stronger identity and role-based access controls, durable production storage, calibrated live feedback loops, drift monitoring, expanded geographic validation, and operationally governed integrations with approved banking and law-enforcement systems.
 
 ## 1. Executive System Overview
 

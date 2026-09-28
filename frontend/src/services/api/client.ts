@@ -1,4 +1,6 @@
-export const API_BASE = (import.meta.env.VITE_API_URL as string) || "http://127.0.0.1:8000";
+import { API_BASE_URL } from '@/lib/apiConfig';
+
+export const API_BASE = API_BASE_URL;
 
 export type RequestOptions = {
   method?: string;

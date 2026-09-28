@@ -1,12 +1,13 @@
 import type { Transaction } from '@/types';
 import { store } from '@/store/realtime';
+import { API_BASE_URL } from '@/lib/apiConfig';
 
 type Handler = (t: Transaction) => void;
 
 export class TransactionStream {
   private es?: EventSource;
   private handlers = new Set<Handler>();
-  private url = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000') + '/api/transactions/realtime';
+  private url = `${API_BASE_URL}/api/transactions/realtime`;
   private reconnectMs = 1000;
   private shouldRun = false;
 

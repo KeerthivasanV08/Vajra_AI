@@ -3,9 +3,11 @@
  * Centralized configuration for API endpoints, animation timings, and visual properties
  */
 
+import { API_BASE_URL } from './apiConfig';
+
 // ===== API CONFIGURATION =====
 export const API_CONFIG = {
-  BASE_URL: 'http://127.0.0.1:8000',
+  BASE_URL: API_BASE_URL,
   ENDPOINTS: {
     ACCOUNTS: '/api/accounts',
   },

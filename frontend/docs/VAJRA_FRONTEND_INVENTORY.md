@@ -53,7 +53,7 @@ The frontend uses **TanStack React Router** (`@tanstack/react-router`) with file
 ---
 
 ## 5. API Services & Client Mapping
-- **Base URL**: Configured via `VITE_API_URL` (defaults to `http://127.0.0.1:8000`).
+- **Base URL**: Configured via `VITE_API_URL`; local development uses `frontend/.env.development`, and production builds require the variable.
 - **Endpoints Defined (`src/services/api.ts`)**:
   - `/api/transactions/recent`, `/api/transactions/realtime`, `/api/transactions/analyze`
   - `/api/accounts`, `/api/alerts`
