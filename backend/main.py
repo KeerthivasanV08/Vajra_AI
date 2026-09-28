@@ -281,6 +281,13 @@ _mount(_digital_routers.get("tv_reports"),   "/api",            ["Digital AML Re
 _mount(_digital_routers.get("health"),       "/api",            ["Platform Health"])
 _mount(_digital_routers.get("officer"),      "/api/officer",    ["Officer Review"])
 
+# Render probes the conventional root health path. Reuse the existing lightweight
+# Digital Risk health handler without exposing model readiness work at this path.
+if _digital_routers.get("health") is not None:
+    from app.api.health_routes import health_check
+
+    app.add_api_route("/health", health_check, methods=["GET"], tags=["Platform Health"])
+
 
 # ───────────────────────────────────────────────────────────────────────────
 # VAJRA v1 ROUTES  (/api/v1/*)
