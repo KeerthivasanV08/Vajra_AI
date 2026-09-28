@@ -6,6 +6,24 @@ VAJRA AI is an AI-powered intelligence and decision-support platform for forecas
 
 **Problem Statement 26184** · *Development of a Predictive Analytics Framework for Cybercrime Complaints to Forecast Likely Cash Withdrawal Locations in Advance, Enabling Generation of Actionable Intelligence for Timely and Proactive Cybercrime Intervention.*
 
+---
+
+## 🚀 Try Our Live Demo
+
+Explore the deployed VAJRA AI predictive cybercrime intelligence and cash-out forecasting platform:
+
+- **Frontend Application (Vercel):** 🚀 [Launch VAJRA AI Demo](https://vajra-76mc8kduk-keerthivasan08coral-1274s-projects.vercel.app/)
+- **Backend API (Render):** ⚡ [Open VAJRA AI API](https://vajra-ai-sh9c.onrender.com/)
+- **Interactive Swagger Documentation:** 📄 [Open Swagger UI](https://vajra-ai-sh9c.onrender.com/docs)
+
+The frontend is deployed on Vercel and the FastAPI backend is deployed on Render. The frontend build uses `VITE_API_URL` to target the backend origin.
+
+---
+
+| Domain | Problem Statement | Primary Focus | Deployment | Architecture Status |
+| --- | --- | --- | --- | --- |
+| Cybercrime Intelligence & Cash-Out Prediction | **SIH PS 26184** | Predictive risk analysis, likely withdrawal locations, and proactive intervention support | Vercel + Render | Deployed Prototype |
+
 | Project field | Details |
 | --- | --- |
 | Organization | Ministry of Home Affairs |
@@ -13,16 +31,6 @@ VAJRA AI is an AI-powered intelligence and decision-support platform for forecas
 | Category | Software |
 | Theme | Blockchain & Cybersecurity |
 | Technology focus | FastAPI, React, predictive ML, geospatial intelligence, graph analysis, SSE, auditability |
-
-## 🚀 Try Our Live Demo
-
-Explore the deployed VAJRA AI predictive cybercrime intelligence platform:
-
-- **Frontend Application:** [Launch VAJRA AI Demo](https://vajra-76mc8kduk-keerthivasan08coral-1274s-projects.vercel.app/)
-- **Backend API:** [VAJRA AI API](https://vajra-ai-sh9c.onrender.com/)
-- **API Documentation:** [Swagger UI](https://vajra-ai-sh9c.onrender.com/docs)
-
-The frontend is deployed on Vercel and the FastAPI backend is deployed on Render. The frontend build uses `VITE_API_URL` to target the backend origin; these links are the verified deployment references for this repository.
 
 ---
 
