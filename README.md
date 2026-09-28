@@ -219,7 +219,16 @@ npm run build
 
 ---
 
-## 6. Operational & Legal Disclaimers
+## 6. Deployment
+
+- Deploy the API as a Render Web Service with `backend/` as its root. The build command is `pip install -r requirements.txt`; the start command is `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`. See the [backend deployment summary](backend/README.md#deployment) for required settings.
+- Include the trained model artifacts and bundled datasets in the backend release. Startup fails when required model artifacts are missing.
+- Set `ENVIRONMENT=production`, a unique secret `JWT_SECRET`, and `FRONTEND_ORIGINS` to the exact deployed frontend origin. Set the frontend build variable `VITE_API_URL` to the deployed API origin.
+- Check backend readiness at `/api/v1/health/ready`. Render's default filesystem is ephemeral; CSV-backed audit and runtime records are not durable across restarts or redeploys without persistent storage.
+- The current authentication is prototype-only. Keep the service restricted and use synthetic data; do not expose it to real users or sensitive information.
+- See the [frontend deployment notes](frontend/README.md#deployment) and [full backend Render guide](docs/deployment/backend-render.md).
+
+## 7. Operational & Legal Disclaimers
 
 1. **Prototype Decision Support**: All SOP action tiers represent decision support recommendations. Seizure, freezing, or arrest requires configured law enforcement or banking human authorization.
 2. **Data Provenance**: All demonstration telemetry, withdrawal node coordinates, and transaction chains are labeled with `DATA_PROVENANCE_SYNTHETIC` to prevent confusing prototype demonstrations with live law enforcement telemetry.

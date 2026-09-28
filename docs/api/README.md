@@ -4,6 +4,10 @@
 > **API Prefix**: `/api/v1` (VAJRA Predictive Core) & `/api` (Digital AML Risk Core)  
 > **OpenAPI Docs**: `http://127.0.0.1:8000/docs`
 
+## Deployment
+
+In a deployed environment, use the backend's HTTPS origin as the API base URL and the corresponding `/docs` path for OpenAPI documentation. The frontend reads `VITE_API_URL` at build time; configure it to the backend origin (without an API path suffix), then allow the deployed frontend origin in the backend's `FRONTEND_ORIGINS` setting. Configure TLS and restrict API access at the hosting or gateway layer. See the [backend Render deployment guide](../deployment/backend-render.md).
+
 ---
 
 ## Endpoint Summary

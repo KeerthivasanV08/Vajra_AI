@@ -40,3 +40,7 @@ An independent pipeline audit was executed across all 8 machine learning models 
 4. **Model 4 (Node Re-Ranker)**: Exceptional Hit@3 (99.20%) on spatial candidate shortlist re-ranking. Requires candidate generation prior to invocation.
 5. **Model 5 (Cross-Border)**: Isolated override condition verified. Label derivation warning noted.
 6. **Model 6 (SOP Calibration)**: Isotonic calibration reduces Brier score from 0.2146 to 0.0001, providing well-calibrated probabilities.
+
+## Deployment Considerations
+
+The audit reports describe synthetic data and checked-in model artifacts; they are not evidence of operational validation. The backend writes mutable audit-ledger and runtime records as CSV files beneath `backend/data`. On Render's default ephemeral filesystem those generated records are not durable across restarts or redeploys, so configure and verify persistent storage before treating them as retained audit evidence. Keep the prototype service restricted and do not process real or sensitive records with its current authentication. See the [backend deployment guide](../deployment/backend-render.md).

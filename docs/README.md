@@ -64,12 +64,15 @@ Welcome to the comprehensive technical documentation for **VAJRA AI: Predictive 
 ---
 
 ## 6. Data, Security & Deployment
+
+The backend deployment guide targets Render and documents its required production secrets, model/data artifacts, readiness check, and ephemeral-filesystem caveat. The frontend build uses Nitro and requires `VITE_API_URL` to point at the deployed API; add the frontend's exact origin to backend CORS configuration. These deployments remain prototype-only until authentication and durable audit storage are addressed.
+
 - [**Dataset Schemas & Provenance**](data/datasets.md) — Feature definitions, synthetic datasets, and data provenance.
 - [**Security Architecture**](security/security-architecture.md) — RBAC, cryptographic hashing, and artifact protection.
 - [**Operational & Legal Boundaries**](security/operational-and-legal-boundaries.md) — Disclaimers on prototype decision tiers & legal authority boundaries.
-- [**Frontend Deployment Guide**](deployment/frontend.md) — Vite SPA / SSR deployment & configuration.
-- [**Backend Deployment Guide**](deployment/backend.md) — FastAPI / Uvicorn server configuration & environment settings.
-- [**Production Checklist**](deployment/production-checklist.md) — Pre-deployment verification criteria.
+- [**Backend Render Deployment Guide**](deployment/backend-render.md) — Render service configuration, environment settings, health checks, storage limitations, and security notes.
+- [**Frontend Deployment Notes**](../frontend/README.md#deployment) — Nitro-compatible hosting, build-time API URL, and backend CORS origin configuration.
+- [**Backend Deployment Summary**](../backend/README.md#deployment) — Required model/data artifacts, Render commands, and runtime persistence caveats.
 
 ---
 
