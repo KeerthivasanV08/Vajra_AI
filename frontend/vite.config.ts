@@ -5,9 +5,11 @@ import { loadEnv } from "vite";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
+  const apiUrl = env.VITE_API_URL?.trim() ?? "";
+  const isLocalApiUrl = /^(https?:\/\/)?(127\.0\.0\.1|localhost)(:\d+)?(?:\/|$)/i.test(apiUrl);
 
-  if (mode === "production" && !env.VITE_API_URL?.trim()) {
-    throw new Error("VITE_API_URL must be configured for production builds.");
+  if (mode === "production" && (!apiUrl || isLocalApiUrl)) {
+    throw new Error("VITE_API_URL must be a deployed backend origin for production builds.");
   }
 
   return {
