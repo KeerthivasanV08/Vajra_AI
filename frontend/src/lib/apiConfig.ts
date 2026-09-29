@@ -1,4 +1,4 @@
-export const DEFAULT_PRODUCTION_API_URL = 'https://vajra-ai-sh9c.onrender.com';
+export const DEFAULT_PRODUCTION_API_URL = 'https://vajra-ai-0q3q.onrender.com';
 
 function resolveApiBaseUrl(): string {
   const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();

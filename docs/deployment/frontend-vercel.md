@@ -7,8 +7,8 @@ VAJRA AI's frontend is a Vite/TanStack application deployed through the Nitro/Ve
 | Environment | `VITE_API_URL` |
 | --- | --- |
 | Development | `http://127.0.0.1:8000` |
-| Production | `https://vajra-ai-sh9c.onrender.com` |
-| Preview | `https://vajra-ai-sh9c.onrender.com` |
+| Production | `https://vajra-ai-0q3q.onrender.com` |
+| Preview | `https://vajra-ai-0q3q.onrender.com` |
 
 The value must contain only the backend origin. Do not append `/api` or `/api/v1`; the frontend services append their route paths themselves. Trailing slashes are normalized by the shared API configuration.
 
@@ -17,7 +17,7 @@ The value must contain only the backend origin. Do not append `/api` or `/api/v1
 Create this client-visible Vercel variable for both **Production** and **Preview**:
 
 ```text
-VITE_API_URL=https://vajra-ai-sh9c.onrender.com
+VITE_API_URL=https://vajra-ai-0q3q.onrender.com
 ```
 
 `VITE_*` variables are intentionally public. They are embedded into browser JavaScript at build time and must not contain backend secrets.
@@ -56,7 +56,7 @@ The following route families preserve the backend contract:
 The resulting production URL format is:
 
 ```text
-https://vajra-ai-sh9c.onrender.com/api/alerts
+https://vajra-ai-0q3q.onrender.com/api/alerts
 ```
 
 It must not become `.../api/api/alerts` or use a localhost host.
@@ -66,8 +66,8 @@ It must not become `.../api/api/alerts` or use a localhost host.
 The transaction and alert `EventSource` clients use the same shared API base configuration as REST requests:
 
 ```text
-https://vajra-ai-sh9c.onrender.com/api/transactions/realtime
-https://vajra-ai-sh9c.onrender.com/api/alerts/realtime
+https://vajra-ai-0q3q.onrender.com/api/transactions/realtime
+https://vajra-ai-0q3q.onrender.com/api/alerts/realtime
 ```
 
 The UI preserves connected, disconnected, loading, error, and reconnecting states. It does not substitute mock events when Render is unavailable.
@@ -77,7 +77,7 @@ The UI preserves connected, disconnected, loading, error, and reconnecting state
 From `frontend/`, build with the production origin supplied in the environment:
 
 ```powershell
-$env:VITE_API_URL = "https://vajra-ai-sh9c.onrender.com"
+$env:VITE_API_URL = "https://vajra-ai-0q3q.onrender.com"
 npm run build
 ```
 
@@ -93,8 +93,8 @@ The current build may contain framework-internal `localhost` placeholders used b
 Verify the deployed backend separately before diagnosing browser failures as frontend issues:
 
 ```text
-https://vajra-ai-sh9c.onrender.com/docs
-https://vajra-ai-sh9c.onrender.com/api/v1/health
+https://vajra-ai-0q3q.onrender.com/docs
+https://vajra-ai-0q3q.onrender.com/api/v1/health
 ```
 
 If direct API requests succeed but browser requests fail with CORS errors, configure the exact Vercel origin in the Render backend's explicit `FRONTEND_ORIGINS` setting. CORS failures are distinct from `ERR_CONNECTION_REFUSED` caused by a stale localhost bundle.

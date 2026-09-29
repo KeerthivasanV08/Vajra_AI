@@ -12,9 +12,9 @@ VAJRA AI is an AI-powered intelligence and decision-support platform for forecas
 
 Explore the deployed VAJRA AI predictive cybercrime intelligence and cash-out forecasting platform:
 
-- **Frontend Application (Vercel):** 🚀 [Launch VAJRA AI Demo](https://vajra-76mc8kduk-keerthivasan08coral-1274s-projects.vercel.app/)
-- **Backend API (Render):** ⚡ [Open VAJRA AI API](https://vajra-ai-sh9c.onrender.com/)
-- **Interactive Swagger Documentation:** 📄 [Open Swagger UI](https://vajra-ai-sh9c.onrender.com/docs)
+- **Frontend Application (Vercel):** 🚀 [Launch VAJRA AI Demo](https://vajra-ai-phi.vercel.app/)
+- **Backend API (Render):** ⚡ [Open VAJRA AI API](https://vajra-ai-0q3q.onrender.com/)
+- **Interactive Swagger Documentation:** 📄 [Open Swagger UI](https://vajra-ai-0q3q.onrender.com/docs)
 
 The frontend is deployed on Vercel and the FastAPI backend is deployed on Render. The frontend build uses `VITE_API_URL` to target the backend origin.
 

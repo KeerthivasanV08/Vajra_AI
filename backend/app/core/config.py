@@ -28,8 +28,7 @@ class Settings:
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:3000",
-        "https://vajra-ai-six.vercel.app",
-        "https://vajra-76mc8kduk-keerthivasan08coral-1274s-projects.vercel.app",
+        "https://vajra-ai-phi.vercel.app",
     ]
     CORS_ORIGIN_REGEX: Optional[str] = os.getenv(
         "CORS_ORIGIN_REGEX", r"https://.*\.vercel\.app"

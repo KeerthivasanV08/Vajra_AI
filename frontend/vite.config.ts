@@ -3,7 +3,7 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { nitro } from "nitro/vite";
 import { loadEnv } from "vite";
 
-const PRODUCTION_API_URL = "https://vajra-ai-sh9c.onrender.com";
+const PRODUCTION_API_URL = "https://vajra-ai-0q3q.onrender.com";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
