@@ -176,11 +176,13 @@ async def lifespan(app: FastAPI):
 
 def _report_digital_health(health: dict) -> None:
     """Log Digital Risk Core model health."""
+    artifacts = health.get("artifacts", {})
     for key in ("behavioral_model", "sequence_model", "graph_engine"):
         if health.get(key) == "healthy":
             logger.info(f"    ✅  Digital Risk [{key}]: healthy")
         else:
-            reason = health.get("artifacts", {}).get(key, {}).get("reason", "unknown")
+            artifact = artifacts.get(key, "unknown") if isinstance(artifacts, dict) else "unknown"
+            reason = artifact.get("reason", "unknown") if isinstance(artifact, dict) else artifact
             logger.warning(f"    ⚠️  Digital Risk [{key}]: {reason}")
     logger.info(f"    🔧  Runtime mode: {health.get('runtime_mode', 'UNKNOWN')}")
 
