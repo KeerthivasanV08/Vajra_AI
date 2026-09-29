@@ -16,9 +16,10 @@ import {
   fetchMuleFingerprint,
   fetchMulePredictedTerminals,
   fetchMuleTrace,
+  fetchWithdrawalNode,
   searchMuleAccounts,
 } from "@/services/api";
-import type { MuleRingTransaction, MuleTraceHop } from "@/types/vajra";
+import type { MuleRingTransaction, MuleTraceHop, WithdrawalNode } from "@/types/vajra";
 
 export const Route = createFileRoute("/mule-ring-investigator")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -209,6 +210,7 @@ function MuleRingInvestigatorPage() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [showAccountSearch, setShowAccountSearch] = useState(!search.accountId && !search.caseId && !search.alertId);
   const [selectedTransaction, setSelectedTransaction] = useState<MuleRingTransaction | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   // Case/alert IDs resolve server-side to their account and preserve the
   // investigation context when a search result is already linked.
   const requestedId = search.caseId || search.alertId || search.accountId;
@@ -235,6 +237,12 @@ function MuleRingInvestigatorPage() {
     queryKey: ["mule-ring", "terminals", requestedId],
     queryFn: () => fetchMulePredictedTerminals(requestedId as string),
     enabled: Boolean(requestedId),
+    retry: false,
+  });
+  const nodeQuery = useQuery<WithdrawalNode>({
+    queryKey: ["mule-ring", "node", selectedNodeId],
+    queryFn: () => fetchWithdrawalNode(selectedNodeId as string),
+    enabled: Boolean(selectedNodeId),
     retry: false,
   });
   const trace = traceQuery.data;
@@ -272,8 +280,8 @@ function MuleRingInvestigatorPage() {
               <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-mono uppercase">
                 {backLink && <Link to={backLink.to} className="inline-flex items-center gap-1 text-rose-300 hover:text-rose-200"><ArrowLeft className="h-3.5 w-3.5" />{backLink.label}</Link>}
                 {[
-                  ["CASE", trace?.case_id || search.caseId, search.caseId ? `/cases` : null] as const,
-                  ["ALERT", trace?.alert_id || search.alertId, search.alertId ? `/alerts` : null] as const,
+                  ["CASE", trace?.case_id || search.caseId, trace?.case_id || search.caseId ? `/cases` : null] as const,
+                  ["ALERT", trace?.alert_id || search.alertId, trace?.alert_id || search.alertId ? `/alerts` : null] as const,
                   ["ACCOUNT", activeAccountId, null] as const,
                 ].map(([label, value, navTo]) =>
                   navTo && value ? (
@@ -327,7 +335,7 @@ function MuleRingInvestigatorPage() {
                   }}
                   className="rounded-md border border-slate-700 px-3 py-2 text-xs text-slate-400 hover:bg-slate-800"
                 >
-                  Clear Selection
+                  Clear Investigation
                 </button>
               </div>
             )}
@@ -345,16 +353,16 @@ function MuleRingInvestigatorPage() {
       {(showAccountSearch || (!activeAccountId && !search.caseId && !search.alertId)) && <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
         <h2 className="vajra-section-title">Search Account</h2>
         <p className="mt-1 vajra-body-small">Search seeded account records by masked ID or holder name.</p>
-        <div className="relative mt-3"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search account ID or name" className="w-full rounded-md border border-slate-700 bg-slate-950 py-2 pl-9 pr-3 text-sm text-slate-100 placeholder:text-slate-500" /></div>
+        <form className="relative mt-3" onSubmit={(event) => { event.preventDefault(); setDebouncedQuery(query.trim()); }}><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" /><input value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={(event) => { if (event.key === "Escape") { setQuery(""); setDebouncedQuery(""); } }} placeholder="Search account ID or name" aria-label="Search account ID or name" className="w-full rounded-md border border-slate-700 bg-slate-950 py-2 pl-9 pr-3 text-sm text-slate-100 placeholder:text-slate-500" /></form>
         <div className="mt-2 divide-y divide-slate-800 overflow-hidden rounded-md border border-slate-800">
           {query.trim().length < 2 && <div className="p-3 text-sm text-slate-400">Type at least 2 characters to search.</div>}
           {query.trim().length >= 2 && searchState === "loading" && <div className="space-y-2 p-3"><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /></div>}
           {searchState === "error" && <div className="p-3 text-sm text-rose-300">Account search is unavailable. Try again.</div>}
           {searchState === "empty" && <div className="p-3 text-sm text-slate-400">No matching accounts found.</div>}
-          {searchResults.map((account) => <button key={account.account_id} aria-pressed={activeAccountId === account.account_id} onClick={() => { setShowAccountSearch(false); void navigate({ to: "/mule-ring-investigator", search: { accountId: account.account_id, caseId: account.linked_case_id || undefined, alertId: undefined } }); }} className={`flex w-full flex-wrap items-center justify-between gap-3 px-3 py-3 text-left hover:bg-slate-800 ${activeAccountId === account.account_id ? "bg-cyan-950/40 ring-1 ring-inset ring-cyan-700/60" : ""}`}>
+          {searchResults.map((account) => <div key={account.account_id} className={`flex w-full flex-wrap items-center justify-between gap-3 px-3 py-3 hover:bg-slate-800 ${activeAccountId === account.account_id ? "bg-cyan-950/40 ring-1 ring-inset ring-cyan-700/60" : ""}`}>
             <span className="min-w-0"><span className="block font-mono text-sm font-semibold text-slate-100">{account.account_id_masked}</span><span className="text-sm text-slate-400">{account.holder_name_masked}</span></span>
-            <span className="flex flex-wrap items-center gap-2 text-xs"><span className="text-slate-400">{account.bank}</span>{account.risk_tier && <span className="rounded-full border border-amber-700/60 bg-amber-950/40 px-2 py-1 text-amber-300">{account.risk_tier}</span>}{account.linked_case_id && <span className="rounded-full border border-cyan-700/60 bg-cyan-950/40 px-2 py-1 text-cyan-200">Linked to {account.linked_case_id}</span>}</span>
-          </button>)}
+            <span className="flex flex-wrap items-center gap-2 text-xs"><span className="text-slate-400">{account.bank}</span>{account.risk_tier && <span className="rounded-full border border-amber-700/60 bg-amber-950/40 px-2 py-1 text-amber-300">{account.risk_tier}</span>}{account.linked_case_id && <span className="rounded-full border border-cyan-700/60 bg-cyan-950/40 px-2 py-1 text-cyan-200">Linked to {account.linked_case_id}</span>}<button type="button" onClick={() => { setShowAccountSearch(false); setSelectedNodeId(null); void navigate({ to: "/mule-ring-investigator", search: { accountId: account.account_id, caseId: account.linked_case_id || undefined, alertId: undefined } }); }} className="rounded-md bg-rose-700 px-3 py-1.5 font-semibold text-white hover:bg-rose-600">Investigate</button></span>
+          </div>)}
         </div>
       </section>}
 
@@ -381,16 +389,17 @@ function MuleRingInvestigatorPage() {
           {fingerprintState === "idle" && <div className="rounded-lg border border-dashed border-slate-700 bg-slate-950/50 p-4 text-sm text-slate-500">Select an account to begin.</div>}
           {fingerprintState === "error" && <RetryPanel message={fingerprint?.reason || "Model 8 fingerprint analysis is currently unavailable."} onRetry={() => void fingerprintQuery.refetch()} />}
           {fingerprintState === "empty" && <div className="rounded-lg border border-slate-800 bg-slate-950 p-4 text-sm text-slate-400">No known pattern matched.</div>}
-          {fingerprintState === "success" && <div className="space-y-3">{fingerprint?.patterns.map((pattern) => <details key={pattern.pattern_name} className="group rounded-lg border border-slate-800 bg-slate-950 p-3"><summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2"><span className="flex flex-wrap gap-2"><span className="inline-flex items-center gap-1 rounded-md border border-rose-800/70 bg-rose-950/40 px-2 py-1 text-sm text-rose-200"><Tag className="h-3 w-3" />{pattern.pattern_name.replace(/_/g, " ")}</span></span><span className="font-mono text-sm font-semibold text-amber-300">{pattern.match_confidence == null ? "Unavailable" : `${(pattern.match_confidence * 100).toFixed(1)}%`}</span></summary><ul className="mt-3 space-y-1 border-t border-slate-800 pt-3 text-xs text-slate-400">{pattern.matching_features.map((feature) => <li key={feature}>• {feature}</li>)}</ul></details>)}<p className="vajra-body-small text-slate-500">Investigative intelligence only. Does not alter SOP action tiers.</p></div>}
+          {fingerprintState === "success" && <div className="space-y-3">{fingerprint?.patterns.map((pattern) => <details key={pattern.pattern_name} className="group rounded-lg border border-slate-800 bg-slate-950 p-3"><summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2"><span className="flex flex-wrap gap-2"><span className="inline-flex items-center gap-1 rounded-md border border-rose-800/70 bg-rose-950/40 px-2 py-1 text-sm text-rose-200"><Tag className="h-3 w-3" />{pattern.pattern_name.replace(/_/g, " ")}</span></span><span className="font-mono text-sm font-semibold text-amber-300">{pattern.match_confidence == null ? "Similarity unavailable" : `Similarity ${pattern.match_confidence.toFixed(4)}`}</span></summary><ul className="mt-3 space-y-1 border-t border-slate-800 pt-3 text-xs text-slate-400">{pattern.matching_features.map((feature) => <li key={feature}>• {feature}</li>)}</ul></details>)}<p className="vajra-body-small text-slate-500">Investigative pattern match — not a probability or final decision. Does not alter SOP action tiers.</p></div>}
         </section>
         <section className="space-y-3 rounded-xl border border-slate-800 bg-slate-900 p-4"><h3 className="vajra-section-title flex items-center gap-2 uppercase tracking-wider"><Building2 className="h-4 w-4 text-pink-300" />Predicted Physical Cash-Out Terminals</h3>
           {terminalState === "loading" && <div className="space-y-2">{[0, 1, 2].map((rank) => <Skeleton key={rank} className="h-14 w-full" />)}</div>}
           {terminalState === "idle" && <div className="rounded-lg border border-dashed border-slate-700 bg-slate-950/50 p-4 text-sm text-slate-500">Select an account to begin.</div>}
           {terminalState === "error" && <RetryPanel message={terminalsQuery.data?.reason || "Physical cash-out prediction is currently unavailable."} onRetry={() => void terminalsQuery.refetch()} />}
           {terminalState === "empty" && <div className="rounded-lg border border-slate-800 bg-slate-950 p-4 text-sm text-slate-400">No predicted terminals are available.</div>}
-          {terminalState === "success" && <ol className="divide-y divide-slate-800 rounded-lg border border-slate-800 bg-slate-950">{terminals.slice(0, 3).map((candidate) => <li key={candidate.node_id} className="flex flex-wrap items-center justify-between gap-3 p-3"><div className="flex items-center gap-3"><span className="grid h-7 w-7 place-items-center rounded-full border border-pink-800/70 font-mono text-xs text-pink-300">#{candidate.rank}</span><div><div className="font-mono text-sm font-semibold text-slate-100">{candidate.node_id}</div><div className="text-xs text-slate-400">{candidate.distance_from_corridor_km == null ? "Distance unavailable" : `${candidate.distance_from_corridor_km.toFixed(1)} km from corridor`}</div></div></div><div className="flex items-center gap-3"><div className="font-mono text-sm font-semibold text-pink-300">{candidate.confidence_pct == null ? "Unavailable" : `${candidate.confidence_pct.toFixed(1)}%`}</div><Link to="/heatmap" search={{ nodeId: candidate.node_id, caseId: trace?.case_id || search.caseId }} className="rounded border border-pink-800/70 px-2 py-1 text-xs text-pink-200 hover:bg-pink-950/50">Open Map</Link></div></li>)}</ol>}
+            {terminalState === "success" && <ol className="divide-y divide-slate-800 rounded-lg border border-slate-800 bg-slate-950">{terminals.slice(0, 3).map((candidate) => <li key={candidate.node_id} className="flex flex-wrap items-center justify-between gap-3 p-3"><div className="flex items-center gap-3"><span className="grid h-7 w-7 place-items-center rounded-full border border-pink-800/70 font-mono text-xs text-pink-300">#{candidate.rank}</span><div><div className="font-mono text-sm font-semibold text-slate-100">{candidate.node_id}</div><div className="text-xs text-slate-400">{candidate.distance_from_corridor_km == null ? "Distance unavailable" : `${candidate.distance_from_corridor_km.toFixed(1)} km from corridor`}</div></div></div><div className="flex items-center gap-3"><div className="font-mono text-sm font-semibold text-pink-300">{candidate.confidence_pct == null ? "Unavailable" : `${candidate.confidence_pct.toFixed(1)}%`}</div><button type="button" onClick={() => setSelectedNodeId(candidate.node_id)} className="rounded border border-pink-800/70 px-2 py-1 text-xs text-pink-200 hover:bg-pink-950/50">View Node</button><Link to="/heatmap" search={{ nodeId: candidate.node_id, caseId: trace?.case_id || search.caseId }} className="rounded border border-pink-800/70 px-2 py-1 text-xs text-pink-200 hover:bg-pink-950/50">Open Map</Link></div></li>)}</ol>}
         </section>
       </div>
+      {selectedNodeId && <aside className="rounded-xl border border-pink-800/70 bg-slate-900 p-4"><div className="flex items-center justify-between"><h2 className="vajra-section-title">Predicted Node Detail</h2><button type="button" onClick={() => setSelectedNodeId(null)} className="text-sm text-slate-300">Close</button></div>{nodeQuery.isPending && <div className="mt-3 text-sm text-slate-400">Loading node details…</div>}{nodeQuery.isError && <RetryPanel message="Unable to load node details." onRetry={() => void nodeQuery.refetch()} />}{nodeQuery.data && <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2"><div>Node: {nodeQuery.data.node_id}</div><div>Type: {nodeQuery.data.node_type}</div><div>Location: {[nodeQuery.data.city, nodeQuery.data.district, nodeQuery.data.state].filter(Boolean).join(", ") || "Unavailable"}</div><div>Coordinates: {nodeQuery.data.latitude}, {nodeQuery.data.longitude}</div><div>Vulnerability: {nodeQuery.data.node_vulnerability_score == null ? "Unavailable" : nodeQuery.data.node_vulnerability_score}</div><div className="text-pink-300">PREDICTED · NOT YET OBSERVED</div></div>}</aside>}
       {selectedTransaction && <aside className="rounded-xl border border-cyan-800/70 bg-slate-900 p-4"><div className="flex items-center justify-between"><h2 className="vajra-section-title">Transaction Detail</h2><button onClick={() => setSelectedTransaction(null)} className="text-sm text-slate-300">Close</button></div><div className="mt-3 grid gap-2 text-sm sm:grid-cols-2"><div>From: {selectedTransaction.from_account || "Unavailable"}</div><div>To: {selectedTransaction.to_account || "Unavailable"}</div><div>Amount: {money(selectedTransaction.amount)}</div><div>Transaction: {selectedTransaction.transaction_id || "Unavailable"}</div></div></aside>}
     </div>
   );

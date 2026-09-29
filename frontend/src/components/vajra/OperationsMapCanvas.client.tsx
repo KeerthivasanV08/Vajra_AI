@@ -1,5 +1,10 @@
+import { useEffect } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import type { HighRiskCorridor, WithdrawalNode } from '@/types/vajra';
 
 interface Props {
@@ -13,6 +18,14 @@ interface Props {
 }
 
 export function OperationsMapCanvasClient({ nodes = [], selectedNode, onSelectNode, center, zoom = 6, className = '' }: Props) {
+  useEffect(() => {
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: markerIcon2x,
+      iconUrl: markerIcon,
+      shadowUrl: markerShadow,
+    });
+  }, []);
+
   const fallback: [number, number] = [20.5937, 78.9629];
   const selected = selectedNode && Number.isFinite(selectedNode.latitude) && Number.isFinite(selectedNode.longitude)
     ? [selectedNode.latitude, selectedNode.longitude] as [number, number] : undefined;
