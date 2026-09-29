@@ -31,6 +31,9 @@ class Settings:
         "https://vajra-ai-six.vercel.app",
         "https://vajra-76mc8kduk-keerthivasan08coral-1274s-projects.vercel.app",
     ]
+    CORS_ORIGIN_REGEX: Optional[str] = os.getenv(
+        "CORS_ORIGIN_REGEX", r"https://.*\.vercel\.app"
+    )
 
     # Data & Artifact Directories
     # DATA_ROOT anchors on BACKEND_DIR so the backend is self-contained:
