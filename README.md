@@ -4,9 +4,12 @@
 
 VAJRA AI is an AI-powered intelligence and decision-support platform for forecasting likely cash-withdrawal locations from cybercrime, financial, behavioral, geospatial, and relationship signals. It connects TrustVault digital risk intelligence with physical cash-out prediction, operational alerting, investigation workflows, and auditable SOP-based decision support.
 
+Internally, VAJRA AI is powered by two fused engines rather than one: the **Digital Detector**, which provides identity and transaction-level AML intelligence, and the **Physical Prediction Engine**, the original PRAHARI core for geospatial cash-out forecasting. Together they close the full loop: the Digital Detector catches the mule network while it is forming and moving money, and the Physical Prediction Engine forecasts where that money will turn into cash. Neither replaces I4C's existing systems, including NCRP, CFCFRMS, Samanvaya, the Suspect Registry, and Pratibimb; both sit on top of them.
+
+The single end-to-end question VAJRA AI answers is: **"Is this account a mule, and if so, where and when will it cash out?"** The question is asked at onboarding, continuously during every transaction, and conclusively when layering behaviour is confirmed.
+
 **Problem Statement 26184** · *Development of a Predictive Analytics Framework for Cybercrime Complaints to Forecast Likely Cash Withdrawal Locations in Advance, Enabling Generation of Actionable Intelligence for Timely and Proactive Cybercrime Intervention.*
 
----
 
 ## 🚀 Try Our Live Demo
 
